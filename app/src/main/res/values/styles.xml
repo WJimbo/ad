@@ -1,0 +1,120 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+    <style  name="txtLabel">
+        <item name="android:textColor">@color/label</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_width">100dp</item>
+        <item name="android:gravity">left</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+
+    </style>
+
+    <style  name="txtContent">
+        <item name="android:textColor">@color/content</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:gravity">left</item>
+    </style>
+
+
+    <style  name="editText">
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textColorHint">@color/tips</item>
+        <item name="android:padding">8dp</item>
+        <item name="colorControlNormal">@color/tips</item>
+        <item name="colorControlActivated">@color/orange</item>
+        <item name="android:background">@null</item>
+        <item name="android:gravity">left</item>
+    </style>
+
+
+
+
+
+
+
+
+
+    <style  name="itemLabel">
+        <item name="android:textColor">@color/label</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:gravity">left</item>
+    </style>
+
+
+
+    <style  name="itemContent">
+        <item name="android:textColor">@color/content</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_marginTop">3dp</item>
+        <item name="android:layout_marginBottom">3dp</item>
+        <item name="android:gravity">left</item>
+    </style>
+
+
+
+    <style  name="itemTitle">
+        <item name="android:textColor">@color/itemTitle</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:gravity">left</item>
+    </style>
+
+    <style  name="itemBrief">
+        <item name="android:textColor">#666666</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:gravity">left</item>
+        <item name="android:lineSpacingExtra">5dp</item>
+
+    </style>
+
+
+
+
+
+    <style name="MyDialog"
+        parent="android:Theme.Holo.Light.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+
+</resources>
