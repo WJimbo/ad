@@ -26,7 +26,7 @@ public class CrashApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        LoggerHelper.init();
         CrashHandler crashHandler = CrashHandler.getInstance();
         crashHandler.init(getApplicationContext());
         Context cont = this.getApplicationContext();

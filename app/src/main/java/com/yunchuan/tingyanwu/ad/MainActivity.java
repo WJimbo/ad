@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.yunchuan.tingyanwu.ad.service.HeartBeatService;
+import com.yunchuan.tingyanwu.ad.service.socket.CommandReceiveService;
 import com.yunchuan.tingyanwu.ad.util.CrashApplication;
 import com.yunchuan.tingyanwu.ad.util.FileHelper;
 import com.yunchuan.tingyanwu.ad.util.FullScreenVideoView;
@@ -327,11 +327,7 @@ Toast.makeText(mContext,"命令"+command,Toast.LENGTH_LONG).show();
             }
         });
 
-
-        Intent h = new Intent(this, HeartBeatService.class);
-        startService(h);
-
-
+        CommandReceiveService.startService(this);
     }
 
     public void initMp() {

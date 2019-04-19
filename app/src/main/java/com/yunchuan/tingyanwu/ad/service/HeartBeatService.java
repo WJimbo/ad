@@ -288,7 +288,6 @@ public class HeartBeatService extends Service {
             if (connector != null) {
                 connector.dispose();
             }
-
             initClientMina();
         }
     }

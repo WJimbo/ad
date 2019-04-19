@@ -100,6 +100,8 @@
         <service
             android:name=".service.HeartBeatService"
             android:exported="false"></service>
+        <service android:name=".service.socket.CommandReceiveService"
+            android:exported="false"/>
     </application>
 
 </manifest>
