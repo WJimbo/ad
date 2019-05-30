@@ -3,17 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/white"
+    android:orientation="vertical"
 
-    tools:context="com.yunchuan.tingyanwu.ad.MainActivity">
+    tools:context="com.xingyeda.ad.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:orientation="vertical">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -26,17 +26,17 @@
                 android:orientation="vertical"
                 android:showDividers="middle">
 
-                <com.yunchuan.tingyanwu.ad.util.FullScreenVideoView
-                    android:id="@+id/v1"
+                <com.dueeeke.videoplayer.player.IjkVideoView
+                    android:id="@+id/ijkVideoView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="0dp"
                     android:layout_gravity="center"
-
-                    android:visibility="gone" />
+                    android:layout_margin="0dp"
+                    android:visibility="visible"
+                    />
 
                 <ImageView
-                    android:id="@+id/p1"
+                    android:id="@+id/ad_pic"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="0dp"
@@ -44,14 +44,36 @@
                     android:src="@mipmap/p1" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tips"
-                style="@style/txtLabel"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_marginBottom="0dp"
-                android:layout_marginRight="0dp"
-                android:text="mac" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/version"
+                    style="@style/txtLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:text="mac" />
+
+                <TextView
+                    android:id="@+id/mac"
+                    style="@style/txtLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/version"
+                    android:text="mac1111111111111111" />
+
+                <TextView
+                    android:id="@+id/tips"
+                    style="@style/txtLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/mac"
+                    android:text="222222222222222222222222222" />
+            </LinearLayout>
+
+
         </FrameLayout>
 
 
@@ -62,10 +84,10 @@
         android:layout_width="match_parent"
         android:layout_height="48sp"
         android:layout_gravity="bottom"
-        android:visibility="gone"
-android:background="@color/white"
+        android:background="@color/white"
+        android:orientation="horizontal"
 
-        android:orientation="horizontal">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/marquee"
@@ -83,8 +105,6 @@ android:background="@color/white"
             android:text=""
             android:textColor="@color/orange" />
     </LinearLayout>
-
-
 
 
 </LinearLayout>

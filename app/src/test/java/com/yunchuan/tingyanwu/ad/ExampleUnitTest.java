@@ -1,4 +1,4 @@
-package com.yunchuan.tingyanwu.ad;
+package com.xingyeda.ad;
 
 import org.junit.Test;
 

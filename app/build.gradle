@@ -3,7 +3,7 @@ android {
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
     defaultConfig {
-        applicationId "com.yunchuan.tingyanwu.ad"
+        applicationId "com.xingyeda.ad"
         minSdkVersion 19
         targetSdkVersion 22
         versionCode 1
@@ -14,7 +14,13 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            aaptOptions.cruncherEnabled = false
+            aaptOptions.useNewCruncher = false
         }
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
     }
     dexOptions {
     }
@@ -32,40 +38,51 @@ dependencies {
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
-    testImplementation 'junit:junit:4.12'
-    implementation 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
-    implementation 'org.jsoup:jsoup:1.10.2'
-    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-    implementation 'com.android.support:appcompat-v7:28.0.0'
+
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
+    //noinspection GradleCompatible
+    implementation 'com.android.support:appcompat-v7:22.2.1'
     implementation 'com.android.support:design:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    implementation 'com.jakewharton:butterknife:8.8.1'
-    implementation 'io.reactivex:rxjava:1.1.8'
-    implementation 'io.reactivex:rxandroid:1.2.1'
+    implementation 'com.android.support:support-v4:28.0.0'
+
+    //网络请求
     implementation 'com.squareup.retrofit2:retrofit:2.1.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
-    implementation 'com.google.code.gson:gson:2.8.2'
-    implementation 'com.android.support:support-v4:28.0.0'
-    implementation 'com.nineoldandroids:library:2.4.0'
-    implementation 'com.daimajia.slider:library:1.1.5@aar'
-    testImplementation 'junit:junit:4.12'
-   annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-    implementation 'com.tencent.bugly:crashreport:2.6.6.1'
+    implementation 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+    implementation 'io.reactivex:rxjava:1.1.8'
+    implementation 'io.reactivex:rxandroid:1.2.1'
+    //加载图片
     implementation 'com.github.bumptech.glide:glide:3.8.0'
-   implementation 'com.squareup.picasso:picasso:2.5.2'
-    implementation files('libs/mina-core-2.0.16.jar')
-//    implementation files('libs/slf4j-api-1.7.21.jar')
-    implementation 'org.greenrobot:eventbus:3.0.0'
-    implementation 'com.danikula:videocache:2.6.4'
-
-    implementation 'cn.jzvd:jiaozivideoplayer:6.0.0'
-
-//socket  https://github.com/vilyever/AndroidSocketClient
-    api 'com.github.vilyever:AndroidSocketClient:3.0.3'
-
+    //socketClient
+    implementation 'com.github.vilyever:AndroidSocketClient:3.0.3'
+    //下载用
+    implementation 'com.liulishuo.filedownloader:library:1.7.6'
+    //自动注入
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    //jsonutil
+    implementation 'com.google.code.gson:gson:2.8.2'
     //日志打印
-    api 'com.orhanobut:logger:2.2.0'
+    implementation 'com.orhanobut:logger:2.2.0'
+    //消息订阅
+    implementation 'org.greenrobot:eventbus:3.0.0'
+    //播放器
+    implementation 'com.github.dueeeke.dkplayer:dkplayer-java:2.5.7'
+    implementation 'com.github.dueeeke.dkplayer:dkplayer-armv7a:2.5.7'
+    implementation 'com.github.dueeeke.dkplayer:dkplayer-x86:2.5.7'
+    //自动更新
+    implementation 'com.github.a-voyager:AutoInstaller:v1.0'
+
+    //定时任务
+    implementation 'com.github.lgw666:SimpleTimerTaskHandler:v1.0'
+
+    //数据库操作
+    implementation 'cn.ittiger:tigerdb:1.0'
+
+    testImplementation 'junit:junit:4.12'
+
+
 
 }
 

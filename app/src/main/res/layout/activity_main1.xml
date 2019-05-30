@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/white"
-    tools:context="com.yunchuan.tingyanwu.ad.MainActivity">
+    tools:context="com.xingyeda.ad.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,7 +34,7 @@
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-                    <com.yunchuan.tingyanwu.ad.util.FullScreenVideoView
+                    <com.xingyeda.ad.util.FullScreenVideoView
                     android:id="@+id/v1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -73,7 +73,7 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <com.yunchuan.tingyanwu.ad.util.FullScreenVideoView
+                <com.xingyeda.ad.util.FullScreenVideoView
                     android:id="@+id/v2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -99,7 +99,7 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <com.yunchuan.tingyanwu.ad.util.FullScreenVideoView
+                <com.xingyeda.ad.util.FullScreenVideoView
                     android:id="@+id/v3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

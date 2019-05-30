@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.yunchuan.tingyanwu.ad.service.DataManager;
-import com.yunchuan.tingyanwu.ad.vo.AdInfo;
-import com.yunchuan.tingyanwu.ad.vo.MsgInfo;
-import com.yunchuan.tingyanwu.ad.vo.VersionInfo;
+import com.xingyeda.ad.service.DataManager;
+import com.xingyeda.ad.vo.AdInfo;
+import com.xingyeda.ad.vo.MsgInfo;
+import com.xingyeda.ad.vo.VersionInfo;
 
 import okhttp3.ResponseBody;
 import rx.Observer;
@@ -94,10 +94,8 @@ public class AdPresenter implements IPresenter {
     }
 
 
-
-
-    public void getAdInfo(String mac) {
-        mCompositeSubscription.add(manager.getAdInfo(mac)
+    public void getAdInfo(String url) {
+        mCompositeSubscription.add(manager.getAdInfo(url)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<AdInfo>() {
@@ -107,7 +105,6 @@ public class AdPresenter implements IPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("ad presenter adinfo", e.toString());
                         mAdView.onError("请求失败!");
                     }
 
@@ -120,9 +117,8 @@ public class AdPresenter implements IPresenter {
     }
 
 
-
-    public void getAnnouncement(String mac) {
-        mCompositeSubscription.add(manager.getAnnouncement(mac)
+    public void getAnnouncement(String url) {
+        mCompositeSubscription.add(manager.getAnnouncement(url)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<MsgInfo>() {
@@ -133,9 +129,6 @@ public class AdPresenter implements IPresenter {
                     @Override
                     public void onError(Throwable e) {
 
-                       // mAdView.onError("请求失败!");
-
-
                     }
 
                     @Override
@@ -145,7 +138,6 @@ public class AdPresenter implements IPresenter {
                 })
         );
     }
-
 
 
     public void getVersion(String url) {
@@ -168,10 +160,6 @@ public class AdPresenter implements IPresenter {
                     }
                 })
         );
+
     }
-
-
-
-
-
 }
