@@ -21,7 +21,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class Util {
-
+    public static void loadImage(Context context, final String imageUrl, final ImageView imageView,RotateTransformation rotateTransformation) {
+        Glide.with(context).load(imageUrl).transform(rotateTransformation).into(imageView);
+    }
     public static void loadImage(Context context, final String imageUrl, final ImageView imageView) {
         Glide.with(context).load(imageUrl).into(imageView);
     }

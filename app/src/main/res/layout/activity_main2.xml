@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:orientation="vertical"
 
     tools:context="com.xingyeda.ad.MainActivity">
@@ -20,20 +19,29 @@
             android:layout_height="match_parent">
 
             <LinearLayout
+                android:background="@color/Black"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:dividerPadding="0dp"
                 android:orientation="vertical"
                 android:showDividers="middle">
 
-                <com.dueeeke.videoplayer.player.IjkVideoView
-                    android:id="@+id/ijkVideoView"
+                <!--<com.dueeeke.videoplayer.player.IjkVideoView-->
+                    <!--android:id="@+id/ijkVideoView"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_gravity="center"-->
+                    <!--android:layout_margin="0dp"-->
+                    <!--android:visibility="visible"-->
+                    <!--/>-->
+                <VideoView
+                    android:id="@+id/videoView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_margin="0dp"
                     android:visibility="visible"
-                    />
+                />
 
                 <ImageView
                     android:id="@+id/ad_pic"
@@ -51,10 +59,13 @@
 
                 <TextView
                     android:id="@+id/version"
+                    android:rotation="270"
+                    android:transformPivotX="80dp"
+                    android:transformPivotY="80dp"
                     style="@style/txtLabel"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="30dp"
-                    android:text="mac" />
+                    android:text="mac12323123132131312312" />
 
                 <TextView
                     android:id="@+id/mac"
