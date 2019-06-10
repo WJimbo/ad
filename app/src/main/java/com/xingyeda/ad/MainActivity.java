@@ -252,14 +252,14 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        if (keyCode == KeyEvent.KEYCODE_BACK) {
-//            Toast.makeText(MainActivity.this, "返回键无效", Toast.LENGTH_SHORT).show();
-//            return true;//return true;拦截事件传递,从而屏蔽back键。
-//        }
-//        if (KeyEvent.KEYCODE_HOME == keyCode) {
-//            Toast.makeText(getApplicationContext(), "HOME 键已被禁用...", Toast.LENGTH_SHORT).show();
-//            return true;//同理
-//        }
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Toast.makeText(MainActivity.this, "返回键无效", Toast.LENGTH_SHORT).show();
+            return true;//return true;拦截事件传递,从而屏蔽back键。
+        }
+        if (KeyEvent.KEYCODE_HOME == keyCode) {
+            Toast.makeText(getApplicationContext(), "HOME 键已被禁用...", Toast.LENGTH_SHORT).show();
+            return true;//同理
+        }
         return super.onKeyDown(keyCode, event);
     }
 
@@ -487,7 +487,7 @@ public class MainActivity extends BaseActivity {
         final String path = getExternalFilesDir("/").getAbsolutePath() + "/video/" + vName + ".mp4";
         FileDownloader.getImpl().create(ad.getFileUrl())
                 .setPath(path)
-                .setForceReDownload(true)
+                //.setForceReDownload(true)
                 .setAutoRetryTimes(5)
                 .setListener(new FileDownloadListener() {
                     @Override
@@ -697,12 +697,12 @@ public class MainActivity extends BaseActivity {
         @Override
         public void onSuccess(AdInfo adInfo) {
             List<Ad> list = adInfo.getObj();
-            Ad videoAD = new Ad();
-            videoAD.setFiletype("2");
-            videoAD.setFileUrl("http://vfx.mtime.cn/Video/2019/02/04/mp4/190204084208765161.mp4");
-            videoAD.setId(1333);
-            videoAD.setDuration(30);
-            list.add(videoAD);
+//            Ad videoAD = new Ad();
+//            videoAD.setFiletype("2");
+//            videoAD.setFileUrl("http://vfx.mtime.cn/Video/2019/02/04/mp4/190204084208765161.mp4");
+//            videoAD.setId(1333);
+//            videoAD.setDuration(30);
+//            list.add(videoAD);
             for (Ad ad : list) {
                 if (!"2".equals(ad.getFiletype())) {
                     DATAS.put(ad.getId(), ad);//优先将图片放入播放列表
