@@ -16,6 +16,10 @@ public class BaseApplication extends Application {
     public static final String HOST = "120.25.245.234";
     public static String www = "http://120.25.245.234:8080/xydServer/servlet/";
 
+    /**
+     * 是否需要旋转视频
+     */
+    public static final boolean RotateVideo = true;
 
     public static int VERSIONCODE = 6;
 

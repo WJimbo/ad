@@ -517,23 +517,9 @@ public class MainActivity extends BaseActivity {
                     @Override
                     protected void completed(BaseDownloadTask task) {
 
-                        if (videoEditor == null) {
-                            videoEditor = new VideoEditor();
-                        }
                         LoggerHelper.i("下载完成 : " + ad.getFileUrl());
                         ad.setFileUrl(path);
-                        if (videoEditor == null) {
-                            videoEditor = new VideoEditor();
-                            videoEditor.setOnProgessListener(new onVideoEditorProgressListener() {
-                                @Override
-                                public void onProgress(VideoEditor v, int percent) {
-                                    if (mProgressDialog != null) {
-                                        mProgressDialog.setMessage("正在处理中..." + String.valueOf(percent) + "%");
-                                    }
-                                }
-                            });
-                        }
-                        Toast.makeText(getApplicationContext(), "正在旋转视频", Toast.LENGTH_LONG).show();
+
                         new SubAsyncTask(ad, path).execute();
                     }
 
@@ -591,41 +577,57 @@ public class MainActivity extends BaseActivity {
 
         @Override
         protected synchronized Boolean doInBackground(Object... params) {
-            //修改视频元数据
-            String dstVideo = null;
-            dstVideo = videoEditor.executeSetVideoMetaAngle(path, 270);
-            if (dstVideo == null) {
-                //旋转视频
-                dstVideo = videoEditor.executeVideoRotate90Clockwise(path);
+            if(BaseApplication.RotateVideo){
+                if (videoEditor == null) {
+                    videoEditor = new VideoEditor();
+                    videoEditor.setOnProgessListener(new onVideoEditorProgressListener() {
+                        @Override
+                        public void onProgress(VideoEditor v, int percent) {
+                            if (mProgressDialog != null) {
+                                mProgressDialog.setMessage("正在处理中..." + String.valueOf(percent) + "%");
+                            }
+                        }
+                    });
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "正在旋转视频", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+                //修改视频元数据
+                String dstVideo = null;
+                dstVideo = videoEditor.executeSetVideoMetaAngle(path, 270);
+                if (dstVideo == null) {
+                    //旋转视频
+//                    dstVideo = videoEditor.executeVideoRotate90Clockwise(path);
 //                            dstVideo = videoEditor.executeVideoRotate90CounterClockwise(path);
+                }
+                if (dstVideo != null) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "旋转视频成功", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                    Tools.file().deleteFile(path);
+                    Tools.file().moveFile(dstVideo, path);
+                    ad.setFileUrl(path);
+                } else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "旋转视频失败", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                }
             }
-            if (dstVideo != null) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(), "旋转视频成功", Toast.LENGTH_LONG).show();
-                    }
-                });
-
-                Tools.file().deleteFile(path);
-                Tools.file().moveFile(dstVideo, path);
-                ad.setFileUrl(path);
-            } else {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(), "旋转视频失败", Toast.LENGTH_LONG).show();
-                    }
-                });
-
-            }
-
 
             DATAS.put(ad.getId(), ad);
-
             Util.sortMapByKey(DATAS);
-
-
             AdEntity entity = adInfoToEntity(ad);
             entity.setState("0");
             if (dbUtil.get(String.valueOf(entity.getId())) == null) {
