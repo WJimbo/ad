@@ -24,12 +24,6 @@ public class MyIjkPlayer extends IjkPlayer {
         if(onInfoListener != null){
             mMediaPlayer.setOnInfoListener(onInfoListener);
         }
-//        mMediaPlayer.setOnInfoListener(new IMediaPlayer.OnInfoListener() {
-//            @Override
-//            public boolean onInfo(IMediaPlayer iMediaPlayer, int i, int i1) {
-//                return false;
-//            }
-//        });
         mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec", 1);
         mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-auto-rotate", 1);
         mMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-handle-resolution-change", 1);

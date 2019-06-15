@@ -52,37 +52,14 @@
                     android:src="@mipmap/p1" />
             </LinearLayout>
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/tips"
+                style="@style/txtLabel"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/version"
-                    android:rotation="270"
-                    android:transformPivotX="80dp"
-                    android:transformPivotY="80dp"
-                    style="@style/txtLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:text="mac12323123132131312312" />
-
-                <TextView
-                    android:id="@+id/mac"
-                    style="@style/txtLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/version"
-                    android:text="mac1111111111111111" />
-
-                <TextView
-                    android:id="@+id/tips"
-                    style="@style/txtLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/mac"
-                    android:text="222222222222222222222222222" />
-            </LinearLayout>
+                android:layout_height="30dp"
+                android:layout_marginBottom="0dp"
+                android:layout_marginRight="0dp"
+                android:text="mac" />
 
 
         </FrameLayout>

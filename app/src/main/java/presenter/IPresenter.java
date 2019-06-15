@@ -5,6 +5,7 @@ import android.content.Intent;
 import view.IView;
 
 public interface IPresenter {
+
     void onCreate();
 
     void onStart();//暂时没用到

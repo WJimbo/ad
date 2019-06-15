@@ -1,5 +1,7 @@
 package com.xingyeda.ad;
 
+import java.util.Date;
+
 import cn.ittiger.database.annotation.PrimaryKey;
 import cn.ittiger.database.annotation.Table;
 
@@ -29,6 +31,7 @@ public class AdEntity {
      */
     private String state;
 
+
     private String MD5;
 
 
@@ -46,6 +49,9 @@ public class AdEntity {
      * 文件类型
      */
     private String filetype;
+
+
+    private String endtime;
 
     public int getId() {
         return id;
@@ -109,5 +115,13 @@ public class AdEntity {
 
     public void setFiletype(String filetype) {
         this.filetype = filetype;
+    }
+
+    public String getEndtime() {
+        return endtime;
+    }
+
+    public void setEndtime(String endtime) {
+        this.endtime = endtime;
     }
 }

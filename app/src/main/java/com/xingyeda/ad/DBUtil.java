@@ -2,7 +2,6 @@ package com.xingyeda.ad;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.xingyeda.ad.util.LoggerHelper;
 
@@ -48,9 +47,11 @@ public class DBUtil {
         //创建db，在创建数据库的时候，不需要在onDbCreateHandler手动去创建相关的数据表，在对实体对象进行数据操作的时候，会自动判断表是否存在，不存在的话会自动创建，同时如果有新增的字段也会自动更新表结构
         db = SQLiteDBFactory.createSQLiteDB(config);
     }
+
     public void save(AdEntity entity) {
         db.save(entity);
     }
+
     public AdEntity get(String id) {
         return db.query(AdEntity.class, id);
     }
@@ -61,6 +62,10 @@ public class DBUtil {
 
     public void delete(String id) {
         db.delete("delete from xyd_ad_info where id = '" + id + "'");
+    }
+
+    public void drop() {
+        db.deleteAll(AdEntity.class);
     }
 
     public void delete(AdEntity entity) {

@@ -83,12 +83,6 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.tips)
     public TextView mTips;
 
-    @BindView(R.id.version)
-    public TextView mVersion;
-
-    @BindView(R.id.mac)
-    public TextView mMac;
-
 
     /**
      * 通告
@@ -327,66 +321,12 @@ public class MainActivity extends BaseActivity {
         pic.setVisibility(View.VISIBLE);
 
 
-        mVersion.setText("version:" + BaseApplication.VERSION_NAME);
-//        mVersion.setRotation(270);
-        mMac.setText("mac:" + andoridId);
-        mTips.setText("时间..");
+        mTips.setText("mac:" + andoridId + " version:" + BaseApplication.VERSION_NAME);
 
         //初始化视频播放器数据
         //ijkVideoView.setRotation(-90f);
         //pic.setRotation(-90f);
         MyIjkPlayer mediaPlayer = new MyIjkPlayer(this);
-//        mediaPlayer.setOnInfoListener(new IMediaPlayer.OnInfoListener() {
-//            @Override
-//            public boolean onInfo(IMediaPlayer iMediaPlayer, int what, int extra) {
-//                if (what == IMediaPlayer.MEDIA_INFO_VIDEO_ROTATION_CHANGED) {
-//                    //这里返回了视频旋转的角度，根据角度旋转视频到正确的画面
-//                    if (ijkVideoView != null) {
-//                        ijkVideoView.setRotation(extra);
-//                    }
-//                }
-//                return false;
-//            }
-//        });
-//        ijkVideoView.setCustomMediaPlayer(mediaPlayer);
-//
-//        ijkVideoView.setVideoController(null); //
-//        ijkVideoView.addOnVideoViewStateChangeListener(new OnVideoViewStateChangeListener() {
-//            @Override
-//            public void onPlayerStateChanged(int playerState) {
-//                switch (playerState) {
-//                    case IjkVideoView.PLAYER_NORMAL://小屏
-//                        break;
-//                    case IjkVideoView.PLAYER_FULL_SCREEN://全屏
-//                        break;
-//                }
-//            }
-//
-//            @Override
-//            public void onPlayStateChanged(int playState) {
-//                switch (playState) {
-//                    case IjkVideoView.STATE_IDLE:
-//                        break;
-//                    case IjkVideoView.STATE_PREPARING:
-//                        break;
-//                    case IjkVideoView.STATE_PREPARED:
-//                        break;
-//                    case IjkVideoView.STATE_PLAYING:
-//                        break;
-//                    case IjkVideoView.STATE_PAUSED:
-//                        break;
-//                    case IjkVideoView.STATE_BUFFERING:
-//                        break;
-//                    case IjkVideoView.STATE_BUFFERED:
-//                        break;
-//                    case IjkVideoView.STATE_PLAYBACK_COMPLETED:
-//                        ijkVideoView.start();
-//                        break;
-//                    case IjkVideoView.STATE_ERROR:
-//                        break;
-//                }
-//            }
-//        });
 
         register();
 
@@ -424,10 +364,6 @@ public class MainActivity extends BaseActivity {
     private void playVideo() {
         videoView.stopPlayback();
         videoView.start();
-//        ijkVideoView.stopPlayback();
-//        //ijkVideoView.setLooping(true);
-//        ijkVideoView.setPlayOnMobileNetwork(true);
-//        ijkVideoView.start();
     }
 
 
@@ -517,9 +453,23 @@ public class MainActivity extends BaseActivity {
                     @Override
                     protected void completed(BaseDownloadTask task) {
 
+                        if (videoEditor == null) {
+                            videoEditor = new VideoEditor();
+                        }
                         LoggerHelper.i("下载完成 : " + ad.getFileUrl());
                         ad.setFileUrl(path);
-
+                        if (videoEditor == null) {
+                            videoEditor = new VideoEditor();
+                            videoEditor.setOnProgessListener(new onVideoEditorProgressListener() {
+                                @Override
+                                public void onProgress(VideoEditor v, int percent) {
+                                    if (mProgressDialog != null) {
+                                        mProgressDialog.setMessage("正在处理中..." + String.valueOf(percent) + "%");
+                                    }
+                                }
+                            });
+                        }
+                        Toast.makeText(getApplicationContext(), "正在旋转视频", Toast.LENGTH_LONG).show();
                         new SubAsyncTask(ad, path).execute();
                     }
 
@@ -577,57 +527,41 @@ public class MainActivity extends BaseActivity {
 
         @Override
         protected synchronized Boolean doInBackground(Object... params) {
-            if(BaseApplication.RotateVideo){
-                if (videoEditor == null) {
-                    videoEditor = new VideoEditor();
-                    videoEditor.setOnProgessListener(new onVideoEditorProgressListener() {
-                        @Override
-                        public void onProgress(VideoEditor v, int percent) {
-                            if (mProgressDialog != null) {
-                                mProgressDialog.setMessage("正在处理中..." + String.valueOf(percent) + "%");
-                            }
-                        }
-                    });
-                }
+            //修改视频元数据
+            String dstVideo = null;
+            dstVideo = videoEditor.executeSetVideoMetaAngle(path, 270);
+            if (dstVideo == null) {
+                //旋转视频
+                dstVideo = videoEditor.executeVideoRotate90Clockwise(path);
+//                            dstVideo = videoEditor.executeVideoRotate90CounterClockwise(path);
+            }
+            if (dstVideo != null) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getApplicationContext(), "正在旋转视频", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "旋转视频成功", Toast.LENGTH_LONG).show();
                     }
                 });
 
-                //修改视频元数据
-                String dstVideo = null;
-                dstVideo = videoEditor.executeSetVideoMetaAngle(path, 270);
-                if (dstVideo == null) {
-                    //旋转视频
-//                    dstVideo = videoEditor.executeVideoRotate90Clockwise(path);
-//                            dstVideo = videoEditor.executeVideoRotate90CounterClockwise(path);
-                }
-                if (dstVideo != null) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(), "旋转视频成功", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                Tools.file().deleteFile(path);
+                Tools.file().moveFile(dstVideo, path);
+                ad.setFileUrl(path);
+            } else {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "旋转视频失败", Toast.LENGTH_LONG).show();
+                    }
+                });
 
-                    Tools.file().deleteFile(path);
-                    Tools.file().moveFile(dstVideo, path);
-                    ad.setFileUrl(path);
-                } else {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(), "旋转视频失败", Toast.LENGTH_LONG).show();
-                        }
-                    });
-
-                }
             }
 
+
             DATAS.put(ad.getId(), ad);
+
             Util.sortMapByKey(DATAS);
+
+
             AdEntity entity = adInfoToEntity(ad);
             entity.setState("0");
             if (dbUtil.get(String.valueOf(entity.getId())) == null) {
@@ -651,7 +585,6 @@ public class MainActivity extends BaseActivity {
             Bundle data = msg.getData();
             String type = (String) data.get("type");
             String url = (String) data.get("url");
-            //String md5 = (String) data.get("md5");
 
             if (url == null || "".equals(url)) return;
 
@@ -661,12 +594,9 @@ public class MainActivity extends BaseActivity {
                 pic.setVisibility(View.VISIBLE);
                 videoView.setVisibility(View.GONE);
                 videoView.stopPlayback();
-//                ijkVideoView.setVisibility(View.GONE);
-//                ijkVideoView.stopPlayback();
                 Util.loadImage(mContext, url, pic, new RotateTransformation(getApplicationContext(), 270f));
             } else {
                 pic.setVisibility(View.GONE);
-//                ijkVideoView.setVisibility(View.VISIBLE);
                 videoView.setVisibility(View.VISIBLE);
                 playLocalVideo(url);
             }

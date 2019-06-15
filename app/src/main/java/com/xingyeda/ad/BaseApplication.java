@@ -10,8 +10,8 @@ import com.xingyeda.ad.util.LoggerHelper;
 
 public class BaseApplication extends Application {
 
-//    public static final String HOST = "192.168.10.200";
-//    public static String www = "http://192.168.10.200:8080/xydServer/servlet/";
+    //public static final String HOST = "192.168.10.114";
+    //public static String www = "http://192.168.10.114:8080/xydServer/servlet/";
 
     public static final String HOST = "120.25.245.234";
     public static String www = "http://120.25.245.234:8080/xydServer/servlet/";
@@ -25,7 +25,7 @@ public class BaseApplication extends Application {
 
     public static String HOME = "";
 
-    public static String VERSION_NAME = "20190529";
+    public static String VERSION_NAME = "20190614";
 
 
     @Override
