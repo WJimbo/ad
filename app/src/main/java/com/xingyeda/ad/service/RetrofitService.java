@@ -1,7 +1,6 @@
 package com.xingyeda.ad.service;
 
 
-import com.xingyeda.ad.vo.AdInfo;
 import com.xingyeda.ad.vo.MsgInfo;
 import com.xingyeda.ad.vo.VersionInfo;
 
@@ -16,9 +15,6 @@ import rx.Observable;
 
 
 public interface RetrofitService {
-
-    @GET
-    Observable<AdInfo> getAdInfo(@Url String url);
 
     @GET
     Observable<ResponseBody> register(@Url String url);

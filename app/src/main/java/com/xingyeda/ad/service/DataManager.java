@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.google.gson.GsonBuilder;
 import com.xingyeda.ad.BaseApplication;
-import com.xingyeda.ad.vo.AdInfo;
 import com.xingyeda.ad.vo.MsgInfo;
 import com.xingyeda.ad.vo.VersionInfo;
 
@@ -34,12 +33,6 @@ public class DataManager {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
         this.mRetrofitService = mRetrofit.create(RetrofitService.class);
-    }
-
-
-    public Observable<AdInfo> getAdInfo(String mac) {
-        Log.i(TAG, mac);
-        return mRetrofitService.getAdInfo(mac);
     }
 
 

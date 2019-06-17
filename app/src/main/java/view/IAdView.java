@@ -1,6 +1,5 @@
 package view;
 
-import com.xingyeda.ad.vo.AdInfo;
 import com.xingyeda.ad.vo.MsgInfo;
 import com.xingyeda.ad.vo.VersionInfo;
 
@@ -11,7 +10,6 @@ import okhttp3.ResponseBody;
  */
 
 public interface IAdView extends IView {
-    void onSuccess(AdInfo adInfo);
     void onError(String result);
     void onSuccessRegister(ResponseBody result);
     void onSuccessAnnouncement(MsgInfo result);

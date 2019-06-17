@@ -1,11 +1,10 @@
 package com.xingyeda.ad;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,24 +18,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import com.dueeeke.videoplayer.listener.OnVideoViewStateChangeListener;
-import com.dueeeke.videoplayer.player.IjkVideoView;
+import com.altang.app.common.utils.GsonUtil;
+import com.altang.app.common.utils.UIUtils;
 import com.gavinrowe.lgw.library.SimpleTimerTask;
 import com.gavinrowe.lgw.library.SimpleTimerTaskHandler;
-import com.lansosdk.videoeditor.VideoEditor;
-import com.lansosdk.videoeditor.onVideoEditorProgressListener;
-import com.liulishuo.filedownloader.BaseDownloadTask;
-import com.liulishuo.filedownloader.FileDownloadListener;
-import com.liulishuo.filedownloader.FileDownloader;
-import com.mazouri.tools.Tools;
 import com.xingyeda.ad.service.socket.CommandMessageData;
 import com.xingyeda.ad.service.socket.CommandReceiveService;
-import com.xingyeda.ad.util.GsonUtil;
-import com.xingyeda.ad.util.LoggerHelper;
+
 import com.xingyeda.ad.util.RotateTransformation;
 import com.xingyeda.ad.util.Util;
-import com.xingyeda.ad.vo.Ad;
-import com.xingyeda.ad.vo.AdInfo;
+import com.xingyeda.ad.vo.AdItem;
+import com.xingyeda.ad.vo.AdListResponseData;
 import com.xingyeda.ad.vo.MsgInfo;
 import com.xingyeda.ad.vo.Version;
 import com.xingyeda.ad.vo.VersionInfo;
@@ -46,12 +38,8 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-import java.net.URI;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,7 +53,7 @@ import view.IAdView;
 public class MainActivity extends BaseActivity {
     @BindView(R.id.videoView)
     VideoView videoView;
-    private VideoEditor videoEditor;
+
     /**
      * 视频播放
      */
@@ -97,40 +85,20 @@ public class MainActivity extends BaseActivity {
 
     private Unbinder mUnbinder = null;
 
-    private String andoridId;
+
 
     private AutoInstaller installer;
 
-
-    private void remove(Integer id) {
-        Iterator<Integer> iterator = DATAS.keySet().iterator();
-        while (iterator.hasNext()) {
-            Integer key = iterator.next();
-            if (key.equals(id)) {
-                iterator.remove();
-            }
-        }
-    }
-
-    private void delete(String id) {
-        AdEntity ad = dbUtil.get(id);
-        remove(Integer.valueOf(id));
-        if (ad == null) return;
-        String path = ad.getLocalUrl();
-        new File(path).delete();
-        dbUtil.delete(ad);
-
-    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessage(CommandMessageData messageData) {
         String command = messageData.getCommond();
         //更新数据，增加发送廣告
         if (command.equals("A543")) {
-            data();
+            requestList();
         }
         if (command.equals("A531")) {
-            delete(messageData.getContent());
+            ADListManager.getInstance(getApplicationContext()).setNeedUpdateList();
         }
         //重启
         if (command.equals("A544")) {
@@ -190,6 +158,7 @@ public class MainActivity extends BaseActivity {
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
+        unregisterReceiver(innerReceiver);
         mUnbinder.unbind();
     }
 
@@ -210,10 +179,9 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    private void data() {
-        buildData();
-        mAdInfoPresenter.getAdInfo(BaseApplication.www + "GetAdversitingByMac/R?mac=" + andoridId);
-        mAdInfoPresenter.getAnnouncement(BaseApplication.www + "getEquipmentAnnouncement?etype=2&mac=" + andoridId);
+    private void requestList() {
+        ADListManager.getInstance(getApplicationContext()).setNeedUpdateList();
+        mAdInfoPresenter.getAnnouncement(BaseApplication.www + "getEquipmentAnnouncement?etype=2&mac=" + BaseApplication.andoridId);
     }
 
 
@@ -224,23 +192,30 @@ public class MainActivity extends BaseActivity {
     private void register() {
         mAdInfoPresenter = new AdPresenter(this);
         mAdInfoPresenter.onCreate();
-        mAdInfoPresenter.attachView(mAdView);
-        //注册机器
-        mAdInfoPresenter.register(BaseApplication.www + "insertEqByMac/C?mac=" + andoridId + "&eq_Version=version" + BaseApplication.VERSIONCODE);
-    }
-
-    private DBUtil dbUtil;
-
-
-    private void buildData() {
-        DATAS.clear();
-        List<AdEntity> localData = dbUtil.list();
-        for (AdEntity entity : localData) {
-            if (new File(entity.getLocalUrl()).exists()) {
-                DATAS.put(entity.getId(), Util.entityToPo(entity));
+        mAdInfoPresenter.attachView(new IAdView() {
+            @Override
+            public void onError(String result) {
             }
-        }
 
+            @Override
+            public void onSuccessRegister(ResponseBody result) {
+            }
+
+
+            @Override
+            public void onSuccessAnnouncement(MsgInfo result) {
+            }
+
+            @Override
+            public void onSuccessVersion(VersionInfo result) {
+                Version ver = GsonUtil.gson.fromJson(result.getObj(), Version.class);
+                if (ver.getVersionNumber() > BaseApplication.VERSIONCODE) {
+                    installer.installFromUrl(ver.getUrl());
+                }
+            }
+        });
+        //注册机器
+        mAdInfoPresenter.register(BaseApplication.www + "insertEqByMac/C?mac=" + BaseApplication.andoridId + "&eq_Version=version" + BaseApplication.VERSIONCODE);
     }
 
 
@@ -256,11 +231,9 @@ public class MainActivity extends BaseActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
-
+    //创建广播
+    InnerReceiver innerReceiver = new InnerReceiver();
     private void receiverHome() {
-
-        //创建广播
-        InnerReceiver innerReceiver = new InnerReceiver();
         //动态注册广播
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         //启动广播
@@ -269,6 +242,24 @@ public class MainActivity extends BaseActivity {
 
 
     private void initialization() {
+        ADListManager.getInstance(this).setOnDataChangeCallBackListener(new ADListManager.OnDataChangeCallBackListener() {
+            @Override
+            public void dataChanged(AdListResponseData adListResponseData) {
+                if(adListResponseData != null && adListResponseData.getObj() != null){
+                    List<AdItem> adItems = new ArrayList<>();
+                    adItems.addAll(adListResponseData.getObj());
+                    for(AdItem adItem : adItems){
+                        if("2".equals(adItem.getFiletype())){
+                            DownloadManager.DownloadItem downloadItem = new DownloadManager.DownloadItem();
+                            downloadItem.rotateVideo = BaseApplication.RotateVideo;
+                            downloadItem.url = adItem.getFileUrl();
+                            downloadItem.savePath = new File(BaseApplication.VEDIO_DOWNLOAD_ROOT_PATH, adItem.getLocationFileName());
+                            DownloadManager.getInstance().downloadWithUrl(downloadItem);
+                        }
+                    }
+                }
+            }
+        });
 
         mUnbinder = ButterKnife.bind(this);
         //订阅组件注册
@@ -278,11 +269,6 @@ public class MainActivity extends BaseActivity {
 
         //注册键盘
         receiverHome();
-
-
-        dbUtil = DBUtil.getInstance(this);
-        dbUtil.initialization();
-
 
         installer = new AutoInstaller.Builder(this)
                 .setMode(AutoInstaller.MODE.AUTO_ONLY)
@@ -307,37 +293,41 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-//        andoridId = "c9a44d3e90f2b0f4";//大广告机
-        andoridId = "472481f1f2f9f8ac";//电视机
-        //andoridId = Util.getAndroidId(this);
 
-        LoggerHelper.i("andoridId : " + andoridId);
 
         //显示默认图片
 //        ijkVideoView.setVisibility(View.GONE);
         videoView.setZOrderMediaOverlay(true);
 //        videoView.setZOrderOnTop(true);
         videoView.setVisibility(View.GONE);
+        videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                //屏蔽视频无法播放错误弹出框
+                videoView.stopPlayback();
+                return true;
+            }
+        });
         pic.setVisibility(View.VISIBLE);
 
 
-        mTips.setText("mac:" + andoridId + " version:" + BaseApplication.VERSION_NAME);
+        mTips.setText("mac:" + BaseApplication.andoridId + " version:" + BaseApplication.VERSION_NAME);
 
         //初始化视频播放器数据
         //ijkVideoView.setRotation(-90f);
         //pic.setRotation(-90f);
-        MyIjkPlayer mediaPlayer = new MyIjkPlayer(this);
+//        MyIjkPlayer mediaPlayer = new MyIjkPlayer(this);
 
         register();
 
         checkVersion();
-
+        requestList();
         //开始请求数据
         //容错，怕偶尔收不到服务器推送，采用轮询的方式获取数据。
         SimpleTimerTask loopTask = new SimpleTimerTask(60 * 60 * 1000) {
             @Override
             public void run() {
-                data();
+                requestList();
             }
         };
         timeHandler.sendTask(1, loopTask);
@@ -374,304 +364,77 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main2);
         ButterKnife.bind(this);
         initialization();
-    }
-
-    private void play() {
         Util.defaultImage(MainActivity.this, pic);
+        startPlayThread();
+    }
+    private int currentShowAdIndex = 0;
+    private void startPlayThread() {
         Thread playThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     while (true) {
-                        for (Map.Entry<Integer, Ad> entry : DATAS.entrySet()) {
-                            Ad info = entry.getValue();
-                            Message msg = Message.obtain();
-                            Bundle b = new Bundle();
-                            b.putString("type", info.getFiletype());
-                            b.putString("url", info.getFileUrl());
-                            b.putString("md5", info.getMD5());
-                            msg.setData(b);
-                            msg.what = 1;
-                            handler.sendMessage(msg);
-                            Thread.sleep(info.getDuration() * 1000);
+                        try {
+                            List<AdItem> tempAdItemList = new ArrayList<>();
+                            AdListResponseData adListResponseData = ADListManager.getInstance(getApplicationContext()).getAdListResponseData();
+
+                            if(adListResponseData != null && adListResponseData.getObj() != null){
+                                tempAdItemList.addAll(adListResponseData.getObj());
+                            }
+                            if(currentShowAdIndex < 0 || currentShowAdIndex >= tempAdItemList.size()){
+                                currentShowAdIndex = 0;
+                            }
+                            int index = currentShowAdIndex;
+                            AdItem showAdItem = null;
+                            for(; index < tempAdItemList.size();index++){
+                                final AdItem adItem = tempAdItemList.get(index);
+                                final String fileType = adItem.getFiletype();
+                                if("2".equals(adItem.getFiletype())){
+                                    File file = new File(BaseApplication.VEDIO_DOWNLOAD_ROOT_PATH,adItem.getLocationFileName());
+                                    if(!file.exists()){
+                                        continue;
+                                    }
+                                }
+                                showAdItem = adItem;
+                                UIUtils.runOnMainThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if(pic != null){
+                                            if ("0".equals(fileType)) {
+                                                pic.setVisibility(View.VISIBLE);
+                                                videoView.setVisibility(View.GONE);
+                                                videoView.stopPlayback();
+                                                Util.loadImage(mContext, adItem.getFileUrl(), pic, new RotateTransformation(getApplicationContext(), 270f));
+                                            } else {
+                                                pic.setVisibility(View.GONE);
+                                                videoView.setVisibility(View.VISIBLE);
+                                                playLocalVideo(new File(BaseApplication.VEDIO_DOWNLOAD_ROOT_PATH,adItem.getLocationFileName()).getPath());
+                                            }
+                                        }
+
+                                    }
+                                });
+
+                                break;
+                            }
+                            currentShowAdIndex = index;
+                            if(showAdItem != null){
+                                Thread.sleep(showAdItem.getDuration() * 1000);
+                            }else{
+                                Thread.sleep(1);
+                            }
+                            currentShowAdIndex++;
+                        }catch (Exception ex){
+
                         }
-                        Thread.sleep(1);
+
                     }
-                } catch (InterruptedException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
         playThread.start();
     }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-    }
-
-    private void continueDownLoad(BaseDownloadTask task) {
-        while (task.getSmallFileSoFarBytes() != task.getSmallFileTotalBytes()) {
-            int percent = (int) ((double) task.getSmallFileSoFarBytes() / (double) task.getSmallFileTotalBytes() * 100);
-        }
-    }
-
-    private void download(final Ad ad) {
-        Toast.makeText(getApplicationContext(), "正在下载视频", Toast.LENGTH_LONG).show();
-        String vName = UUID.randomUUID().toString();
-        final String path = getExternalFilesDir("/").getAbsolutePath() + "/video/" + vName + ".mp4";
-        FileDownloader.getImpl().create(ad.getFileUrl())
-                .setPath(path)
-                //.setForceReDownload(true)
-                .setAutoRetryTimes(5)
-                .setListener(new FileDownloadListener() {
-                    @Override
-                    protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-                        LoggerHelper.i("开始下载文件 : " + ad.getFileUrl());
-                    }
-
-                    @Override
-                    protected void connected(BaseDownloadTask task, String etag, boolean isContinue, int soFarBytes, int totalBytes) {
-                        Log.i("download", "资源地址链接成功");
-                    }
-
-                    @Override
-                    protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-                        Toast.makeText(getApplicationContext(), "下载进度(" + soFarBytes + "/" + totalBytes + ")", Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    protected void blockComplete(BaseDownloadTask task) {
-                    }
-
-                    @Override
-                    protected void retry(final BaseDownloadTask task, final Throwable ex, final int retryingTimes, final int soFarBytes) {
-                    }
-
-                    //下载成功
-                    @Override
-                    protected void completed(BaseDownloadTask task) {
-
-                        if (videoEditor == null) {
-                            videoEditor = new VideoEditor();
-                        }
-                        LoggerHelper.i("下载完成 : " + ad.getFileUrl());
-                        ad.setFileUrl(path);
-                        if (videoEditor == null) {
-                            videoEditor = new VideoEditor();
-                            videoEditor.setOnProgessListener(new onVideoEditorProgressListener() {
-                                @Override
-                                public void onProgress(VideoEditor v, int percent) {
-                                    if (mProgressDialog != null) {
-                                        mProgressDialog.setMessage("正在处理中..." + String.valueOf(percent) + "%");
-                                    }
-                                }
-                            });
-                        }
-                        Toast.makeText(getApplicationContext(), "正在旋转视频", Toast.LENGTH_LONG).show();
-                        new SubAsyncTask(ad, path).execute();
-                    }
-
-                    @Override
-                    protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-                    }
-
-                    @Override
-                    protected void error(BaseDownloadTask task, Throwable e) {
-                        Toast.makeText(getApplicationContext(), "下载出错", Toast.LENGTH_LONG).show();
-                        Log.i("download", "下载出错了:" + e.getLocalizedMessage());
-                    }
-
-                    @Override
-                    protected void warn(BaseDownloadTask task) {
-                        continueDownLoad(task);
-                    }
-                }).start();
-    }
-
-    private ProgressDialog mProgressDialog;
-
-    private void showProgressDialog() {
-        mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mProgressDialog.setMessage("正在处理中...");
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.show();
-    }
-
-    private void calcelProgressDialog() {
-        if (mProgressDialog != null) {
-            mProgressDialog.cancel();
-            mProgressDialog = null;
-        }
-    }
-
-    /**
-     * 异步执行
-     */
-    public class SubAsyncTask extends AsyncTask<Object, Object, Boolean> {
-        private Ad ad;
-        private String path;
-
-        public SubAsyncTask(Ad ad, String path) {
-            this.ad = ad;
-            this.path = path;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            showProgressDialog();
-            super.onPreExecute();
-        }
-
-        @Override
-        protected synchronized Boolean doInBackground(Object... params) {
-            //修改视频元数据
-            String dstVideo = null;
-            dstVideo = videoEditor.executeSetVideoMetaAngle(path, 270);
-            if (dstVideo == null) {
-                //旋转视频
-                dstVideo = videoEditor.executeVideoRotate90Clockwise(path);
-//                            dstVideo = videoEditor.executeVideoRotate90CounterClockwise(path);
-            }
-            if (dstVideo != null) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(), "旋转视频成功", Toast.LENGTH_LONG).show();
-                    }
-                });
-
-                Tools.file().deleteFile(path);
-                Tools.file().moveFile(dstVideo, path);
-                ad.setFileUrl(path);
-            } else {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(), "旋转视频失败", Toast.LENGTH_LONG).show();
-                    }
-                });
-
-            }
-
-
-            DATAS.put(ad.getId(), ad);
-
-            Util.sortMapByKey(DATAS);
-
-
-            AdEntity entity = adInfoToEntity(ad);
-            entity.setState("0");
-            if (dbUtil.get(String.valueOf(entity.getId())) == null) {
-                dbUtil.save(entity);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            super.onPostExecute(result);
-            calcelProgressDialog();
-        }
-    }
-
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (pic == null) return;
-            Bundle data = msg.getData();
-            String type = (String) data.get("type");
-            String url = (String) data.get("url");
-
-            if (url == null || "".equals(url)) return;
-
-            //LoggerHelper.i("---file md5:" + md5 + "---- 正在播放文件 : " + url);
-
-            if ("0".equals(type)) {
-                pic.setVisibility(View.VISIBLE);
-                videoView.setVisibility(View.GONE);
-                videoView.stopPlayback();
-                Util.loadImage(mContext, url, pic, new RotateTransformation(getApplicationContext(), 270f));
-            } else {
-                pic.setVisibility(View.GONE);
-                videoView.setVisibility(View.VISIBLE);
-                playLocalVideo(url);
-            }
-
-        }
-    };
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-    }
-
-    private ConcurrentHashMap<Integer, Ad> DATAS = new ConcurrentHashMap<Integer, Ad>();
-
-    private AdEntity adInfoToEntity(Ad ad) {
-        AdEntity entity = new AdEntity();
-        entity.setId(ad.getId());
-        entity.setMD5(ad.getMD5());
-        entity.setLocalUrl(ad.getFileUrl());
-        entity.setDuration(ad.getDuration());
-        entity.setState("1");
-        return entity;
-    }
-
-    /**
-     * 获取网络数据后，处理函数
-     */
-    private IAdView mAdView = new IAdView() {
-        @Override
-        public void onSuccess(AdInfo adInfo) {
-            List<Ad> list = adInfo.getObj();
-//            Ad videoAD = new Ad();
-//            videoAD.setFiletype("2");
-//            videoAD.setFileUrl("http://vfx.mtime.cn/Video/2019/02/04/mp4/190204084208765161.mp4");
-//            videoAD.setId(1333);
-//            videoAD.setDuration(30);
-//            list.add(videoAD);
-            for (Ad ad : list) {
-                if (!"2".equals(ad.getFiletype())) {
-                    DATAS.put(ad.getId(), ad);//优先将图片放入播放列表
-                } else {
-                    //视频是否已经下载完毕，若下载完毕该map会保存,若没有则开始下载
-                    if (!DATAS.keySet().contains(ad.getId())) {
-                        download(ad);//从网络下上下视频
-                    }
-                }
-            }
-            Util.sortMapByKey(DATAS);
-            play();
-            //LoggerHelper.i("接口返回返回数据大小 : " + DATAS.size());
-        }
-
-
-        @Override
-        public void onError(String result) {
-        }
-
-        @Override
-        public void onSuccessRegister(ResponseBody result) {
-        }
-
-
-        @Override
-        public void onSuccessAnnouncement(MsgInfo result) {
-        }
-
-        @Override
-        public void onSuccessVersion(VersionInfo result) {
-            Version ver = GsonUtil.gson.fromJson(result.getObj(), Version.class);
-            if (ver.getVersionNumber() > BaseApplication.VERSIONCODE) {
-                installer.installFromUrl(ver.getUrl());
-            }
-        }
-    };
-
 }
 

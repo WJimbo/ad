@@ -1,16 +1,13 @@
 package com.xingyeda.ad.util;
 
 import android.content.Context;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.xingyeda.ad.AdEntity;
+import com.xingyeda.ad.vo.AdItem;
 import com.xingyeda.ad.R;
-import com.xingyeda.ad.vo.Ad;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -87,19 +84,12 @@ public class Util {
         }*/
     }
 
-    public static Ad entityToPo(AdEntity entity) {
-        Ad ad = new Ad();
-        ad.setFileUrl(entity.getLocalUrl());
-        ad.setDuration(entity.getDuration());
-        ad.setFiletype(entity.getFiletype());
-        return ad;
-    }
 
-    public static Map<Integer, Ad> sortMapByKey(Map<Integer, Ad> map) {
+    public static Map<Integer, AdItem> sortMapByKey(Map<Integer, AdItem> map) {
         if (map == null || map.isEmpty()) {
             return null;
         }
-        Map<Integer, Ad> sortMap = new TreeMap<Integer, Ad>(new Comparator<Integer>() {
+        Map<Integer, AdItem> sortMap = new TreeMap<Integer, AdItem>(new Comparator<Integer>() {
             @Override
             public int compare(Integer o1, Integer o2) {
                 if (o1.intValue() < o2.intValue())

@@ -5,7 +5,8 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.xingyeda.ad.service.DataManager;
-import com.xingyeda.ad.vo.AdInfo;
+
+import com.xingyeda.ad.vo.AdListResponseData;
 import com.xingyeda.ad.vo.MsgInfo;
 import com.xingyeda.ad.vo.VersionInfo;
 
@@ -88,29 +89,6 @@ public class AdPresenter implements IPresenter {
                     public void onNext(ResponseBody result) {
                         mAdView.onSuccessRegister(result);
 
-                    }
-                })
-        );
-    }
-
-
-    public void getAdInfo(String url) {
-        mCompositeSubscription.add(manager.getAdInfo(url)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<AdInfo>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        mAdView.onError("请求失败!");
-                    }
-
-                    @Override
-                    public void onNext(AdInfo adInfo) {
-                        mAdView.onSuccess(adInfo);
                     }
                 })
         );

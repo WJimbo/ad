@@ -1,1 +1,1 @@
-include ':app', ':lansongsdk'
+include ':app', ':lansongsdk', ':zz_common_utils'

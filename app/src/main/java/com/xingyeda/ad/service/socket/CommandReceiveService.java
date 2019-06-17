@@ -7,6 +7,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 
+import com.altang.app.common.utils.GsonUtil;
+import com.altang.app.common.utils.LoggerHelper;
 import com.vilyever.socketclient.SocketClient;
 import com.vilyever.socketclient.helper.SocketClientAddress;
 import com.vilyever.socketclient.helper.SocketClientDelegate;
@@ -19,8 +21,6 @@ import com.vilyever.socketclient.util.CharsetUtil;
 
 
 import com.xingyeda.ad.BaseApplication;
-import com.xingyeda.ad.util.GsonUtil;
-import com.xingyeda.ad.util.LoggerHelper;
 import com.xingyeda.ad.util.Util;
 
 import org.greenrobot.eventbus.EventBus;
