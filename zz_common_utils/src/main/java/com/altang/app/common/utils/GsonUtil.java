@@ -1,4 +1,4 @@
-package com.xingyeda.ad.util;
+package com.altang.app.common.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

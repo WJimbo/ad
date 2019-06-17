@@ -1,4 +1,4 @@
-package com.xingyeda.ad.util;
+package com.altang.app.common.utils;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,14 +7,13 @@ import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.FormatStrategy;
 import com.orhanobut.logger.Logger;
 import com.orhanobut.logger.PrettyFormatStrategy;
-import com.xingyeda.ad.BuildConfig;
-
+import com.altang.app.common.BuildConfig;
 
 /**
  * Created by winnie on 2017/12/21.
  */
 
-public class LoggerHelper {
+public class LoggerHelper{
     public static void init(){
         FormatStrategy formatStrategy = PrettyFormatStrategy.newBuilder()
                 .showThreadInfo(false)  // (Optional) Whether to show thread info or not. Default true

@@ -1,10 +1,12 @@
 package com.xingyeda.ad.vo;
 
+import java.io.File;
+
 /**
  * Created by tingyanwu on 2017/10/29.
  */
 
-public class Ad {
+public class AdItem {
 
 
 //              "id": 84,   //广告的id
@@ -29,6 +31,13 @@ public class Ad {
     private String filetype;
     private String fileUrl;
     private String MD5;
+
+    public String getLocationFileName(){
+        if("2".equals(filetype)){
+            return fileUrl.hashCode() + ".mp4";
+        }
+        return "";
+    }
 
     public String getMD5() {
         return MD5;
