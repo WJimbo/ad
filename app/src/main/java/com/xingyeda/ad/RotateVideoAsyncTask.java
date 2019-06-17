@@ -1,7 +1,11 @@
 package com.xingyeda.ad;
 import android.os.AsyncTask;
+
+import com.altang.app.common.utils.LoggerHelper;
 import com.lansosdk.videoeditor.VideoEditor;
 import com.mazouri.tools.Tools;
+
+import java.io.File;
 
 public class RotateVideoAsyncTask extends AsyncTask<Object, Object, Boolean> {
     private VideoEditor videoEditor;
@@ -36,8 +40,11 @@ public class RotateVideoAsyncTask extends AsyncTask<Object, Object, Boolean> {
             dstVideo = videoEditor.executeVideoRotate90Clockwise(srcPath);
         }
         if (dstVideo != null) {
+            LoggerHelper.i("旋转视频地址:" + dstVideo);
             Tools.file().deleteFile(dstPath);
-            Tools.file().moveFile(dstVideo, dstPath);
+            Tools.file().deleteFile(srcPath);
+            Tools.file().moveFile(dstVideo, srcPath);
+            Tools.file().rename(srcPath,(new File(dstPath).getName()));
         } else {
         }
 

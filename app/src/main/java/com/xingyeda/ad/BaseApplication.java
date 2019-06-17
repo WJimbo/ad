@@ -8,6 +8,7 @@ import com.altang.app.common.utils.LoggerHelper;
 import com.lansosdk.videoeditor.LanSoEditor;
 import com.liulishuo.filedownloader.FileDownloader;
 import com.xingyeda.ad.util.CrashHandler;
+import com.xingyeda.ad.util.MyLog;
 
 import java.io.File;
 
@@ -40,13 +41,13 @@ public class BaseApplication extends Application {
 //        andoridId = "472481f1f2f9f8ac";//电视机
         //andoridId = Util.getAndroidId(this);
 //      测试mac：  49022511e7f2b209，4d564e1762d530d8，da52c5ebae234301
-//        andoridId = "49022511e7f2b209";
+        andoridId = "49022511e7f2b209";
 //        andoridId = "4d564e1762d530d8";
-        andoridId = "da52c5ebae234301";
+//        andoridId = "da52c5ebae234301";
 
 
         LoggerHelper.init();
-
+        MyLog.getInstance(this);
         CrashHandler crashHandler = CrashHandler.getInstance();
         crashHandler.init(getApplicationContext());
         Context cont = this.getApplicationContext();

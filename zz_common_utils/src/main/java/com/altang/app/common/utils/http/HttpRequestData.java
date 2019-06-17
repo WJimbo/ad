@@ -18,7 +18,7 @@ public class HttpRequestData {
     private RequestModeType requestMode = RequestModeType.POST;
     private String requestURL;
     private int timeOutMill = 15* 1000;
-    private boolean showLog = false;
+    private boolean showLog = true;
 
 
     //请求内容

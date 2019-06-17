@@ -22,7 +22,7 @@ import java.util.TreeMap;
 
 public class Util {
     public static void loadImage(Context context, final String imageUrl, final ImageView imageView, RotateTransformation rotateTransformation) {
-        Glide.with(context).load(imageUrl).transform(rotateTransformation).into(imageView);
+        Glide.with(context).load(imageUrl).placeholder(R.mipmap.p1).transform(rotateTransformation).into(imageView);
     }
 
     public static int compareDate(String DATE2) {
@@ -44,9 +44,10 @@ public class Util {
         return 0;
     }
 
-    public static void defaultImage(Context context, final ImageView imageView) {
+    public static void defaultImage(Context context, final ImageView imageView, RotateTransformation rotateTransformation) {
         imageView.setVisibility(View.VISIBLE);
-        Glide.with(context).load(R.mipmap.p1).into(imageView);
+
+        Glide.with(context).load(R.mipmap.p1).transform(rotateTransformation).into(imageView);
     }
 
     public static String getAndroidId(Context context) {

@@ -19,6 +19,8 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.altang.app.common.utils.GsonUtil;
+import com.altang.app.common.utils.LoggerHelper;
+import com.altang.app.common.utils.ToolUtils;
 import com.altang.app.common.utils.UIUtils;
 import com.gavinrowe.lgw.library.SimpleTimerTask;
 import com.gavinrowe.lgw.library.SimpleTimerTaskHandler;
@@ -249,7 +251,7 @@ public class MainActivity extends BaseActivity {
                     List<AdItem> adItems = new ArrayList<>();
                     adItems.addAll(adListResponseData.getObj());
                     for(AdItem adItem : adItems){
-                        if("2".equals(adItem.getFiletype())){
+                        if("2".equals(adItem.getFiletype()) && !ToolUtils.file().isFileExists(new File(BaseApplication.VEDIO_DOWNLOAD_ROOT_PATH,adItem.getLocationFileName()))){
                             DownloadManager.DownloadItem downloadItem = new DownloadManager.DownloadItem();
                             downloadItem.rotateVideo = BaseApplication.RotateVideo;
                             downloadItem.url = adItem.getFileUrl();
@@ -304,6 +306,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
                 //屏蔽视频无法播放错误弹出框
+                LoggerHelper.i("视频无法播放");
                 videoView.stopPlayback();
                 return true;
             }
@@ -336,6 +339,7 @@ public class MainActivity extends BaseActivity {
     private void playLocalVideo(String url) {
         String path = "file://" + url;
 //        ijkVideoView.setUrl(path);
+        LoggerHelper.i("playLocalVideo:" + path);
         videoView.stopPlayback();
         videoView.setVideoPath(path);
         videoView.start();
@@ -364,7 +368,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main2);
         ButterKnife.bind(this);
         initialization();
-        Util.defaultImage(MainActivity.this, pic);
+        Util.defaultImage(MainActivity.this, pic, new RotateTransformation(this,270));
         startPlayThread();
     }
     private int currentShowAdIndex = 0;

@@ -2,6 +2,7 @@ package com.xingyeda.ad;
 
 import android.content.Context;
 
+import com.altang.app.common.utils.LoggerHelper;
 import com.altang.app.common.utils.ToolUtils;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
@@ -56,7 +57,10 @@ public class DownloadManager {
     public void downloadWithUrl(DownloadItem downloadItem){
         if (!isFileDownloading(downloadItem)) {
             downloadingList.add(downloadItem);
+            LoggerHelper.i("开始下载列表：" + downloadItem.getTempSavePath());
             startDownload(downloadItem);
+        }else{
+            LoggerHelper.i("已在下载列表：" + downloadItem.getTempSavePath());
         }
     }
 
