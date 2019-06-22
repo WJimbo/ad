@@ -462,16 +462,22 @@ public class MainActivity extends BaseActivity {
                                     UIUtils.runOnMainThread(new Runnable() {
                                         @Override
                                         public void run() {
+                                            LogDebugUtil.appendLog("暂无可轮播的广告");
                                             pic.setVisibility(View.VISIBLE);
                                             videoView.setVisibility(View.GONE);
                                             Util.defaultImage(MainActivity.this, pic, new RotateTransformation(getApplicationContext(), 270));
                                         }
                                     });
-                                    Thread.sleep(1);
+                                    if(tempAdItemList.size() == 0){
+                                        Thread.sleep(5 * 1000);
+                                    }else{
+                                        Thread.sleep(1 * 1000);
+                                    }
+
                                 }
 
                             } catch (Exception ex) {
-
+                                LogDebugUtil.appendLog("轮播数据出问题了：" + ex.getMessage());
                             }
 
                         }
