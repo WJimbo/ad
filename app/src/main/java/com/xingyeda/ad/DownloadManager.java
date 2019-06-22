@@ -7,6 +7,8 @@ import com.altang.app.common.utils.ToolUtils;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
 import com.liulishuo.filedownloader.FileDownloader;
+import com.xingyeda.ad.logdebug.LogDebugItem;
+import com.xingyeda.ad.logdebug.LogDebugUtil;
 import com.xingyeda.ad.util.MyLog;
 
 import java.io.File;
@@ -57,10 +59,12 @@ public class DownloadManager {
     public void downloadWithUrl(DownloadItem downloadItem){
         if (!isFileDownloading(downloadItem)) {
             downloadingList.add(downloadItem);
-            LoggerHelper.i("开始下载列表：" + downloadItem.getTempSavePath());
+            LoggerHelper.i("加入到视频下载队列：" + downloadItem.getTempSavePath());
+            LogDebugUtil.appendLog("加入到视频下载队列：" + downloadItem.getTempSavePath());
             startDownload(downloadItem);
         }else{
-            LoggerHelper.i("已在下载列表：" + downloadItem.getTempSavePath());
+            LogDebugUtil.appendLog("已在下载队列中：" + downloadItem.getTempSavePath());
+            LoggerHelper.i("已在下载队列中：" + downloadItem.getTempSavePath());
         }
     }
 
@@ -73,6 +77,7 @@ public class DownloadManager {
                     @Override
                     protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
                         MyLog.d("开始下载文件:" + task.getUrl());
+                        LogDebugUtil.appendLog("开始下载文件:" + task.getUrl());
                     }
 
                     @Override
@@ -96,7 +101,7 @@ public class DownloadManager {
                     @Override
                     protected void completed(BaseDownloadTask task) {
                         MyLog.d("下载完成:" + task.getUrl());
-
+                        LogDebugUtil.appendLog("下载完成:" + task.getUrl());
                         if(downloadItem.rotateVideo){
                             RotateVideoAsyncTask rotateVideoAsyncTask = new RotateVideoAsyncTask(downloadItem.getTempSavePath().getPath(),downloadItem.savePath.getPath());
                             rotateVideoAsyncTask.setCallback(new RotateVideoAsyncTask.Callback() {
@@ -123,6 +128,7 @@ public class DownloadManager {
                     protected void error(BaseDownloadTask task, Throwable e) {
                         MyLog.d("下载出错:" + task.getUrl() +"\n" + e.getMessage());
                         downloadingList.remove(downloadItem);
+                        LogDebugUtil.appendLog("下载出错:" + task.getUrl() +"\n" + e.getMessage());
                     }
 
                     @Override

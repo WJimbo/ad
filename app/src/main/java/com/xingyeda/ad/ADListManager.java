@@ -2,6 +2,7 @@ package com.xingyeda.ad;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 
 import com.altang.app.common.utils.GsonUtil;
 import com.altang.app.common.utils.UIUtils;
@@ -10,6 +11,7 @@ import com.mazouri.tools.Tools;
 import com.altang.app.common.utils.http.BaseResponseData;
 import com.altang.app.common.utils.http.HttpRequestData;
 import com.altang.app.common.utils.http.HttpRequestModel;
+import com.xingyeda.ad.logdebug.LogDebugUtil;
 import com.xingyeda.ad.util.MyLog;
 import com.xingyeda.ad.vo.AdItem;
 import com.xingyeda.ad.vo.AdListResponseData;
@@ -81,6 +83,7 @@ public class ADListManager {
         if(isUpdatingList){
             return;
         }
+        LogDebugUtil.appendLog("正在开始调用广告数据");
         isUpdatingList = true;
         needUpdateList = false;
         final HttpRequestData requestData = new HttpRequestData();
@@ -93,10 +96,12 @@ public class ADListManager {
                 if(responseData.isOperationSuccess()){
                     adListResponseData = (AdListResponseData)responseData;
                     saveListToLocation();
+                    LogDebugUtil.appendLog("调用广告数据成功:" + adListResponseData.getObj().size() + "条");
                     if(onDataChangeCallBackListener != null){
                         onDataChangeCallBackListener.dataChanged(adListResponseData);
                     }
                 }else{
+                    LogDebugUtil.appendLog("调用广告数据失败:" + responseData.getErrorMsg());
                     MyLog.d("更新广告接口出错:" + responseData.getErrorMsg());
                     needUpdateList = true;
                 }

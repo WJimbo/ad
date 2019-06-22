@@ -25,6 +25,10 @@ public class Util {
         Glide.with(context).load(imageUrl).placeholder(R.mipmap.p1).transform(rotateTransformation).into(imageView);
     }
 
+    public static void loadImage(Context context, final File file, final ImageView imageView, RotateTransformation rotateTransformation) {
+        Glide.with(context).load(file).placeholder(R.mipmap.p1).transform(rotateTransformation).into(imageView);
+    }
+
     public static int compareDate(String DATE2) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 

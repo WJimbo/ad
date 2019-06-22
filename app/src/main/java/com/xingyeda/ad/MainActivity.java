@@ -6,14 +6,13 @@ import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -24,9 +23,10 @@ import com.altang.app.common.utils.ToolUtils;
 import com.altang.app.common.utils.UIUtils;
 import com.gavinrowe.lgw.library.SimpleTimerTask;
 import com.gavinrowe.lgw.library.SimpleTimerTaskHandler;
+import com.xingyeda.ad.logdebug.LogDebugItem;
+import com.xingyeda.ad.logdebug.LogDebugUtil;
 import com.xingyeda.ad.service.socket.CommandMessageData;
 import com.xingyeda.ad.service.socket.CommandReceiveService;
-
 import com.xingyeda.ad.util.RotateTransformation;
 import com.xingyeda.ad.util.Util;
 import com.xingyeda.ad.vo.AdItem;
@@ -82,19 +82,31 @@ public class MainActivity extends BaseActivity {
 
 
     SimpleTimerTaskHandler timeHandler = SimpleTimerTaskHandler.getInstance();
+    @BindView(R.id.tv_LogDebug)
+    TextView tvLogDebug;
+    @BindView(R.id.scrollView_LogDebug)
+    ScrollView scrollViewLogDebug;
 
     private AdPresenter mAdInfoPresenter = null;
 
     private Unbinder mUnbinder = null;
 
 
-
     private AutoInstaller installer;
 
+    private StringBuffer logStringBuffer = new StringBuffer();
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onLogEvent(LogDebugItem logDebugItem) {
+        if(BaseApplication.OpenLogView){
+            logStringBuffer.insert(0,logDebugItem.getMessage() + "\n");
+            tvLogDebug.setText(logStringBuffer.toString());
+        }
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessage(CommandMessageData messageData) {
         String command = messageData.getCommond();
+        LogDebugUtil.appendLog("接收到服务器心跳命令:" + command);
         //更新数据，增加发送廣告
         if (command.equals("A543")) {
             requestList();
@@ -233,8 +245,10 @@ public class MainActivity extends BaseActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
+
     //创建广播
     InnerReceiver innerReceiver = new InnerReceiver();
+
     private void receiverHome() {
         //动态注册广播
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
@@ -247,11 +261,11 @@ public class MainActivity extends BaseActivity {
         ADListManager.getInstance(this).setOnDataChangeCallBackListener(new ADListManager.OnDataChangeCallBackListener() {
             @Override
             public void dataChanged(AdListResponseData adListResponseData) {
-                if(adListResponseData != null && adListResponseData.getObj() != null){
+                if (adListResponseData != null && adListResponseData.getObj() != null) {
                     List<AdItem> adItems = new ArrayList<>();
                     adItems.addAll(adListResponseData.getObj());
-                    for(AdItem adItem : adItems){
-                        if("2".equals(adItem.getFiletype()) && !ToolUtils.file().isFileExists(new File(BaseApplication.VEDIO_DOWNLOAD_ROOT_PATH,adItem.getLocationFileName()))){
+                    for (AdItem adItem : adItems) {
+                        if ("2".equals(adItem.getFiletype()) && !ToolUtils.file().isFileExists(new File(BaseApplication.VEDIO_DOWNLOAD_ROOT_PATH, adItem.getLocationFileName()))) {
                             DownloadManager.DownloadItem downloadItem = new DownloadManager.DownloadItem();
                             downloadItem.rotateVideo = BaseApplication.RotateVideo;
                             downloadItem.url = adItem.getFileUrl();
@@ -294,8 +308,7 @@ public class MainActivity extends BaseActivity {
                 Toast.makeText(MainActivity.this, "请打开辅助功能服务", Toast.LENGTH_SHORT).show();
             }
         });
-
-
+        scrollViewLogDebug.setVisibility(BaseApplication.OpenLogView ? View.VISIBLE : View.GONE);
 
         //显示默认图片
 //        ijkVideoView.setVisibility(View.GONE);
@@ -308,7 +321,20 @@ public class MainActivity extends BaseActivity {
                 //屏蔽视频无法播放错误弹出框
                 LoggerHelper.i("视频无法播放");
                 videoView.stopPlayback();
+                playThread.interrupt();
                 return true;
+            }
+        });
+        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                playThread.interrupt();
+            }
+        });
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                pic.setVisibility(View.GONE);
             }
         });
         pic.setVisibility(View.VISIBLE);
@@ -327,7 +353,7 @@ public class MainActivity extends BaseActivity {
         requestList();
         //开始请求数据
         //容错，怕偶尔收不到服务器推送，采用轮询的方式获取数据。
-        SimpleTimerTask loopTask = new SimpleTimerTask(60 * 60 * 1000) {
+        SimpleTimerTask loopTask = new SimpleTimerTask(1 * 60 * 1000) {
             @Override
             public void run() {
                 requestList();
@@ -336,13 +362,15 @@ public class MainActivity extends BaseActivity {
         timeHandler.sendTask(1, loopTask);
     }
 
-    private void playLocalVideo(String url) {
-        String path = "file://" + url;
+    private void playLocalVideo(File file) {
+        String path = "file://" + file.getPath();
+        Util.loadImage(this, file, pic, new RotateTransformation(this, 0));
 //        ijkVideoView.setUrl(path);
         LoggerHelper.i("playLocalVideo:" + path);
         videoView.stopPlayback();
         videoView.setVideoPath(path);
         videoView.start();
+
     }
 
 
@@ -368,77 +396,93 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main2);
         ButterKnife.bind(this);
         initialization();
-        Util.defaultImage(MainActivity.this, pic, new RotateTransformation(this,270));
+        Util.defaultImage(MainActivity.this, pic, new RotateTransformation(this, 270));
         startPlayThread();
     }
+
     private int currentShowAdIndex = 0;
+    private Thread playThread;
+
     private void startPlayThread() {
-        Thread playThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    while (true) {
-                        try {
-                            List<AdItem> tempAdItemList = new ArrayList<>();
-                            AdListResponseData adListResponseData = ADListManager.getInstance(getApplicationContext()).getAdListResponseData();
+        if (playThread == null) {
+            playThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        while (true) {
+                            try {
+                                List<AdItem> tempAdItemList = new ArrayList<>();
+                                AdListResponseData adListResponseData = ADListManager.getInstance(getApplicationContext()).getAdListResponseData();
 
-                            if(adListResponseData != null && adListResponseData.getObj() != null){
-                                tempAdItemList.addAll(adListResponseData.getObj());
-                            }
-                            if(currentShowAdIndex < 0 || currentShowAdIndex >= tempAdItemList.size()){
-                                currentShowAdIndex = 0;
-                            }
-                            int index = currentShowAdIndex;
-                            AdItem showAdItem = null;
-                            for(; index < tempAdItemList.size();index++){
-                                final AdItem adItem = tempAdItemList.get(index);
-                                final String fileType = adItem.getFiletype();
-                                if("2".equals(adItem.getFiletype())){
-                                    File file = new File(BaseApplication.VEDIO_DOWNLOAD_ROOT_PATH,adItem.getLocationFileName());
-                                    if(!file.exists()){
-                                        continue;
-                                    }
+                                if (adListResponseData != null && adListResponseData.getObj() != null) {
+                                    tempAdItemList.addAll(adListResponseData.getObj());
                                 }
-                                showAdItem = adItem;
-                                UIUtils.runOnMainThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if(pic != null){
-                                            if ("0".equals(fileType)) {
-                                                pic.setVisibility(View.VISIBLE);
-                                                videoView.setVisibility(View.GONE);
-                                                videoView.stopPlayback();
-                                                Util.loadImage(mContext, adItem.getFileUrl(), pic, new RotateTransformation(getApplicationContext(), 270f));
-                                            } else {
-                                                pic.setVisibility(View.GONE);
-                                                videoView.setVisibility(View.VISIBLE);
-                                                playLocalVideo(new File(BaseApplication.VEDIO_DOWNLOAD_ROOT_PATH,adItem.getLocationFileName()).getPath());
-                                            }
+                                if (currentShowAdIndex < 0 || currentShowAdIndex >= tempAdItemList.size()) {
+                                    currentShowAdIndex = 0;
+                                }
+                                int index = currentShowAdIndex;
+                                AdItem showAdItem = null;
+                                for (; index < tempAdItemList.size(); index++) {
+                                    final AdItem adItem = tempAdItemList.get(index);
+                                    final String fileType = adItem.getFiletype();
+                                    if ("2".equals(adItem.getFiletype())) {
+                                        File file = new File(BaseApplication.VEDIO_DOWNLOAD_ROOT_PATH, adItem.getLocationFileName());
+                                        if (!file.exists()) {
+                                            LogDebugUtil.appendLog("切换播放视频文件不存在：" + adItem.getFileUrl());
+                                            continue;
                                         }
-
                                     }
-                                });
+                                    showAdItem = adItem;
+                                    UIUtils.runOnMainThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (pic != null) {
+                                                if ("0".equals(fileType)) {
+                                                    pic.setVisibility(View.VISIBLE);
+                                                    videoView.setVisibility(View.GONE);
+                                                    videoView.stopPlayback();
+                                                    Util.loadImage(mContext, adItem.getFileUrl(), pic, new RotateTransformation(getApplicationContext(), 270f));
+                                                } else {
+                                                    pic.setVisibility(View.VISIBLE);
+                                                    videoView.setVisibility(View.VISIBLE);
+                                                    playLocalVideo(new File(BaseApplication.VEDIO_DOWNLOAD_ROOT_PATH, adItem.getLocationFileName()));
+                                                }
+                                            }
 
-                                break;
+                                        }
+                                    });
+
+                                    break;
+                                }
+                                currentShowAdIndex = index;
+                                currentShowAdIndex++;
+                                if (showAdItem != null) {
+                                    Thread.sleep(showAdItem.getDuration() * 1000);
+                                } else {
+                                    UIUtils.runOnMainThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            pic.setVisibility(View.VISIBLE);
+                                            videoView.setVisibility(View.GONE);
+                                            Util.defaultImage(MainActivity.this, pic, new RotateTransformation(getApplicationContext(), 270));
+                                        }
+                                    });
+                                    Thread.sleep(1);
+                                }
+
+                            } catch (Exception ex) {
+
                             }
-                            currentShowAdIndex = index;
-                            if(showAdItem != null){
-                                Thread.sleep(showAdItem.getDuration() * 1000);
-                            }else{
-                                Thread.sleep(1);
-                            }
-                            currentShowAdIndex++;
-                        }catch (Exception ex){
 
                         }
-
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-            }
-        });
-        playThread.start();
+            });
+            playThread.start();
+        }
+
     }
 }
 

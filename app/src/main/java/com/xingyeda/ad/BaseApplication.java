@@ -24,7 +24,10 @@ public class BaseApplication extends Application {
      * 是否需要旋转视频
      */
     public static final boolean RotateVideo = true;
-
+    /**
+     * 主界面日志调试接口
+     */
+    public static final boolean OpenLogView = true;
     public static int VERSIONCODE = 6;
 
     public static String HOME = "";
