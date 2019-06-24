@@ -75,8 +75,6 @@ public class MainActivity extends BaseActivity {
     SimpleTimerTaskHandler timeHandler = SimpleTimerTaskHandler.getInstance();
     @BindView(R.id.tv_LogDebug)
     TextView tvLogDebug;
-    @BindView(R.id.scrollView_LogDebug)
-    ScrollView scrollViewLogDebug;
     @BindView(R.id.iv_Defualt)
     ImageView ivDefualt;
     @BindView(R.id.tv_CountSecond)
@@ -331,7 +329,7 @@ public class MainActivity extends BaseActivity {
                 Toast.makeText(MainActivity.this, "请打开辅助功能服务", Toast.LENGTH_SHORT).show();
             }
         });
-        scrollViewLogDebug.setVisibility(BaseApplication.OpenLogView ? View.VISIBLE : View.GONE);
+        tvLogDebug.setVisibility(BaseApplication.OpenLogView ? View.VISIBLE : View.GONE);
 
         //显示默认图片
 //        ijkVideoView.setVisibility(View.GONE);

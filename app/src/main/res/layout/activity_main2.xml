@@ -35,6 +35,7 @@
         android:src="@mipmap/bg_defualt_portrait"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
     <com.xingyeda.ad.widget.SquareHeightRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -43,6 +44,28 @@
         android:gravity="bottom"
         >
 
+
+
+        <TextView
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#8000"
+            android:padding="10dp"
+            android:id="@+id/tv_LogDebug"
+            android:textSize="12sp"
+            android:textColor="@color/White"
+            />
+    </com.xingyeda.ad.widget.SquareHeightRelativeLayout>
+
+
+    <com.xingyeda.ad.widget.SquareHeightRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:rotation="270"
+        android:layout_alignParentRight="true"
+        android:gravity="bottom"
+        >
         <TextView
             android:gravity="bottom|center"
             android:padding="5dp"
@@ -53,26 +76,8 @@
             android:layout_marginBottom="0dp"
             android:layout_marginRight="0dp"
             android:text="mac" />
-
     </com.xingyeda.ad.widget.SquareHeightRelativeLayout>
 
-
-    <ScrollView
-        android:visibility="gone"
-        android:id="@+id/scrollView_LogDebug"
-        android:background="@color/Transparent"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#8000"
-            android:padding="20dp"
-            android:id="@+id/tv_LogDebug"
-            android:textSize="12sp"
-            android:textColor="@color/White"
-            />
-    </ScrollView>
 
     <TextView
         android:gravity="center"
