@@ -1,115 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:animateLayoutChanges="true"
+    android:padding="8dp"
+    android:background="@color/Black"
     tools:context="com.xingyeda.ad.MainActivity">
-
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_weight="1"
-        android:background="@color/white"
-        android:orientation="vertical">
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:background="@color/Black"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:dividerPadding="0dp"
-                android:orientation="vertical"
-                android:showDividers="middle">
-
-                <!--<com.dueeeke.videoplayer.player.IjkVideoView-->
-                    <!--android:id="@+id/ijkVideoView"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:layout_gravity="center"-->
-                    <!--android:layout_margin="0dp"-->
-                    <!--android:visibility="visible"-->
-                    <!--/>-->
-                <VideoView
-                    android:id="@+id/videoView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_margin="0dp"
-                    android:visibility="visible"
-                />
-
-                <ImageView
-                    android:id="@+id/ad_pic"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="0dp"
-                    android:scaleType="fitXY"
-                    android:src="@mipmap/p1" />
-
-
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/tips"
-                style="@style/txtLabel"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_marginBottom="0dp"
-                android:layout_marginRight="0dp"
-                android:text="mac" />
-
-            <ScrollView
-                android:id="@+id/scrollView_LogDebug"
-                android:background="@color/Transparent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="#8000"
-                    android:padding="60dp"
-                    android:id="@+id/tv_LogDebug"
-                    android:textSize="12sp"
-                    android:textColor="@color/White"
-                    />
-            </ScrollView>
-        </FrameLayout>
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/marqueeLayout"
-        android:layout_width="match_parent"
-        android:layout_height="48sp"
-        android:layout_gravity="bottom"
-        android:background="@color/white"
-        android:orientation="horizontal"
-
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/marquee"
-            style="@style/itemTitle"
+        android:layout_height="match_parent">
+        <VideoView
+            android:id="@+id/videoView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
-            android:ellipsize="marquee"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:gravity="center"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:scrollHorizontally="true"
-            android:singleLine="true"
-            android:text=""
-            android:textColor="@color/orange" />
-    </LinearLayout>
+            android:layout_gravity="center"
+            android:layout_margin="0dp"
+            android:visibility="visible"
+            />
+    </FrameLayout>
 
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/ad_pic"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="0dp"
+        android:scaleType="fitXY"
+        android:src="@mipmap/bg_defualt_portrait" />
+
+    <ImageView
+        android:id="@+id/iv_Defualt"
+        android:scaleType="fitXY"
+        android:src="@mipmap/bg_defualt_portrait"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <com.xingyeda.ad.widget.SquareHeightRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:rotation="270"
+        android:layout_alignParentRight="true"
+        android:gravity="bottom"
+        >
+
+        <TextView
+            android:gravity="bottom|center"
+            android:padding="5dp"
+            android:id="@+id/tips"
+            android:textColor="@color/Red"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:layout_marginRight="0dp"
+            android:text="mac" />
+
+    </com.xingyeda.ad.widget.SquareHeightRelativeLayout>
+
+
+    <ScrollView
+        android:visibility="gone"
+        android:id="@+id/scrollView_LogDebug"
+        android:background="@color/Transparent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#8000"
+            android:padding="20dp"
+            android:id="@+id/tv_LogDebug"
+            android:textSize="12sp"
+            android:textColor="@color/White"
+            />
+    </ScrollView>
+
+    <TextView
+        android:gravity="center"
+        android:padding="5dp"
+        android:id="@+id/tv_CountSecond"
+        android:textColor="@color/White"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentRight="true"
+        android:rotation="270"
+        android:background="#8000"
+        android:text="" />
+
+</RelativeLayout>
 

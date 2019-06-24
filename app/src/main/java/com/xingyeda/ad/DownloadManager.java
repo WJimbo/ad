@@ -7,6 +7,7 @@ import com.altang.app.common.utils.ToolUtils;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
 import com.liulishuo.filedownloader.FileDownloader;
+import com.mazouri.tools.Tools;
 import com.xingyeda.ad.logdebug.LogDebugItem;
 import com.xingyeda.ad.logdebug.LogDebugUtil;
 import com.xingyeda.ad.util.MyLog;
@@ -113,8 +114,7 @@ public class DownloadManager {
                             });
                             rotateVideoAsyncTask.execute();
                         }else{
-                            ToolUtils.file().moveFile(downloadItem.getTempSavePath(),downloadItem.savePath);
-                            ToolUtils.file().deleteFile(downloadItem.getTempSavePath());
+                            Tools.file().rename(downloadItem.getTempSavePath(),downloadItem.savePath.getName());
                             downloadingList.remove(downloadItem);
                         }
 

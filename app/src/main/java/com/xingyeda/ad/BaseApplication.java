@@ -44,11 +44,11 @@ public class BaseApplication extends Application {
         //        andoridId = "c9a44d3e90f2b0f4";//大广告机
 //        andoridId = "472481f1f2f9f8ac";//电视机
         andoridId = Util.getAndroidId(this);
-//      测试mac：  49022511e7f2b209，4d564e1762d530d8，da52c5ebae234301
+//      测试mac：  49022511e7f2b209，4d564e1762d530d8，da52c5ebae234301   d0afdfc31e535514
 //        andoridId = "49022511e7f2b209";
 //        andoridId = "4d564e1762d530d8";
 //        andoridId = "da52c5ebae234301";
-
+        andoridId = "d0afdfc31e535514";
 
         LoggerHelper.init();
         MyLog.getInstance(this);

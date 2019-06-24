@@ -67,7 +67,7 @@ public class ADListManager {
         }
         rootPath = rootPath + File.separator + "XYD_AD" + File.separator + "data";
         File rootFile = new File(rootPath);
-        locationSaveFile = new File(rootPath,"adList.db");
+        locationSaveFile = new File(rootPath,BaseApplication.andoridId + "_adList.db");
         if (!rootFile.exists()) {
             rootFile.mkdirs();
         }

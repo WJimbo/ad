@@ -4,14 +4,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,7 +19,6 @@ import android.widget.VideoView;
 import com.altang.app.common.utils.GsonUtil;
 import com.altang.app.common.utils.LoggerHelper;
 import com.altang.app.common.utils.ToolUtils;
-import com.altang.app.common.utils.UIUtils;
 import com.gavinrowe.lgw.library.SimpleTimerTask;
 import com.gavinrowe.lgw.library.SimpleTimerTaskHandler;
 import com.xingyeda.ad.logdebug.LogDebugItem;
@@ -74,18 +72,18 @@ public class MainActivity extends BaseActivity {
     public TextView mTips;
 
 
-    /**
-     * 通告
-     */
-    @BindView(R.id.marqueeLayout)
-    public LinearLayout mMarqueeLayout;
-
-
     SimpleTimerTaskHandler timeHandler = SimpleTimerTaskHandler.getInstance();
     @BindView(R.id.tv_LogDebug)
     TextView tvLogDebug;
     @BindView(R.id.scrollView_LogDebug)
     ScrollView scrollViewLogDebug;
+    @BindView(R.id.iv_Defualt)
+    ImageView ivDefualt;
+    @BindView(R.id.tv_CountSecond)
+    TextView tvCountSecond;
+
+
+    private CountDownTimer countDownTimer;
 
     private AdPresenter mAdInfoPresenter = null;
 
@@ -94,11 +92,36 @@ public class MainActivity extends BaseActivity {
 
     private AutoInstaller installer;
 
+
+    private Handler mHandler;
+
+    private Runnable toNextAdRunnable = new Runnable() {
+        @Override
+        public void run() {
+            playNextAd();
+        }
+    };
+
+    //  目前只有全屏
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main2);
+        mHandler = new Handler();
+        ButterKnife.bind(this);
+        initialization();
+
+        ivDefualt.setImageResource(BaseApplication.RotateVideo ? R.mipmap.bg_defualt_landscape : R.mipmap.bg_defualt_portrait);
+        ivDefualt.setVisibility(View.VISIBLE);
+        mHandler.postDelayed(toNextAdRunnable, 5 * 1000);
+    }
+
     private StringBuffer logStringBuffer = new StringBuffer();
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLogEvent(LogDebugItem logDebugItem) {
-        if(BaseApplication.OpenLogView){
-            logStringBuffer.insert(0,logDebugItem.getMessage() + "\n");
+        if (BaseApplication.OpenLogView) {
+            logStringBuffer.insert(0, logDebugItem.getMessage() + "\n");
             tvLogDebug.setText(logStringBuffer.toString());
         }
     }
@@ -319,22 +342,21 @@ public class MainActivity extends BaseActivity {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
                 //屏蔽视频无法播放错误弹出框
-                LoggerHelper.i("视频无法播放");
-                videoView.stopPlayback();
-                playThread.interrupt();
+                LogDebugUtil.appendLog("视频无法播放");
+                playNextAd();
                 return true;
             }
         });
         videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                playThread.interrupt();
+                playNextAd();
             }
         });
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
-                pic.setVisibility(View.GONE);
+
             }
         });
         pic.setVisibility(View.VISIBLE);
@@ -364,8 +386,6 @@ public class MainActivity extends BaseActivity {
 
     private void playLocalVideo(File file) {
         String path = "file://" + file.getPath();
-        Util.loadImage(this, file, pic, new RotateTransformation(this, 0));
-//        ijkVideoView.setUrl(path);
         LoggerHelper.i("playLocalVideo:" + path);
         videoView.stopPlayback();
         videoView.setVideoPath(path);
@@ -373,122 +393,96 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    private int currentShowAdIndex = -1;
 
-    private void playRemoteVideo(String url) {
-        Log.i("remote", url);
-//        ijkVideoView.setUrl(url);
-        videoView.stopPlayback();
-        videoView.setVideoURI(Uri.parse(url));
-        videoView.start();
+    private synchronized void playNextAd() {
+        long delayTime = 0;
+        mHandler.removeCallbacks(toNextAdRunnable);
+        AdItem adItem = getNextADItem();
+        if (adItem == null) {
+            ivDefualt.setVisibility(View.VISIBLE);
+            pic.setVisibility(View.INVISIBLE);
+            videoView.setVisibility(View.INVISIBLE);
+            delayTime = 10000;
 
-    }
-
-    private void playVideo() {
-        videoView.stopPlayback();
-        videoView.start();
-    }
-
-
-    //  目前只有全屏
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
-        ButterKnife.bind(this);
-        initialization();
-        Util.defaultImage(MainActivity.this, pic, new RotateTransformation(this, 270));
-        startPlayThread();
-    }
-
-    private int currentShowAdIndex = 0;
-    private Thread playThread;
-
-    private void startPlayThread() {
-        if (playThread == null) {
-            playThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        while (true) {
-                            try {
-                                List<AdItem> tempAdItemList = new ArrayList<>();
-                                AdListResponseData adListResponseData = ADListManager.getInstance(getApplicationContext()).getAdListResponseData();
-
-                                if (adListResponseData != null && adListResponseData.getObj() != null) {
-                                    tempAdItemList.addAll(adListResponseData.getObj());
-                                }
-                                if (currentShowAdIndex < 0 || currentShowAdIndex >= tempAdItemList.size()) {
-                                    currentShowAdIndex = 0;
-                                }
-                                int index = currentShowAdIndex;
-                                AdItem showAdItem = null;
-                                for (; index < tempAdItemList.size(); index++) {
-                                    final AdItem adItem = tempAdItemList.get(index);
-                                    final String fileType = adItem.getFiletype();
-                                    if ("2".equals(adItem.getFiletype())) {
-                                        File file = new File(BaseApplication.VEDIO_DOWNLOAD_ROOT_PATH, adItem.getLocationFileName());
-                                        if (!file.exists()) {
-                                            LogDebugUtil.appendLog("切换播放视频文件不存在：" + adItem.getFileUrl());
-                                            continue;
-                                        }
-                                    }
-                                    showAdItem = adItem;
-                                    UIUtils.runOnMainThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if (pic != null) {
-                                                if ("0".equals(fileType)) {
-                                                    pic.setVisibility(View.VISIBLE);
-                                                    videoView.setVisibility(View.GONE);
-                                                    videoView.stopPlayback();
-                                                    Util.loadImage(mContext, adItem.getFileUrl(), pic, new RotateTransformation(getApplicationContext(), 270f));
-                                                } else {
-                                                    pic.setVisibility(View.VISIBLE);
-                                                    videoView.setVisibility(View.VISIBLE);
-                                                    playLocalVideo(new File(BaseApplication.VEDIO_DOWNLOAD_ROOT_PATH, adItem.getLocationFileName()));
-                                                }
-                                            }
-
-                                        }
-                                    });
-
-                                    break;
-                                }
-                                currentShowAdIndex = index;
-                                currentShowAdIndex++;
-                                if (showAdItem != null) {
-                                    Thread.sleep(showAdItem.getDuration() * 1000);
-                                } else {
-                                    UIUtils.runOnMainThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            LogDebugUtil.appendLog("暂无可轮播的广告");
-                                            pic.setVisibility(View.VISIBLE);
-                                            videoView.setVisibility(View.GONE);
-                                            Util.defaultImage(MainActivity.this, pic, new RotateTransformation(getApplicationContext(), 270));
-                                        }
-                                    });
-                                    if(tempAdItemList.size() == 0){
-                                        Thread.sleep(5 * 1000);
-                                    }else{
-                                        Thread.sleep(1 * 1000);
-                                    }
-
-                                }
-
-                            } catch (Exception ex) {
-                                LogDebugUtil.appendLog("轮播数据出问题了：" + ex.getMessage());
-                            }
-
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            playThread.start();
+            LogDebugUtil.appendLog("未找到可播放的广告");
+        } else {
+            ivDefualt.setVisibility(View.INVISIBLE);
+            if ("2".equals(adItem.getFiletype())) {
+                pic.setVisibility(View.INVISIBLE);
+                videoView.setVisibility(View.VISIBLE);
+                playLocalVideo(new File(BaseApplication.VEDIO_DOWNLOAD_ROOT_PATH, adItem.getLocationFileName()));
+            } else {
+                pic.setVisibility(View.VISIBLE);
+                videoView.setVisibility(View.INVISIBLE);
+                videoView.stopPlayback();
+                Util.loadImage(mContext, adItem.getFileUrl(), pic, new RotateTransformation(getApplicationContext(), BaseApplication.RotateVideo ? 270f : 0f));
+            }
+            delayTime = adItem.getDuration() * 1000;
         }
 
+        mHandler.postDelayed(toNextAdRunnable, delayTime);
+        if(countDownTimer != null){
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
+        countDownTimer = new CountDownTimer(delayTime,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                if(tvCountSecond != null){
+                    tvCountSecond.setText("剩余" + millisUntilFinished / 1000 + "秒");
+                }
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        };
+        countDownTimer.start();
+    }
+
+    private synchronized AdItem getNextADItem() {
+        AdItem adItem = null;
+        List<AdItem> tempAdItemList = new ArrayList<>();
+        AdListResponseData adListResponseData = ADListManager.getInstance(getApplicationContext()).getAdListResponseData();
+
+        if (adListResponseData != null && adListResponseData.getObj() != null) {
+            tempAdItemList.addAll(adListResponseData.getObj());
+        }
+        int tempShowIndex = -1;
+        for (int index = 0; index < tempAdItemList.size(); index++) {
+            AdItem tempAdItem = tempAdItemList.get(index);
+            if (index > currentShowAdIndex) {
+                if ("2".equals(tempAdItem.getFiletype())) {
+                    File file = new File(BaseApplication.VEDIO_DOWNLOAD_ROOT_PATH, adItem.getLocationFileName());
+                    if (file.exists()) {
+                        adItem = tempAdItem;
+                        tempShowIndex = index;
+                        break;
+                    }
+                } else {
+                    adItem = tempAdItem;
+                    tempShowIndex = index;
+                    break;
+                }
+            } else {
+                if (adItem == null) {
+                    if ("2".equals(tempAdItem.getFiletype())) {
+                        File file = new File(BaseApplication.VEDIO_DOWNLOAD_ROOT_PATH, adItem.getLocationFileName());
+                        if (file.exists()) {
+                            adItem = tempAdItem;
+                            tempShowIndex = index;
+                        }
+                    } else {
+                        adItem = tempAdItem;
+                        tempShowIndex = index;
+                    }
+                }
+            }
+        }
+        currentShowAdIndex = tempShowIndex;
+        return adItem;
     }
 }
 
