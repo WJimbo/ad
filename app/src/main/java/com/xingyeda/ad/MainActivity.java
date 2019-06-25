@@ -11,14 +11,12 @@ import android.provider.Settings;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.altang.app.common.utils.GsonUtil;
 import com.altang.app.common.utils.LoggerHelper;
-import com.altang.app.common.utils.ToolUtils;
 import com.gavinrowe.lgw.library.SimpleTimerTask;
 import com.gavinrowe.lgw.library.SimpleTimerTaskHandler;
 import com.xingyeda.ad.logdebug.LogDebugItem;
@@ -286,11 +284,12 @@ public class MainActivity extends BaseActivity {
                     List<AdItem> adItems = new ArrayList<>();
                     adItems.addAll(adListResponseData.getObj());
                     for (AdItem adItem : adItems) {
-                        if ("2".equals(adItem.getFiletype()) && !ToolUtils.file().isFileExists(new File(BaseApplication.VEDIO_DOWNLOAD_ROOT_PATH, adItem.getLocationFileName()))) {
+                        if (!adItem.isFileExsits(BaseApplication.DOWNLOAD_ROOT_PATH)) {
                             DownloadManager.DownloadItem downloadItem = new DownloadManager.DownloadItem();
                             downloadItem.rotateVideo = BaseApplication.RotateVideo;
                             downloadItem.url = adItem.getFileUrl();
-                            downloadItem.savePath = new File(BaseApplication.VEDIO_DOWNLOAD_ROOT_PATH, adItem.getLocationFileName());
+                            downloadItem.fileType = adItem.getFiletype();
+                            downloadItem.savePath = adItem.locationFile(BaseApplication.DOWNLOAD_ROOT_PATH);
                             DownloadManager.getInstance().downloadWithUrl(downloadItem);
                         }
                     }
@@ -335,7 +334,7 @@ public class MainActivity extends BaseActivity {
 //        ijkVideoView.setVisibility(View.GONE);
         videoView.setZOrderMediaOverlay(true);
 //        videoView.setZOrderOnTop(true);
-        videoView.setVisibility(View.GONE);
+        videoView.setVisibility(View.INVISIBLE);
         videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
@@ -358,7 +357,6 @@ public class MainActivity extends BaseActivity {
             }
         });
         pic.setVisibility(View.VISIBLE);
-
 
         mTips.setText("mac:" + BaseApplication.andoridId + " version:" + BaseApplication.VERSION_NAME);
 
@@ -402,19 +400,18 @@ public class MainActivity extends BaseActivity {
             pic.setVisibility(View.INVISIBLE);
             videoView.setVisibility(View.INVISIBLE);
             delayTime = 10000;
-
             LogDebugUtil.appendLog("未找到可播放的广告");
         } else {
             ivDefualt.setVisibility(View.INVISIBLE);
             if ("2".equals(adItem.getFiletype())) {
                 pic.setVisibility(View.INVISIBLE);
                 videoView.setVisibility(View.VISIBLE);
-                playLocalVideo(new File(BaseApplication.VEDIO_DOWNLOAD_ROOT_PATH, adItem.getLocationFileName()));
+                playLocalVideo(new File(BaseApplication.DOWNLOAD_ROOT_PATH, adItem.getLocationFileName()));
             } else {
                 pic.setVisibility(View.VISIBLE);
                 videoView.setVisibility(View.INVISIBLE);
                 videoView.stopPlayback();
-                Util.loadImage(mContext, adItem.getFileUrl(), pic, new RotateTransformation(getApplicationContext(), BaseApplication.RotateVideo ? 270f : 0f));
+                Util.loadImage(mContext, adItem.locationFile(BaseApplication.DOWNLOAD_ROOT_PATH), pic, new RotateTransformation(getApplicationContext(), BaseApplication.RotateVideo ? 270f : 0f));
             }
             delayTime = adItem.getDuration() * 1000;
         }
@@ -452,27 +449,14 @@ public class MainActivity extends BaseActivity {
         for (int index = 0; index < tempAdItemList.size(); index++) {
             AdItem tempAdItem = tempAdItemList.get(index);
             if (index > currentShowAdIndex) {
-                if ("2".equals(tempAdItem.getFiletype())) {
-                    File file = new File(BaseApplication.VEDIO_DOWNLOAD_ROOT_PATH, adItem.getLocationFileName());
-                    if (file.exists()) {
-                        adItem = tempAdItem;
-                        tempShowIndex = index;
-                        break;
-                    }
-                } else {
+                if (tempAdItem.isFileExsits(BaseApplication.DOWNLOAD_ROOT_PATH)) {
                     adItem = tempAdItem;
                     tempShowIndex = index;
                     break;
                 }
             } else {
                 if (adItem == null) {
-                    if ("2".equals(tempAdItem.getFiletype())) {
-                        File file = new File(BaseApplication.VEDIO_DOWNLOAD_ROOT_PATH, adItem.getLocationFileName());
-                        if (file.exists()) {
-                            adItem = tempAdItem;
-                            tempShowIndex = index;
-                        }
-                    } else {
+                    if (tempAdItem.isFileExsits(BaseApplication.DOWNLOAD_ROOT_PATH)) {
                         adItem = tempAdItem;
                         tempShowIndex = index;
                     }

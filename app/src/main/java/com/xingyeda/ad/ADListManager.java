@@ -79,7 +79,7 @@ public class ADListManager {
         updateList();
     }
 
-    private void updateList(){
+    private synchronized void updateList(){
         if(isUpdatingList){
             return;
         }
@@ -117,7 +117,7 @@ public class ADListManager {
         });
     }
 
-    private void saveListToLocation(){
+    private synchronized void saveListToLocation(){
         if(adListResponseData != null){
             String listStr = GsonUtil.gson.toJson(adListResponseData);
             Tools.file().writeFileFromString(locationSaveFile,listStr,false);

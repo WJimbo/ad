@@ -32,7 +32,7 @@ public class BaseApplication extends Application {
     public static int VERSIONCODE = 6;
 
     public static String HOME = "";
-    public static String VEDIO_DOWNLOAD_ROOT_PATH = "";
+    public static String DOWNLOAD_ROOT_PATH = "";
 
     public static String VERSION_NAME = "20190614";
 
@@ -72,8 +72,8 @@ public class BaseApplication extends Application {
         } else {// 如果SD卡不存在，就保存到本应用的目录下
             rootPath = context.getFilesDir().getAbsolutePath();
         }
-        VEDIO_DOWNLOAD_ROOT_PATH = rootPath + File.separator + "XYD_AD" + File.separator + "vedio";
-        File rootFilePath = new File(VEDIO_DOWNLOAD_ROOT_PATH);
+        DOWNLOAD_ROOT_PATH = rootPath + File.separator + "XYD_AD" + File.separator + "download";
+        File rootFilePath = new File(DOWNLOAD_ROOT_PATH);
         if (!rootFilePath.exists()) {
             rootFilePath.mkdirs();
         }

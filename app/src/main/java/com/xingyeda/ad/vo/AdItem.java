@@ -1,5 +1,7 @@
 package com.xingyeda.ad.vo;
 
+import com.altang.app.common.utils.ToolUtils;
+
 import java.io.File;
 
 /**
@@ -35,8 +37,19 @@ public class AdItem {
     public String getLocationFileName(){
         if("2".equals(filetype)){
             return fileUrl.hashCode() + ".mp4";
+        }else if("0".equals(filetype)){
+            return fileUrl.hashCode() + ".jpg";
+        }else if("1".equals(filetype)){
+            return fileUrl.hashCode() + ".mp3";
         }
-        return "";
+        return fileUrl.hashCode() + ".unknow";
+    }
+
+    public boolean isFileExsits(String rootPath){
+        return ToolUtils.file().isFileExists(new File(rootPath,getLocationFileName()));
+    }
+    public File locationFile(String rootPath){
+        return new File(rootPath,getLocationFileName());
     }
 
     public String getMD5() {

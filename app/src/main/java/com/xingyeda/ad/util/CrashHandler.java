@@ -114,7 +114,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
         Log.e(TAG, ex.toString());
 
         final Throwable exx = ex;
-
+        MyLog.e("很抱歉,程序出现异常,即将退出." + exx.getLocalizedMessage());
 //        使用Toast来显示异常信息
         new Thread() {
             @Override
@@ -127,8 +127,9 @@ public class CrashHandler implements UncaughtExceptionHandler {
         //收集设备参数信息
         collectDeviceInfo(mContext);
         //保存日志文件
-        saveCrashInfo2File(ex);
+//        saveCrashInfo2File(ex);
         return true;
+
     }
 
     /**

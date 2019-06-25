@@ -8,7 +8,6 @@ import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
 import com.liulishuo.filedownloader.FileDownloader;
 import com.mazouri.tools.Tools;
-import com.xingyeda.ad.logdebug.LogDebugItem;
 import com.xingyeda.ad.logdebug.LogDebugUtil;
 import com.xingyeda.ad.util.MyLog;
 
@@ -20,8 +19,9 @@ public class DownloadManager {
     public static class DownloadItem{
         public String url;
         public File savePath;
-        public File getTempSavePath(){
-            return new File(savePath.getPath() + ".tmp.mp4");
+        public String fileType;//0图片  1音频  2视频
+        public File getTempDownloadPath(){
+            return new File(savePath.getParent(), "tmp_" + savePath.getName());
         }
         public boolean rotateVideo = false;
 
@@ -32,7 +32,8 @@ public class DownloadManager {
             }
             if (url.equals(((DownloadItem) obj).url)
                     && savePath.getPath().equals(((DownloadItem) obj).savePath.getPath())
-                    && rotateVideo == ((DownloadItem) obj).rotateVideo) {
+                    && rotateVideo == ((DownloadItem) obj).rotateVideo
+                    && fileType.equals(((DownloadItem) obj).fileType)) {
                 return true;
             }
             return super.equals(obj);
@@ -60,18 +61,18 @@ public class DownloadManager {
     public void downloadWithUrl(DownloadItem downloadItem){
         if (!isFileDownloading(downloadItem)) {
             downloadingList.add(downloadItem);
-            LoggerHelper.i("加入到视频下载队列：" + downloadItem.getTempSavePath());
-            LogDebugUtil.appendLog("加入到视频下载队列：" + downloadItem.getTempSavePath());
+            LoggerHelper.i("加入到视频下载队列：" + downloadItem.getTempDownloadPath());
+            LogDebugUtil.appendLog("加入到视频下载队列：" + downloadItem.getTempDownloadPath());
             startDownload(downloadItem);
         }else{
-            LogDebugUtil.appendLog("已在下载队列中：" + downloadItem.getTempSavePath());
-            LoggerHelper.i("已在下载队列中：" + downloadItem.getTempSavePath());
+            LogDebugUtil.appendLog("已在下载队列中：" + downloadItem.getTempDownloadPath());
+            LoggerHelper.i("已在下载队列中：" + downloadItem.getTempDownloadPath());
         }
     }
 
     private void startDownload(final DownloadItem downloadItem){
         FileDownloader.getImpl().create(downloadItem.url)
-                .setPath(downloadItem.getTempSavePath().getPath())
+                .setPath(downloadItem.getTempDownloadPath().getPath())
                 //.setForceReDownload(true)
                 .setAutoRetryTimes(5)
                 .setListener(new FileDownloadListener() {
@@ -103,18 +104,18 @@ public class DownloadManager {
                     protected void completed(BaseDownloadTask task) {
                         MyLog.d("下载完成:" + task.getUrl());
                         LogDebugUtil.appendLog("下载完成:" + task.getUrl());
-                        if(downloadItem.rotateVideo){
-                            RotateVideoAsyncTask rotateVideoAsyncTask = new RotateVideoAsyncTask(downloadItem.getTempSavePath().getPath(),downloadItem.savePath.getPath());
+                        if("2".equals(downloadItem.fileType) && downloadItem.rotateVideo){
+                            RotateVideoAsyncTask rotateVideoAsyncTask = new RotateVideoAsyncTask(downloadItem.getTempDownloadPath().getPath(),downloadItem.savePath.getPath());
                             rotateVideoAsyncTask.setCallback(new RotateVideoAsyncTask.Callback() {
                                 @Override
                                 public void rotateVideoFinish(boolean success) {
                                     downloadingList.remove(downloadItem);
-                                    ToolUtils.file().deleteFile(downloadItem.getTempSavePath());
+                                    ToolUtils.file().deleteFile(downloadItem.getTempDownloadPath());
                                 }
                             });
                             rotateVideoAsyncTask.execute();
                         }else{
-                            Tools.file().rename(downloadItem.getTempSavePath(),downloadItem.savePath.getName());
+                            Tools.file().rename(downloadItem.getTempDownloadPath(),downloadItem.savePath.getName());
                             downloadingList.remove(downloadItem);
                         }
 
