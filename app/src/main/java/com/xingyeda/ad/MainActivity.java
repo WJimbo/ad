@@ -408,8 +408,9 @@ public class MainActivity extends BaseActivity {
             ivDefualt.setVisibility(View.VISIBLE);
             pic.setVisibility(View.INVISIBLE);
             videoView.setVisibility(View.INVISIBLE);
+            videoView.stopPlayback();
             delayTime = 10000;
-            LogDebugUtil.appendLog("未找到可播放的广告");
+            LogDebugUtil.appendLog("暂无可播放的广告");
         } else {
             ivDefualt.setVisibility(View.INVISIBLE);
             if ("2".equals(adItem.getFiletype())) {

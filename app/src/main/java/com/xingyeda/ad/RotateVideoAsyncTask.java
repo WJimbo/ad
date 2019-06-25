@@ -2,6 +2,7 @@ package com.xingyeda.ad;
 import android.os.AsyncTask;
 
 import com.altang.app.common.utils.LoggerHelper;
+import com.lansosdk.videoeditor.MediaInfo;
 import com.lansosdk.videoeditor.VideoEditor;
 import com.mazouri.tools.Tools;
 import com.xingyeda.ad.logdebug.LogDebugUtil;
@@ -35,8 +36,13 @@ public class RotateVideoAsyncTask extends AsyncTask<Object, Object, Boolean> {
     protected synchronized Boolean doInBackground(Object... params) {
         //修改视频元数据
         String dstVideo;
-        LogDebugUtil.appendLog("开始旋转视频");
-        dstVideo = videoEditor.executeSetVideoMetaAngle(srcPath, 270);
+        MediaInfo info=new MediaInfo(srcPath);
+        int srcAngle = 0;
+        if(info.prepare()){
+            srcAngle = (int)info.vRotateAngle;
+        }
+        LogDebugUtil.appendLog("开始旋转视频,旋转前角度：" + srcAngle);
+        dstVideo = videoEditor.executeSetVideoMetaAngle(srcPath, 270 + srcAngle);
         if (dstVideo == null) {
             //旋转视频
             LogDebugUtil.appendLog("尝试旋转视频文件成功");
@@ -45,7 +51,12 @@ public class RotateVideoAsyncTask extends AsyncTask<Object, Object, Boolean> {
             LogDebugUtil.appendLog("旋转视频元数据成功");
         }
         if (dstVideo != null) {
-            LogDebugUtil.appendLog("旋转视频成功");
+            info=new MediaInfo(dstVideo);
+            float dstAngle = -1;
+            if(info.prepare()){
+                dstAngle = info.vRotateAngle;
+            }
+            LogDebugUtil.appendLog("旋转视频成功,旋转后角度:"  + dstAngle);
             LoggerHelper.i("旋转视频地址:" + dstVideo);
             Tools.file().deleteFile(dstPath);
             Tools.file().deleteFile(srcPath);
