@@ -186,7 +186,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        videoView.pause();
+        videoView.stopPlayback();
 //        ijkVideoView.pause();
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
@@ -200,7 +200,7 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 //        ijkVideoView.pause();
-        videoView.pause();
+        videoView.resume();
     }
 
 
@@ -356,6 +356,15 @@ public class MainActivity extends BaseActivity {
 
             }
         });
+        videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
+            @Override
+            public boolean onInfo(MediaPlayer mp, int what, int extra) {
+                if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
+                    pic.setVisibility(View.INVISIBLE);
+                }
+                return false;
+            }
+        });
         pic.setVisibility(View.VISIBLE);
 
         mTips.setText("mac:" + BaseApplication.andoridId + " version:" + BaseApplication.VERSION_NAME);
@@ -404,7 +413,7 @@ public class MainActivity extends BaseActivity {
         } else {
             ivDefualt.setVisibility(View.INVISIBLE);
             if ("2".equals(adItem.getFiletype())) {
-                pic.setVisibility(View.INVISIBLE);
+//                pic.setVisibility(View.VISIBLE);
                 videoView.setVisibility(View.VISIBLE);
                 playLocalVideo(new File(BaseApplication.DOWNLOAD_ROOT_PATH, adItem.getLocationFileName()));
             } else {

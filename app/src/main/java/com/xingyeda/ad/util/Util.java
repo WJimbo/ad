@@ -22,11 +22,11 @@ import java.util.TreeMap;
 
 public class Util {
     public static void loadImage(Context context, final String imageUrl, final ImageView imageView, RotateTransformation rotateTransformation) {
-        Glide.with(context).load(imageUrl).transform(rotateTransformation).into(imageView);
+        Glide.with(context).load(imageUrl).animate(android.R.anim.fade_in).transform(rotateTransformation).into(imageView);
     }
 
     public static void loadImage(Context context, final File file, final ImageView imageView, RotateTransformation rotateTransformation) {
-        Glide.with(context).load(file).transform(rotateTransformation).into(imageView);
+        Glide.with(context).load(file).animate(android.R.anim.slide_in_left).transform(rotateTransformation).into(imageView);
     }
 
     public static int compareDate(String DATE2) {
