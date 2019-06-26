@@ -112,16 +112,6 @@ public class MainActivity extends BaseActivity {
         mHandler = new Handler();
         ButterKnife.bind(this);
 
-        ToolUtils.app().onLowMemory();
-//        <VideoView
-//        android:id="@+id/videoView"
-//        android:layout_width="match_parent"
-//        android:layout_height="match_parent"
-//        android:layout_gravity="center"
-//        android:layout_margin="0dp"
-//        android:visibility="visible"
-//                />
-
         initialization();
 
         ivDefualt.setImageResource(BaseApplication.RotateVideo ? R.mipmap.bg_defualt_landscape : R.mipmap.bg_defualt_portrait);
