@@ -8,8 +8,12 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.provider.Settings;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +21,7 @@ import android.widget.VideoView;
 
 import com.altang.app.common.utils.GsonUtil;
 import com.altang.app.common.utils.LoggerHelper;
+import com.altang.app.common.utils.ToolUtils;
 import com.gavinrowe.lgw.library.SimpleTimerTask;
 import com.gavinrowe.lgw.library.SimpleTimerTaskHandler;
 import com.xingyeda.ad.logdebug.LogDebugItem;
@@ -49,9 +54,7 @@ import view.IAdView;
 
 
 public class MainActivity extends BaseActivity {
-    @BindView(R.id.videoView)
     VideoView videoView;
-
     /**
      * 视频播放
      */
@@ -77,6 +80,8 @@ public class MainActivity extends BaseActivity {
     ImageView ivDefualt;
     @BindView(R.id.tv_CountSecond)
     TextView tvCountSecond;
+    @BindView(R.id.videoViewRootLayout)
+    FrameLayout videoViewRootLayout;
 
 
     private CountDownTimer countDownTimer;
@@ -101,10 +106,22 @@ public class MainActivity extends BaseActivity {
     //  目前只有全屏
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
         mHandler = new Handler();
         ButterKnife.bind(this);
+
+        ToolUtils.app().onLowMemory();
+//        <VideoView
+//        android:id="@+id/videoView"
+//        android:layout_width="match_parent"
+//        android:layout_height="match_parent"
+//        android:layout_gravity="center"
+//        android:layout_margin="0dp"
+//        android:visibility="visible"
+//                />
+
         initialization();
 
         ivDefualt.setImageResource(BaseApplication.RotateVideo ? R.mipmap.bg_defualt_landscape : R.mipmap.bg_defualt_portrait);
@@ -186,7 +203,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        videoView.stopPlayback();
+        destroyVideoView();
 //        ijkVideoView.pause();
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
@@ -200,7 +217,10 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 //        ijkVideoView.pause();
-        videoView.resume();
+        if (videoView != null && videoView.getVisibility() == View.VISIBLE) {
+            videoView.resume();
+        }
+
     }
 
 
@@ -208,7 +228,9 @@ public class MainActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
 //        ijkVideoView.pause();
-        videoView.pause();
+        if(videoView != null){
+            videoView.pause();
+        }
     }
 
 
@@ -330,11 +352,41 @@ public class MainActivity extends BaseActivity {
         });
         tvLogDebug.setVisibility(BaseApplication.OpenLogView ? View.VISIBLE : View.GONE);
 
+        pic.setVisibility(View.VISIBLE);
+
+        mTips.setText("mac:" + BaseApplication.andoridId + " version:" + BaseApplication.VERSION_NAME);
+
+        //初始化视频播放器数据
+        //ijkVideoView.setRotation(-90f);
+        //pic.setRotation(-90f);
+//        MyIjkPlayer mediaPlayer = new MyIjkPlayer(this);
+
+        register();
+
+        checkVersion();
+        requestList();
+        //开始请求数据
+        //容错，怕偶尔收不到服务器推送，采用轮询的方式获取数据。
+        SimpleTimerTask loopTask = new SimpleTimerTask(1 * 60 * 1000) {
+            @Override
+            public void run() {
+                requestList();
+            }
+        };
+        timeHandler.sendTask(1, loopTask);
+    }
+
+    private void createNewVideoView(){
+        destroyVideoView();
+        videoView = new VideoView(getApplicationContext());
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+        layoutParams.gravity = Gravity.CENTER;
+        videoViewRootLayout.addView(videoView,layoutParams);
         //显示默认图片
 //        ijkVideoView.setVisibility(View.GONE);
         videoView.setZOrderMediaOverlay(true);
 //        videoView.setZOrderOnTop(true);
-        videoView.setVisibility(View.INVISIBLE);
+        videoView.setVisibility(View.VISIBLE);
         videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
@@ -365,34 +417,31 @@ public class MainActivity extends BaseActivity {
                 return false;
             }
         });
-        pic.setVisibility(View.VISIBLE);
-
-        mTips.setText("mac:" + BaseApplication.andoridId + " version:" + BaseApplication.VERSION_NAME);
-
-        //初始化视频播放器数据
-        //ijkVideoView.setRotation(-90f);
-        //pic.setRotation(-90f);
-//        MyIjkPlayer mediaPlayer = new MyIjkPlayer(this);
-
-        register();
-
-        checkVersion();
-        requestList();
-        //开始请求数据
-        //容错，怕偶尔收不到服务器推送，采用轮询的方式获取数据。
-        SimpleTimerTask loopTask = new SimpleTimerTask(1 * 60 * 1000) {
-            @Override
-            public void run() {
-                requestList();
+    }
+    private int gcCount = 0;//播放视频N次后 调用内存释放
+    private void destroyVideoView(){
+        if(videoView != null){
+            videoView.stopPlayback();
+            videoView.suspend();
+            videoView.setOnErrorListener(null);
+            videoView.setOnPreparedListener(null);
+            videoView.setOnCompletionListener(null);
+            videoView = null;
+            videoViewRootLayout.removeAllViews();
+            gcCount++;
+            if(gcCount > 10){
+                System.gc();
+                gcCount = 0;
             }
-        };
-        timeHandler.sendTask(1, loopTask);
+        }
     }
 
+
     private void playLocalVideo(File file) {
+        createNewVideoView();
         String path = "file://" + file.getPath();
         LoggerHelper.i("playLocalVideo:" + path);
-        videoView.stopPlayback();
+
         videoView.setVideoPath(path);
         videoView.start();
 
@@ -407,34 +456,32 @@ public class MainActivity extends BaseActivity {
         if (adItem == null) {
             ivDefualt.setVisibility(View.VISIBLE);
             pic.setVisibility(View.INVISIBLE);
-            videoView.setVisibility(View.INVISIBLE);
-            videoView.stopPlayback();
+            destroyVideoView();
+            destroyVideoView();
             delayTime = 10000;
             LogDebugUtil.appendLog("暂无可播放的广告");
         } else {
             ivDefualt.setVisibility(View.INVISIBLE);
             if ("2".equals(adItem.getFiletype())) {
 //                pic.setVisibility(View.VISIBLE);
-                videoView.setVisibility(View.VISIBLE);
                 playLocalVideo(new File(BaseApplication.DOWNLOAD_ROOT_PATH, adItem.getLocationFileName()));
             } else {
                 pic.setVisibility(View.VISIBLE);
-                videoView.setVisibility(View.INVISIBLE);
-                videoView.stopPlayback();
+                destroyVideoView();
                 Util.loadImage(mContext, adItem.locationFile(BaseApplication.DOWNLOAD_ROOT_PATH), pic, new RotateTransformation(getApplicationContext(), BaseApplication.RotateVideo ? 270f : 0f));
             }
             delayTime = adItem.getDuration() * 1000;
         }
 
         mHandler.postDelayed(toNextAdRunnable, delayTime);
-        if(countDownTimer != null){
+        if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;
         }
-        countDownTimer = new CountDownTimer(delayTime,1000) {
+        countDownTimer = new CountDownTimer(delayTime, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                if(tvCountSecond != null){
+                if (tvCountSecond != null) {
                     tvCountSecond.setText("剩余" + millisUntilFinished / 1000 + "秒");
                 }
             }

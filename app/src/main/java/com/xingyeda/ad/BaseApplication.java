@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Environment;
 
 import com.altang.app.common.utils.LoggerHelper;
+import com.altang.app.common.utils.ToolUtils;
 import com.lansosdk.videoeditor.LanSoEditor;
 import com.liulishuo.filedownloader.FileDownloader;
 import com.xingyeda.ad.util.CrashHandler;
@@ -45,11 +46,11 @@ public class BaseApplication extends Application {
 //        andoridId = "472481f1f2f9f8ac";//电视机
         andoridId = Util.getAndroidId(this);
 //      测试mac：  49022511e7f2b209，4d564e1762d530d8，da52c5ebae234301   d0afdfc31e535514
-//        andoridId = "49022511e7f2b209";
+        andoridId = "49022511e7f2b209";
 //        andoridId = "4d564e1762d530d8";
 //        andoridId = "da52c5ebae234301";
-        andoridId = "d0afdfc31e535514";
-
+//        andoridId = "d0afdfc31e535514";
+        ToolUtils.init(this);
         LoggerHelper.init();
         MyLog.getInstance(this);
         CrashHandler crashHandler = CrashHandler.getInstance();

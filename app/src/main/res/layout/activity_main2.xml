@@ -8,16 +8,10 @@
     android:background="@color/Black"
     tools:context="com.xingyeda.ad.MainActivity">
     <FrameLayout
+        android:id="@+id/videoViewRootLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <VideoView
-            android:id="@+id/videoView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_margin="0dp"
-            android:visibility="visible"
-            />
+
     </FrameLayout>
 
 
@@ -84,7 +78,7 @@
         android:padding="5dp"
         android:id="@+id/tv_CountSecond"
         android:textColor="@color/White"
-        android:textSize="14sp"
+        android:textSize="12sp"
         android:textStyle="bold"
         android:layout_width="60dp"
         android:layout_height="60dp"
