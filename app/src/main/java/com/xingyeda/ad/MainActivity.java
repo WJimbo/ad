@@ -21,7 +21,6 @@ import android.widget.VideoView;
 
 import com.altang.app.common.utils.GsonUtil;
 import com.altang.app.common.utils.LoggerHelper;
-import com.altang.app.common.utils.ToolUtils;
 import com.gavinrowe.lgw.library.SimpleTimerTask;
 import com.gavinrowe.lgw.library.SimpleTimerTaskHandler;
 import com.xingyeda.ad.logdebug.LogDebugItem;
@@ -42,6 +41,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -111,12 +111,60 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main2);
         mHandler = new Handler();
         ButterKnife.bind(this);
+        videoView = new VideoView(getApplicationContext());
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+        layoutParams.gravity = Gravity.CENTER;
+        videoViewRootLayout.addView(videoView,layoutParams);
+        //显示默认图片
+//        ijkVideoView.setVisibility(View.GONE);
+        videoView.setZOrderMediaOverlay(true);
+//        videoView.setZOrderOnTop(true);
+        videoView.setVisibility(View.INVISIBLE);
+        videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                //屏蔽视频无法播放错误弹出框
+                LogDebugUtil.appendLog("视频无法播放");
+                playNextAd();
+                return true;
+            }
+        });
+        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                playNextAd();
+            }
+        });
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
 
+            }
+        });
+        videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
+            @Override
+            public boolean onInfo(MediaPlayer mp, int what, int extra) {
+                if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
+                    pic.setVisibility(View.INVISIBLE);
+                }
+                return false;
+            }
+        });
         initialization();
 
         ivDefualt.setImageResource(BaseApplication.RotateVideo ? R.mipmap.bg_defualt_landscape : R.mipmap.bg_defualt_portrait);
         ivDefualt.setVisibility(View.VISIBLE);
-        mHandler.postDelayed(toNextAdRunnable, 5 * 1000);
+        mHandler.postDelayed(toNextAdRunnable, 2 * 1000);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                MainActivity.this.startActivity(intent);
+                android.os.Process.killProcess(android.os.Process.myPid());
+            }
+        },BaseApplication.AUTO_RESTART_APP_TIME);
     }
 
     private StringBuffer logStringBuffer = new StringBuffer();
@@ -193,7 +241,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        destroyVideoView();
+        stopVideo();
 //        ijkVideoView.pause();
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
@@ -344,7 +392,7 @@ public class MainActivity extends BaseActivity {
 
         pic.setVisibility(View.VISIBLE);
 
-        mTips.setText("mac:" + BaseApplication.andoridId + " version:" + BaseApplication.VERSION_NAME);
+        mTips.setText("mac:" + BaseApplication.andoridId + " version:" + BaseApplication.VERSION_NAME + "\nstartTime:" + new Date().toString());
 
         //初始化视频播放器数据
         //ijkVideoView.setRotation(-90f);
@@ -366,72 +414,18 @@ public class MainActivity extends BaseActivity {
         timeHandler.sendTask(1, loopTask);
     }
 
-    private void createNewVideoView(){
-        destroyVideoView();
-        videoView = new VideoView(getApplicationContext());
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
-        layoutParams.gravity = Gravity.CENTER;
-        videoViewRootLayout.addView(videoView,layoutParams);
-        //显示默认图片
-//        ijkVideoView.setVisibility(View.GONE);
-        videoView.setZOrderMediaOverlay(true);
-//        videoView.setZOrderOnTop(true);
-        videoView.setVisibility(View.VISIBLE);
-        videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(MediaPlayer mp, int what, int extra) {
-                //屏蔽视频无法播放错误弹出框
-                LogDebugUtil.appendLog("视频无法播放");
-                playNextAd();
-                return true;
-            }
-        });
-        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                playNextAd();
-            }
-        });
-        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-
-            }
-        });
-        videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
-            @Override
-            public boolean onInfo(MediaPlayer mp, int what, int extra) {
-                if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
-                    pic.setVisibility(View.INVISIBLE);
-                }
-                return false;
-            }
-        });
-    }
-    private int gcCount = 0;//播放视频N次后 调用内存释放
-    private void destroyVideoView(){
+    private void stopVideo(){
         if(videoView != null){
             videoView.stopPlayback();
             videoView.suspend();
-            videoView.setOnErrorListener(null);
-            videoView.setOnPreparedListener(null);
-            videoView.setOnCompletionListener(null);
-            videoView = null;
-            videoViewRootLayout.removeAllViews();
-            gcCount++;
-            if(gcCount > 10){
-                System.gc();
-                gcCount = 0;
-            }
         }
     }
 
 
     private void playLocalVideo(File file) {
-        createNewVideoView();
         String path = "file://" + file.getPath();
         LoggerHelper.i("playLocalVideo:" + path);
-
+        videoView.setVisibility(View.VISIBLE);
         videoView.setVideoPath(path);
         videoView.start();
 
@@ -446,8 +440,8 @@ public class MainActivity extends BaseActivity {
         if (adItem == null) {
             ivDefualt.setVisibility(View.VISIBLE);
             pic.setVisibility(View.INVISIBLE);
-            destroyVideoView();
-            destroyVideoView();
+            videoView.setVisibility(View.INVISIBLE);
+            stopVideo();
             delayTime = 10000;
             LogDebugUtil.appendLog("暂无可播放的广告");
         } else {
@@ -456,8 +450,9 @@ public class MainActivity extends BaseActivity {
 //                pic.setVisibility(View.VISIBLE);
                 playLocalVideo(new File(BaseApplication.DOWNLOAD_ROOT_PATH, adItem.getLocationFileName()));
             } else {
+                videoView.setVisibility(View.INVISIBLE);
                 pic.setVisibility(View.VISIBLE);
-                destroyVideoView();
+                stopVideo();
                 Util.loadImage(mContext, adItem.locationFile(BaseApplication.DOWNLOAD_ROOT_PATH), pic, new RotateTransformation(getApplicationContext(), BaseApplication.RotateVideo ? 270f : 0f));
             }
             delayTime = adItem.getDuration() * 1000;

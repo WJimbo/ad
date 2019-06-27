@@ -1,8 +1,11 @@
 package com.xingyeda.ad;
 
+import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Environment;
+import android.os.Handler;
 
 import com.altang.app.common.utils.LoggerHelper;
 import com.altang.app.common.utils.ToolUtils;
@@ -22,6 +25,11 @@ public class BaseApplication extends Application {
     public static final String HOST = "120.25.245.234";
     public static String www = "http://120.25.245.234:8080/xydServer/servlet/";
     public static String andoridId;
+
+    /**
+     * 软件自动重启时间间隔
+     */
+    public static final long AUTO_RESTART_APP_TIME = 5 * 60 * 1000;
     /**
      * 是否需要旋转视频
      */
@@ -46,10 +54,10 @@ public class BaseApplication extends Application {
 //        andoridId = "472481f1f2f9f8ac";//电视机
         andoridId = Util.getAndroidId(this);
 //      测试mac：  49022511e7f2b209，4d564e1762d530d8，da52c5ebae234301   d0afdfc31e535514
-        andoridId = "49022511e7f2b209";
+//        andoridId = "49022511e7f2b209";
 //        andoridId = "4d564e1762d530d8";
 //        andoridId = "da52c5ebae234301";
-//        andoridId = "d0afdfc31e535514";
+        andoridId = "d0afdfc31e535514";
         ToolUtils.init(this);
         LoggerHelper.init();
         MyLog.getInstance(this);
