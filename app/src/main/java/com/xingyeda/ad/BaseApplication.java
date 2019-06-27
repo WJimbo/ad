@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Environment;
 import android.os.Handler;
 
+import com.alivc.player.AliVcMediaPlayer;
 import com.altang.app.common.utils.LoggerHelper;
 import com.altang.app.common.utils.ToolUtils;
 import com.lansosdk.videoeditor.LanSoEditor;
@@ -29,7 +30,7 @@ public class BaseApplication extends Application {
     /**
      * 软件自动重启时间间隔
      */
-    public static final long AUTO_RESTART_APP_TIME = 5 * 60 * 1000;
+    public static final long AUTO_RESTART_APP_TIME = 4 * 60 * 60 * 1000;
     /**
      * 是否需要旋转视频
      */
@@ -55,9 +56,9 @@ public class BaseApplication extends Application {
         andoridId = Util.getAndroidId(this);
 //      测试mac：  49022511e7f2b209，4d564e1762d530d8，da52c5ebae234301   d0afdfc31e535514
 //        andoridId = "49022511e7f2b209";
-//        andoridId = "4d564e1762d530d8";
+        andoridId = "4d564e1762d530d8";
 //        andoridId = "da52c5ebae234301";
-        andoridId = "d0afdfc31e535514";
+//        andoridId = "d0afdfc31e535514";
         ToolUtils.init(this);
         LoggerHelper.init();
         MyLog.getInstance(this);
@@ -69,7 +70,7 @@ public class BaseApplication extends Application {
         LanSoEditor.initSDK(getApplicationContext(),null);
 
         initDownloadRootPath(this);
-
+        AliVcMediaPlayer.init(getApplicationContext());
     }
 
     private void initDownloadRootPath(Context context) {

@@ -85,6 +85,10 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation project(':lansongsdk')
     implementation project(':zz_common_utils')
+    implementation project(':AlivcPlayer-3.4.9')
+    implementation project(':AlivcReporter-1.2')
+    implementation project(':AliyunVodPlayer-3.4.9')
+    implementation 'com.aliyun.dpa:oss-android-sdk:+'
 }
 
 
