@@ -23,9 +23,8 @@
         android:supportsRtl="true"
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 
-        <activity android:name=".MainActivity_ALiYunPlayer"
+        <activity android:name=".MainActivity"
             android:screenOrientation="landscape"
-            android:label="Main"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -11,7 +11,11 @@
         android:id="@+id/videoViewRootLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
+        <SurfaceView
+            android:visibility="invisible"
+            android:id="@+id/surfaceView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </FrameLayout>
 
 
@@ -64,7 +68,7 @@
             android:gravity="bottom|center"
             android:padding="5dp"
             android:id="@+id/tips"
-            android:textColor="@color/Red"
+            android:textColor="@color/SteelBlue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="0dp"

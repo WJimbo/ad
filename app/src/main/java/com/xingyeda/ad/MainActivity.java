@@ -7,9 +7,12 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.Process;
 import android.provider.Settings;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -19,6 +22,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.aliyun.vodplayer.media.AliyunLocalSource;
+import com.aliyun.vodplayer.media.AliyunVodPlayer;
+import com.aliyun.vodplayer.media.IAliyunVodPlayer;
 import com.altang.app.common.utils.GsonUtil;
 import com.altang.app.common.utils.LoggerHelper;
 import com.gavinrowe.lgw.library.SimpleTimerTask;
@@ -54,12 +60,10 @@ import view.IAdView;
 
 
 public class MainActivity extends BaseActivity {
-    VideoView videoView;
+//    VideoView videoView;
     /**
      * 视频播放
      */
-//    @BindView(R.id.ijkVideoView)
-//    public IjkVideoView ijkVideoView;
     /**
      * 图片播放
      */
@@ -80,6 +84,8 @@ public class MainActivity extends BaseActivity {
     TextView tvCountSecond;
     @BindView(R.id.videoViewRootLayout)
     FrameLayout videoViewRootLayout;
+    @BindView(R.id.surfaceView)
+    SurfaceView surfaceView;
 
 
     private CountDownTimer countDownTimer;
@@ -100,7 +106,7 @@ public class MainActivity extends BaseActivity {
             playNextAd();
         }
     };
-
+    private AliyunVodPlayer mPlayer;
     //  目前只有全屏
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,45 +115,47 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main2);
         mHandler = new Handler();
         ButterKnife.bind(this);
-        videoView = new VideoView(getApplicationContext());
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
-        layoutParams.gravity = Gravity.CENTER;
-        videoViewRootLayout.addView(videoView,layoutParams);
-        //显示默认图片
-//        ijkVideoView.setVisibility(View.GONE);
-        videoView.setZOrderMediaOverlay(true);
-//        videoView.setZOrderOnTop(true);
-        videoView.setVisibility(View.INVISIBLE);
-        videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(MediaPlayer mp, int what, int extra) {
-                //屏蔽视频无法播放错误弹出框
-                LogDebugUtil.appendLog("视频无法播放");
-                playNextAd();
-                return true;
-            }
-        });
-        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                playNextAd();
-            }
-        });
-        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
+        surfaceView.setZOrderMediaOverlay(true);
 
-            }
-        });
-        videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
+        SurfaceHolder holder = surfaceView.getHolder();
+        //增加surfaceView的监听
+        holder.addCallback(new SurfaceHolder.Callback() {
             @Override
-            public boolean onInfo(MediaPlayer mp, int what, int extra) {
-                if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
-                    pic.setVisibility(View.INVISIBLE);
-                }
-                return false;
+            public void surfaceCreated(SurfaceHolder surfaceHolder) {
+                mPlayer.setDisplay(surfaceHolder);
+            }
+
+            @Override
+            public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width,
+                                       int height) {
+                mPlayer.surfaceChanged();
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
             }
         });
+
+        mPlayer = new AliyunVodPlayer(this);
+        mPlayer.setOnCompletionListener(new IAliyunVodPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion() {
+                playNextAd();
+            }
+        });
+        mPlayer.setOnErrorListener(new IAliyunVodPlayer.OnErrorListener() {
+            @Override
+            public void onError(int i, int i1, String s) {
+                playNextAd();
+            }
+        });
+        mPlayer.setOnPreparedListener(new IAliyunVodPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared() {
+                pic.setVisibility(View.INVISIBLE);
+            }
+        });
+        mPlayer.setDisplay(surfaceView.getHolder());
         initialization();
 
         ivDefualt.setImageResource(BaseApplication.RotateVideo ? R.mipmap.bg_defualt_landscape : R.mipmap.bg_defualt_portrait);
@@ -160,9 +168,9 @@ public class MainActivity extends BaseActivity {
                 Intent intent = new Intent(MainActivity.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 MainActivity.this.startActivity(intent);
-                android.os.Process.killProcess(android.os.Process.myPid());
+                Process.killProcess(Process.myPid());
             }
-        },BaseApplication.AUTO_RESTART_APP_TIME);
+        }, BaseApplication.AUTO_RESTART_APP_TIME);
     }
 
     private StringBuffer logStringBuffer = new StringBuffer();
@@ -172,6 +180,9 @@ public class MainActivity extends BaseActivity {
         if (BaseApplication.OpenLogView) {
             logStringBuffer.insert(0, logDebugItem.getMessage() + "\n");
             tvLogDebug.setText(logStringBuffer.toString());
+            if(logStringBuffer.length() > 5000){
+                logStringBuffer = new StringBuffer();
+            }
         }
     }
 
@@ -253,20 +264,14 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 //        ijkVideoView.pause();
-        if (videoView != null && videoView.getVisibility() == View.VISIBLE) {
-            videoView.resume();
-        }
-
+        mPlayer.resume();
     }
 
 
     @Override
     protected void onPause() {
         super.onPause();
-//        ijkVideoView.pause();
-        if(videoView != null){
-            videoView.pause();
-        }
+        mPlayer.pause();
     }
 
 
@@ -313,7 +318,7 @@ public class MainActivity extends BaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Toast.makeText(MainActivity.this, "返回键无效", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "返回键无效", Toast.LENGTH_SHORT).show();
             return true;//return true;拦截事件传递,从而屏蔽back键。
         }
         if (KeyEvent.KEYCODE_HOME == keyCode) {
@@ -383,7 +388,7 @@ public class MainActivity extends BaseActivity {
             public void onNeed2OpenService() {
                 // 当需要用户手动打开 `辅助功能服务` 时回调
                 // 可以在这里提示用户打开辅助功能
-                Toast.makeText(MainActivity.this, "请打开辅助功能服务", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "请打开辅助功能服务", Toast.LENGTH_SHORT).show();
             }
         });
         tvLogDebug.setVisibility(BaseApplication.OpenLogView ? View.VISIBLE : View.GONE);
@@ -401,24 +406,28 @@ public class MainActivity extends BaseActivity {
 
         checkVersion();
         requestList();
-
     }
 
-    private void stopVideo(){
-        if(videoView != null){
-            videoView.stopPlayback();
-            videoView.suspend();
-        }
+    private void stopVideo() {
+        mPlayer.reset();
+        mPlayer.stop();
     }
 
 
     private void playLocalVideo(File file) {
         String path = "file://" + file.getPath();
         LoggerHelper.i("playLocalVideo:" + path);
-        videoView.setVisibility(View.VISIBLE);
-        videoView.setVideoPath(path);
-        videoView.start();
+        stopVideo();
+        mPlayer.setCirclePlay(false);
+        mPlayer.setAutoPlay(true);
 
+        AliyunLocalSource.AliyunLocalSourceBuilder alsb = new AliyunLocalSource.AliyunLocalSourceBuilder();
+        alsb.setSource(path);
+        AliyunLocalSource localSource = alsb.build();
+
+
+        mPlayer.prepareAsync(localSource);
+        surfaceView.setVisibility(View.VISIBLE);
     }
 
     private int currentShowAdIndex = -1;
@@ -430,7 +439,7 @@ public class MainActivity extends BaseActivity {
         if (adItem == null) {
             ivDefualt.setVisibility(View.VISIBLE);
             pic.setVisibility(View.INVISIBLE);
-            videoView.setVisibility(View.INVISIBLE);
+            surfaceView.setVisibility(View.INVISIBLE);
             stopVideo();
             delayTime = 10000;
             LogDebugUtil.appendLog("暂无可播放的广告");
@@ -440,7 +449,7 @@ public class MainActivity extends BaseActivity {
 //                pic.setVisibility(View.VISIBLE);
                 playLocalVideo(new File(BaseApplication.DOWNLOAD_ROOT_PATH, adItem.getLocationFileName()));
             } else {
-                videoView.setVisibility(View.INVISIBLE);
+                surfaceView.setVisibility(View.INVISIBLE);
                 pic.setVisibility(View.VISIBLE);
                 stopVideo();
                 Util.loadImage(mContext, adItem.locationFile(BaseApplication.DOWNLOAD_ROOT_PATH), pic, new RotateTransformation(getApplicationContext(), BaseApplication.RotateVideo ? 270f : 0f));
