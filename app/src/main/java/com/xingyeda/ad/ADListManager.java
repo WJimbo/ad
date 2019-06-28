@@ -6,6 +6,8 @@ import android.util.Log;
 
 import com.altang.app.common.utils.GsonUtil;
 import com.altang.app.common.utils.UIUtils;
+import com.gavinrowe.lgw.library.SimpleTimerTask;
+import com.gavinrowe.lgw.library.SimpleTimerTaskHandler;
 import com.mazouri.tools.Tools;
 
 import com.altang.app.common.utils.http.BaseResponseData;
@@ -39,6 +41,15 @@ public class ADListManager {
         this.context = context;
         init();
         readListFromLocation();
+        //开始请求数据
+        //容错，怕偶尔收不到服务器推送，采用轮询的方式获取数据。
+        SimpleTimerTask loopTask = new SimpleTimerTask(BaseApplication.AUTO_REQUEST_ADLIST_TIME) {
+            @Override
+            public void run() {
+                setNeedUpdateList();
+            }
+        };
+        SimpleTimerTaskHandler.getInstance().sendTask(1, loopTask);
     }
 
     public AdListResponseData getAdListResponseData() {
@@ -72,10 +83,8 @@ public class ADListManager {
             rootFile.mkdirs();
         }
     }
-    private boolean needUpdateList = false;
     private boolean isUpdatingList = false;
     public void setNeedUpdateList(){
-        needUpdateList = true;
         updateList();
     }
 
@@ -85,7 +94,6 @@ public class ADListManager {
         }
         LogDebugUtil.appendLog("正在开始调用广告数据");
         isUpdatingList = true;
-        needUpdateList = false;
         final HttpRequestData requestData = new HttpRequestData();
         requestData.setRequestURL(BaseApplication.www + "GetAdversitingByMac/R?mac=" + BaseApplication.andoridId);
         requestData.setRequestMode(HttpRequestData.RequestModeType.GET);
@@ -102,16 +110,6 @@ public class ADListManager {
                     }
                 }else{
                     LogDebugUtil.appendLog("调用广告数据失败:" + responseData.getErrorMsg());
-                    MyLog.d("更新广告接口出错:" + responseData.getErrorMsg());
-                    needUpdateList = true;
-                }
-                if(needUpdateList){
-                    UIUtils.runOnMainThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            updateList();
-                        }
-                    },10000);
                 }
             }
         });

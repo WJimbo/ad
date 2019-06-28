@@ -30,7 +30,12 @@ public class BaseApplication extends Application {
     /**
      * 软件自动重启时间间隔
      */
-    public static final long AUTO_RESTART_APP_TIME = 4 * 60 * 60 * 1000;
+    public static final long AUTO_RESTART_APP_TIME = 40 * 60 * 60 * 1000;
+
+    /**
+     * 自动请求广告接口列表间隔时间
+     */
+    public static final long AUTO_REQUEST_ADLIST_TIME = 5 * 60 * 1000;
     /**
      * 是否需要旋转视频
      */

@@ -78,8 +78,6 @@ public class MainActivity_ALiYunPlayer extends BaseActivity {
     @BindView(R.id.tips)
     public TextView mTips;
 
-
-    SimpleTimerTaskHandler timeHandler = SimpleTimerTaskHandler.getInstance();
     @BindView(R.id.tv_LogDebug)
     TextView tvLogDebug;
     @BindView(R.id.iv_Defualt)
@@ -184,6 +182,9 @@ public class MainActivity_ALiYunPlayer extends BaseActivity {
         if (BaseApplication.OpenLogView) {
             logStringBuffer.insert(0, logDebugItem.getMessage() + "\n");
             tvLogDebug.setText(logStringBuffer.toString());
+            if(logStringBuffer.length() > 5000){
+                logStringBuffer = new StringBuffer();
+            }
         }
     }
 
@@ -407,15 +408,6 @@ public class MainActivity_ALiYunPlayer extends BaseActivity {
 
         checkVersion();
         requestList();
-        //开始请求数据
-        //容错，怕偶尔收不到服务器推送，采用轮询的方式获取数据。
-        SimpleTimerTask loopTask = new SimpleTimerTask(1 * 60 * 1000) {
-            @Override
-            public void run() {
-                requestList();
-            }
-        };
-        timeHandler.sendTask(1, loopTask);
     }
 
     private void stopVideo() {

@@ -1,1 +1,1 @@
-include ':app', ':lansongsdk', ':zz_common_utils', ':AlivcPlayer-3.4.9', ':AlivcReporter-1.2', ':AliyunVodPlayer-3.4.9'
+include ':app', ':lansongsdk', ':zz_common_utils', ':AlivcPlayer-3.4.9', ':AlivcReporter-1.2', ':AliyunVodPlayer-3.4.9', ':AliyunVodPlayerView'
