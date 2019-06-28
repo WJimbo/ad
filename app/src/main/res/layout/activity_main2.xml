@@ -68,7 +68,7 @@
             android:gravity="bottom|center"
             android:padding="5dp"
             android:id="@+id/tips"
-            android:textColor="@color/SteelBlue"
+            android:textColor="@color/Red"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="0dp"
@@ -90,6 +90,6 @@
         android:rotation="270"
         android:background="#8000"
         android:text="" />
-
+    
 </RelativeLayout>
 
