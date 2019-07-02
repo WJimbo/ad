@@ -3,6 +3,7 @@ package com.xingyeda.ad;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -33,6 +34,7 @@ import com.xingyeda.ad.logdebug.LogDebugItem;
 import com.xingyeda.ad.logdebug.LogDebugUtil;
 import com.xingyeda.ad.service.socket.CommandMessageData;
 import com.xingyeda.ad.service.socket.CommandReceiveService;
+import com.xingyeda.ad.service.socket.ConnectChangedItem;
 import com.xingyeda.ad.util.RotateTransformation;
 import com.xingyeda.ad.util.Util;
 import com.xingyeda.ad.vo.AdItem;
@@ -46,6 +48,8 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -113,6 +117,7 @@ public class MainActivity extends BaseActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+        EventBus.getDefault().register(this);
         mHandler = new Handler();
         ButterKnife.bind(this);
         surfaceView.setZOrderMediaOverlay(true);
@@ -259,6 +264,10 @@ public class MainActivity extends BaseActivity {
         mUnbinder.unbind();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onConnectionChanged(ConnectChangedItem connectChangedItem){
+        mTips.setTextColor(connectChangedItem.isConnecting() ? Color.GREEN : Color.RED);
+    }
 
     @Override
     protected void onResume() {
@@ -361,8 +370,6 @@ public class MainActivity extends BaseActivity {
         });
 
         mUnbinder = ButterKnife.bind(this);
-        //订阅组件注册
-        EventBus.getDefault().register(this);
         //socket
         CommandReceiveService.startService(this);
 
@@ -395,8 +402,7 @@ public class MainActivity extends BaseActivity {
 
         pic.setVisibility(View.VISIBLE);
 
-        mTips.setText("mac:" + BaseApplication.andoridId + " version:" + BaseApplication.VERSION_NAME + "\nstartTime:" + new Date().toString());
-
+        mTips.setText("MAC:" + BaseApplication.andoridId + " 版本信息:" + BaseApplication.VERSION_NAME + "\n启动时间:" + SimpleDateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM).format(new Date()));
         //初始化视频播放器数据
         //ijkVideoView.setRotation(-90f);
         //pic.setRotation(-90f);

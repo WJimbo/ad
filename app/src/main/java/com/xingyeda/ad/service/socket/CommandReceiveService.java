@@ -32,7 +32,7 @@ public class CommandReceiveService extends Service {
     }
     private Handler mainHandler;
     private SocketClient socketClient;
-
+    public static boolean isConnected = true;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -217,6 +217,8 @@ public class CommandReceiveService extends Service {
             public void onConnected(SocketClient client) {
                 if(currentConnectionState != 1){
                     currentConnectionState = 1;
+                    isConnected = true;
+                    EventBus.getDefault().post(new ConnectChangedItem(isConnected));
                     LoggerHelper.i("Socket连接成功-->" + client.getAddress().getRemoteIP() + ":" + client.getAddress().getRemotePort());
                 }
 //                SocketPacket packet = socketClient.sendData(new byte[]{0x02}); // 发送消息
@@ -233,8 +235,9 @@ public class CommandReceiveService extends Service {
             public void onDisconnected(SocketClient client) {
                 if(currentConnectionState != 0){
                     currentConnectionState = 0;
+                    isConnected = false;
+                    EventBus.getDefault().post(new ConnectChangedItem(isConnected));
                     LoggerHelper.i("Socket连接失败，每隔5秒将尝试重连-->" + client.getAddress().getRemoteIP() + ":" + client.getAddress().getRemotePort());
-
                 }
                 mainHandler.postDelayed(new Runnable() {
                     @Override
