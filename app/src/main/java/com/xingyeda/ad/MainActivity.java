@@ -117,9 +117,11 @@ public class MainActivity extends BaseActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-        EventBus.getDefault().register(this);
+        mUnbinder = ButterKnife.bind(this);
         mHandler = new Handler();
-        ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
+
+
         surfaceView.setZOrderMediaOverlay(true);
 
         SurfaceHolder holder = surfaceView.getHolder();
@@ -266,7 +268,10 @@ public class MainActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onConnectionChanged(ConnectChangedItem connectChangedItem){
-        mTips.setTextColor(connectChangedItem.isConnecting() ? Color.GREEN : Color.RED);
+        LogDebugUtil.appendLog(connectChangedItem.isConnecting() ? "SOCKET已连接" : "SOCKET断开连接");
+        if(mTips != null){
+            mTips.setTextColor(connectChangedItem.isConnecting() ? Color.GREEN : Color.RED);
+        }
     }
 
     @Override
@@ -369,7 +374,7 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        mUnbinder = ButterKnife.bind(this);
+
         //socket
         CommandReceiveService.startService(this);
 

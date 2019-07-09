@@ -21,6 +21,7 @@ import com.vilyever.socketclient.util.CharsetUtil;
 
 
 import com.xingyeda.ad.BaseApplication;
+import com.xingyeda.ad.logdebug.LogDebugUtil;
 import com.xingyeda.ad.util.Util;
 
 import org.greenrobot.eventbus.EventBus;
@@ -219,7 +220,7 @@ public class CommandReceiveService extends Service {
                     currentConnectionState = 1;
                     isConnected = true;
                     EventBus.getDefault().post(new ConnectChangedItem(isConnected));
-                    LoggerHelper.i("Socket连接成功-->" + client.getAddress().getRemoteIP() + ":" + client.getAddress().getRemotePort());
+                    LogDebugUtil.appendLog("Socket连接成功-->" + client.getAddress().getRemoteIP() + ":" + client.getAddress().getRemotePort());
                 }
 //                SocketPacket packet = socketClient.sendData(new byte[]{0x02}); // 发送消息
 //                packet = socketClient.sendString("start"); // 发送消息
@@ -237,7 +238,8 @@ public class CommandReceiveService extends Service {
                     currentConnectionState = 0;
                     isConnected = false;
                     EventBus.getDefault().post(new ConnectChangedItem(isConnected));
-                    LoggerHelper.i("Socket连接失败，每隔5秒将尝试重连-->" + client.getAddress().getRemoteIP() + ":" + client.getAddress().getRemotePort());
+                    LogDebugUtil.appendLog("Socket连接失败，每隔5秒将尝试重连-->" + client.getAddress().getRemoteIP() + ":" + client.getAddress().getRemotePort());
+//                    LoggerHelper.i("Socket连接失败，每隔5秒将尝试重连-->" + client.getAddress().getRemoteIP() + ":" + client.getAddress().getRemotePort());
                 }
                 mainHandler.postDelayed(new Runnable() {
                     @Override
