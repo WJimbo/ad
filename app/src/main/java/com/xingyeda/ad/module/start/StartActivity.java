@@ -1,35 +1,17 @@
 package com.xingyeda.ad.module.start;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.widget.TextView;
 
-
-import com.liulishuo.filedownloader.BaseDownloadTask;
-import com.liulishuo.filedownloader.FileDownloadListener;
-import com.liulishuo.filedownloader.FileDownloader;
 import com.xingyeda.ad.BaseActivity;
-
 import com.xingyeda.ad.BuildConfig;
 import com.xingyeda.ad.R;
 import com.xingyeda.ad.module.main.OneADMainActivity;
 import com.xingyeda.ad.util.MyLog;
-import com.zz9158.app.common.utils.DialogHelper;
-import com.zz9158.app.common.utils.FileHelper;
-import com.zz9158.app.common.utils.ToastUtils;
 import com.zz9158.app.common.utils.ToolUtils;
-import com.zz9158.app.common.utils.UIUtils;
-import com.zz9158.app.common.utils.wifi.WifiHelper;
-
-import org.zeroturnaround.zip.ZipUtil;
-
-import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
