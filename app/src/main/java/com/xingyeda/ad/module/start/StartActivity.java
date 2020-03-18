@@ -16,7 +16,9 @@ import com.liulishuo.filedownloader.FileDownloadListener;
 import com.liulishuo.filedownloader.FileDownloader;
 import com.xingyeda.ad.BaseActivity;
 
+import com.xingyeda.ad.BuildConfig;
 import com.xingyeda.ad.R;
+import com.xingyeda.ad.module.main.OneADMainActivity;
 import com.xingyeda.ad.util.MyLog;
 import com.zz9158.app.common.utils.DialogHelper;
 import com.zz9158.app.common.utils.FileHelper;
@@ -40,12 +42,10 @@ import butterknife.ButterKnife;
 
 public class StartActivity extends BaseActivity {
     public static boolean isStarted = false;
-    private static String KEY_DOWNLOADED_SOZIP;
     @BindView(R.id.infoTextView)
     TextView infoTextView;
     @BindView(R.id.versionInfoTextView)
     TextView versionInfoTextView;
-    private int tryUpdateTime = 0;//下载失败重连次数
 
     private CountDownTimer countDownTimer;
 
@@ -64,7 +64,6 @@ public class StartActivity extends BaseActivity {
                 String action = intent.getAction();
                 if (intent.hasCategory(Intent.CATEGORY_LAUNCHER) && Intent.ACTION_MAIN.equals(action)) {
                     MyLog.i("StartActivity 启动失败 isTaskRoot:" + this.toString());
-                    DeviceUtil.reboot(this);
                     finish();
                     return;
                 }
@@ -81,61 +80,33 @@ public class StartActivity extends BaseActivity {
 //        }
         setContentView(R.layout.activity_start);
         ButterKnife.bind(this);
-        requestOverlayPermission();
-        if (AppInitWithConfigFile.isIsInited()) {
-            if (!WifiHelper.isWifiConnect(this)) {
-                if (!ToolUtils.string().isEmpty(AppInitWithConfigFile.getWifiName())) {
-                    WifiHelper.openAndConfigWifi(this, true, AppInitWithConfigFile.getWifiName(), AppInitWithConfigFile.getWifiPassword(), AppInitWithConfigFile.getWifiType(), new WifiHelper.OpenAndConfigWifiCallback() {
-                        @Override
-                        public void operationResult(boolean success) {
-
-                        }
-                    });
-                }
-            }
-
-        }
-        MyLog.i("StartActivity正常启动:---》1");
         int waitTime = 15 * 1000;
         if (BuildConfig.DEBUG) {
             waitTime = 3 * 1000;
         }
-
-        KEY_DOWNLOADED_SOZIP = "KEY_DOWNLAOD_SOZIP_VERSION" + BuildConfig.BUILD_SO_VERSION;
         countDownTimer = new CountDownTimer(waitTime, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 if (infoTextView != null) {
-                    infoTextView.setText("正在启动中(" + millisUntilFinished / 1000 + "秒)...");
+                    infoTextView.setText("正在启动中(" + (millisUntilFinished + 500) / 1000 + "秒)...");
                 }
             }
 
             @Override
             public void onFinish() {
-                MyLog.i("StartActivity正常启动:---》onFinish");
-                BaiduTTSHelper.getInstance().init(getApplicationContext());
-                if (!BuildConfig.DEBUG) {
-                    if (checkNeedDownloadSoZip()) {
-                        //			LoggerHelper.i(getApplicationContext().getApplicationInfo().nativeLibraryDir);
-                        //
-                        //			LoggerHelper.i("lib a.so exsit:" + ToolUtils.file().isFileExists("/data/data/" + this.getPackageName() + "/lib" + "/a.so"));
-                        //
-                        //			LoggerHelper.i("lib libBugly.so exsit:" + ToolUtils.file().isFileExists("/data/data/" + this.getPackageName() + "/lib" + "/libBugly.so"));
-                        downloadSOZip();
-                    } else {
-                        if (MainApplication.ISADMODEL) {
-                            gotoInitActivity(2000, false);
-                        } else {
-                            gotoInitActivity(2000, true);
-                        }
-
-                    }
-                } else {
-                    gotoInitActivity(2000, false);
-                }
+                OneADMainActivity.startActivity(mContext);
             }
         };
         countDownTimer.start();
         versionInfoTextView.setText("版本号:" + ToolUtils.appTool().getVersionNameFromPackage(this) + "_" + ToolUtils.appTool().getAppVersionCode(this) + "\n编译时间:" + BuildConfig.BUILD_DATE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(countDownTimer != null){
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
     }
 }

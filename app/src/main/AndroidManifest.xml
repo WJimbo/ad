@@ -31,8 +31,6 @@
         <activity android:name=".MainActivity"
             android:screenOrientation="landscape"
             >
-            <intent-filter>
-            </intent-filter>
         </activity>
         <activity android:name=".module.start.StartActivity"
             android:screenOrientation="landscape"
