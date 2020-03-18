@@ -9,7 +9,7 @@
     tools:context="com.xingyeda.ad.MainActivity">
 
 
-    <com.xingyeda.lowermachine.business.modules.main.widget.ADView
+    <com.xingyeda.ad.module.main.widget.ADView
         android:id="@+id/adView"
         android:visibility="invisible"
         android:layout_width="match_parent"

@@ -7,12 +7,13 @@ import android.widget.TextView;
 
 import com.xingyeda.ad.BaseActivity;
 import com.xingyeda.ad.R;
+import com.xingyeda.ad.module.main.widget.ADView;
 
 import butterknife.BindView;
 
 public class OneADMainActivity extends BaseActivity {
     @BindView(R.id.adView)
-    com.xingyeda.lowermachine.business.modules.main.widget.ADView adView;
+    ADView adView;
     @BindView(R.id.tv_LogDebug)
     TextView tvLogDebug;
     @BindView(R.id.tips)
