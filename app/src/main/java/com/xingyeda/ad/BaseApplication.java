@@ -1,20 +1,20 @@
 package com.xingyeda.ad;
 
-import android.app.ActivityManager;
+
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Environment;
-import android.os.Handler;
 
-import com.alivc.player.AliVcMediaPlayer;
-import com.altang.app.common.utils.LoggerHelper;
-import com.altang.app.common.utils.ToolUtils;
+import android.os.Environment;
+
+
+
 import com.lansosdk.videoeditor.LanSoEditor;
 import com.liulishuo.filedownloader.FileDownloader;
 import com.xingyeda.ad.util.CrashHandler;
 import com.xingyeda.ad.util.MyLog;
 import com.xingyeda.ad.util.Util;
+import com.zz9158.app.common.utils.LoggerHelper;
+import com.zz9158.app.common.utils.ToolUtils;
 
 import java.io.File;
 

@@ -1,4 +1,13 @@
-package com.xingyeda.ad.module;
+package com.xingyeda.ad.module.main;
 
-public class OneADMainActivity {
+import android.content.Context;
+import android.content.Intent;
+
+import com.xingyeda.ad.BaseActivity;
+
+public class OneADMainActivity extends BaseActivity {
+    public static void startActivity(Context context){
+        Intent intent = new Intent(context,OneADMainActivity.class);
+        context.startActivity(intent);
+    }
 }

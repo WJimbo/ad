@@ -1,11 +1,12 @@
 package com.xingyeda.ad;
 import android.os.AsyncTask;
 
-import com.altang.app.common.utils.LoggerHelper;
+
 import com.lansosdk.videoeditor.MediaInfo;
 import com.lansosdk.videoeditor.VideoEditor;
 import com.mazouri.tools.Tools;
 import com.xingyeda.ad.logdebug.LogDebugUtil;
+import com.zz9158.app.common.utils.LoggerHelper;
 
 import java.io.File;
 

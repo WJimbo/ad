@@ -68,7 +68,7 @@ dependencies {
     //自动注入
     implementation 'com.jakewharton:butterknife:8.8.1'
     //jsonutil
-    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.google.code.gson:gson:2.8.5'
     //日志打印
     implementation 'com.orhanobut:logger:2.2.0'
     //消息订阅
@@ -85,11 +85,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation project(':lansongsdk')
     implementation project(':zz_common_utils')
-    implementation project(':AlivcPlayer-3.4.9')
-    implementation project(':AlivcReporter-1.2')
-    implementation project(':AliyunVodPlayer-3.4.9')
-    implementation 'com.aliyun.dpa:oss-android-sdk:+'
-    implementation project(':AliyunVodPlayerView')
+    implementation project(':zz_common_widget')
+    implementation 'com.alivc.conan:AlivcConan:0.9.5'
+    implementation project(path: ':AliyunPlayer-4.7.2-full')
 }
 
 

@@ -10,26 +10,18 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Process;
 import android.provider.Settings;
-import android.view.Gravity;
+
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
-import com.aliyun.vodplayer.media.AliyunLocalSource;
-import com.aliyun.vodplayer.media.AliyunVodPlayer;
-import com.aliyun.vodplayer.media.IAliyunVodPlayer;
-import com.altang.app.common.utils.GsonUtil;
-import com.altang.app.common.utils.LoggerHelper;
-import com.gavinrowe.lgw.library.SimpleTimerTask;
-import com.gavinrowe.lgw.library.SimpleTimerTaskHandler;
+
 import com.xingyeda.ad.logdebug.LogDebugItem;
 import com.xingyeda.ad.logdebug.LogDebugUtil;
 import com.xingyeda.ad.service.socket.CommandMessageData;
@@ -42,6 +34,8 @@ import com.xingyeda.ad.vo.AdListResponseData;
 import com.xingyeda.ad.vo.MsgInfo;
 import com.xingyeda.ad.vo.Version;
 import com.xingyeda.ad.vo.VersionInfo;
+import com.zz9158.app.common.utils.GsonUtil;
+import com.zz9158.app.common.utils.LoggerHelper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

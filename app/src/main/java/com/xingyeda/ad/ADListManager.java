@@ -4,19 +4,19 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
-import com.altang.app.common.utils.GsonUtil;
-import com.altang.app.common.utils.UIUtils;
+
 import com.gavinrowe.lgw.library.SimpleTimerTask;
 import com.gavinrowe.lgw.library.SimpleTimerTaskHandler;
 import com.mazouri.tools.Tools;
 
-import com.altang.app.common.utils.http.BaseResponseData;
-import com.altang.app.common.utils.http.HttpRequestData;
-import com.altang.app.common.utils.http.HttpRequestModel;
+
 import com.xingyeda.ad.logdebug.LogDebugUtil;
-import com.xingyeda.ad.util.MyLog;
-import com.xingyeda.ad.vo.AdItem;
+
 import com.xingyeda.ad.vo.AdListResponseData;
+import com.zz9158.app.common.utils.GsonUtil;
+import com.zz9158.app.common.utils.http.BaseRequestData;
+import com.zz9158.app.common.utils.http.BaseResponseData;
+import com.zz9158.app.common.utils.http.HttpRequestModel;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -94,9 +94,9 @@ public class ADListManager {
         }
         LogDebugUtil.appendLog("正在开始调用广告数据");
         isUpdatingList = true;
-        final HttpRequestData requestData = new HttpRequestData();
+        final BaseRequestData requestData = new BaseRequestData();
         requestData.setRequestURL(BaseApplication.www + "GetAdversitingByMac/R?mac=" + BaseApplication.andoridId);
-        requestData.setRequestMode(HttpRequestData.RequestModeType.GET);
+        requestData.setRequestMode(BaseRequestData.RequestModeType.GET);
         HttpRequestModel.asynRequestData(requestData, AdListResponseData.class, new HttpRequestModel.OnLYHttpRequestResponseListener() {
             @Override
             public void onResponse(BaseResponseData responseData) {

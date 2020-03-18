@@ -1,7 +1,9 @@
 package com.xingyeda.ad.util.httputil;
 
-import com.altang.app.common.utils.http.BaseResponseData;
-import com.altang.app.common.utils.http.HTTP_RESPONSE_STATUS;
+
+
+import com.zz9158.app.common.utils.http.BaseResponseData;
+import com.zz9158.app.common.utils.http.HTTP_RESPONSE_STATUS;
 
 import java.util.Map;
 

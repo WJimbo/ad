@@ -3,8 +3,9 @@ package com.xingyeda.ad.util;
 import android.content.Context;
 import android.os.Environment;
 
-import com.altang.app.common.utils.LoggerHelper;
-import com.altang.app.common.utils.ToolUtils;
+
+import com.zz9158.app.common.utils.LoggerHelper;
+import com.zz9158.app.common.utils.ToolUtils;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
