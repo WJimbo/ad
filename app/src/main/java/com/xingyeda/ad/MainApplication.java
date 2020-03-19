@@ -17,6 +17,7 @@ public class MainApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        DeviceUUIDManager.setUuidPrefix("ad");
         if(BuildConfig.DEBUG){
             DeviceUUIDManager.setUUID("6c21a218fb77");
         }

@@ -78,6 +78,12 @@ public class DeviceUUIDManager {
         }
         return str;
     }
+    private static String uuidPrefix = "";
+
+    public static void setUuidPrefix(String uuidPrefix) {
+        DeviceUUIDManager.uuidPrefix = uuidPrefix;
+    }
+
     private static String uuid;
     public static void setUUID(String tempUuid){
         uuid = tempUuid;
@@ -96,9 +102,9 @@ public class DeviceUUIDManager {
             String content = getMacAddress(context);
             if(ToolUtils.string().isEmpty(content) || "020000000000".equals(content)){
 //                content += getDeviceID(context) + getAndroidID(context) + System.currentTimeMillis();
-                uuid = getRandomValue(12);//ToolUtils.secureMD5().getMD5Code(content);
+                uuid = uuidPrefix + getRandomValue(12);//ToolUtils.secureMD5().getMD5Code(content);
             }else{
-                uuid = content;
+                uuid = uuidPrefix + content;
             }
 
             ToolUtils.file().createOrExistsFile(uuidFilePath);
