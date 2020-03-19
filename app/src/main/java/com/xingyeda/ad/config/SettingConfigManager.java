@@ -71,7 +71,7 @@ public class SettingConfigManager {
                                 try{
                                     float value = Float.parseFloat(settingItem.value);
                                     if (value != SettingConfig.getScreenRotateAngle(context)) {
-                                        SettingConfig.setVideoRatateAngle(context,value);
+                                        SettingConfig.setScreenRatateAngle(context,value);
                                         settingChanged = true;
                                     }
                                 }catch (Exception ex){

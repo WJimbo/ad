@@ -121,6 +121,7 @@ public class OneADMainActivity extends BaseActivity {
                             downloadItem.url = adItem.getFileUrl();
                             downloadItem.fileType = adItem.getFiletype();
                             downloadItem.savePath = adItem.locationFile(DownloadManager.getDownloadRootPath(getApplicationContext()));
+                            downloadItem.videoRotateAngle = SettingConfig.getScreenRotateAngle(getApplicationContext());
                             DownloadManager.getInstance().downloadWithUrl(downloadItem);
                         }
                     }

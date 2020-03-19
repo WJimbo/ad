@@ -132,6 +132,7 @@ public class DownloadManager {
                             rotateVideoAsyncTask.setCallback(new RotateVideoAsyncTask.Callback() {
                                 @Override
                                 public void rotateVideoFinish(boolean success) {
+                                    LogDebugUtil.appendLog("视频旋转完成：" + downloadItem.savePath.getName());
                                     downloadingList.remove(downloadItem);
                                     ToolUtils.file().deleteFile(downloadItem.getTempDownloadPath());
                                 }

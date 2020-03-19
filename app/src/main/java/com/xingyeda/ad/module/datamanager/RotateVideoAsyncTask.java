@@ -22,9 +22,11 @@ public class RotateVideoAsyncTask extends AsyncTask<Object, Object, Boolean> {
     }
     private String srcPath;
     private String dstPath;
-    public RotateVideoAsyncTask(String srcPath,String dstPath) {
+    private int videoRotateAngle = 0;
+    public RotateVideoAsyncTask(String srcPath,String dstPath,float videoRotateAngle) {
         this.srcPath = srcPath;
         this.dstPath = dstPath;
+        this.videoRotateAngle = (int)videoRotateAngle;
         videoEditor = new VideoEditor();
     }
 
@@ -43,11 +45,22 @@ public class RotateVideoAsyncTask extends AsyncTask<Object, Object, Boolean> {
             srcAngle = (int)info.vRotateAngle;
         }
         LogDebugUtil.appendLog("开始旋转视频,旋转前角度：" + srcAngle);
-        dstVideo = videoEditor.executeSetVideoMetaAngle(srcPath, 270 + srcAngle);
+        int needRotateAngle = (this.videoRotateAngle + srcAngle) % 360;
+        dstVideo = videoEditor.executeSetVideoMetaAngle(srcPath, needRotateAngle);
         if (dstVideo == null) {
             //旋转视频
-            LogDebugUtil.appendLog("尝试旋转视频文件成功");
-            dstVideo = videoEditor.executeVideoRotate90Clockwise(srcPath);
+            LogDebugUtil.appendLog("旋转视频元数据失败，尝试旋转视频文件");
+            if(needRotateAngle == 90){
+                //视频逆时针旋转90度,也可以认为是顺时针旋转270度.
+                dstVideo = videoEditor.executeVideoRotate90CounterClockwise(srcPath);
+            }else if(needRotateAngle == 270){
+                //视频顺时针旋转90度
+                dstVideo = videoEditor.executeVideoRotate90Clockwise(srcPath);
+            }else if(needRotateAngle == 180){
+                //水平方向翻转
+                dstVideo = videoEditor.executeVideoRotateHorizontally(srcPath);
+            }
+
         }else{
             LogDebugUtil.appendLog("旋转视频元数据成功");
         }
