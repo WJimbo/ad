@@ -86,7 +86,7 @@ public class StartActivity extends BaseActivity {
         rootLayoutVersions.setRotation(SettingConfig.getScreenRotateAngle(this));
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)rootLayoutVersions.getLayoutParams();
         if(SettingConfig.getScreenRotateAngle(this) == 90){
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         }else if(SettingConfig.getScreenRotateAngle(this) == 270){
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         }else if(SettingConfig.getScreenRotateAngle(this) == 0){
