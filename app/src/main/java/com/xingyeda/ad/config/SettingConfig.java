@@ -17,7 +17,7 @@ public class SettingConfig {
     /**
      * 旋转视频角度
      */
-    private static final float DEFAULT_VIDEO_ROTATE_ANGLE = 90;
+    private static final float DEFAULT_VIDEO_ROTATE_ANGLE = 270;
     private static final String KEY_VIDEO_ROTATE_ANGLE = "KEY_VIDEO_ROTATE_ANGLE";
 
     public static float getScreenRotateAngle(Context context){
