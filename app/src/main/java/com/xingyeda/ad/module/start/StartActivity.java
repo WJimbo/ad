@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.xingyeda.ad.base.BaseActivity;
 import com.xingyeda.ad.BuildConfig;
 import com.xingyeda.ad.R;
+import com.xingyeda.ad.config.SettingConfig;
 import com.xingyeda.ad.module.main.OneADMainActivity;
 import com.xingyeda.ad.module.register.RegisterManager;
 import com.xingyeda.ad.service.socket.CommandReceiveService;
@@ -53,15 +54,7 @@ public class StartActivity extends BaseActivity {
                 }
             }
         }
-        MyLog.i("StartActivity正常启动:" + this.toString());
-        if(savedInstanceState != null){
-            MyLog.i("StartActivity正常启动: savedInstanceState :" + savedInstanceState.toString());
-        }
-//        //这是为了应用程序安装完后直接打开，按home键退出后，再次打开程序出现的BUG
-//        if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
-//            //结束你的activity
-//            return;
-//        }
+
         setContentView(R.layout.activity_start);
         ButterKnife.bind(this);
         int waitTime = 15 * 1000;
@@ -83,7 +76,8 @@ public class StartActivity extends BaseActivity {
         };
         countDownTimer.start();
         versionInfoTextView.setText("版本号:" + ToolUtils.appTool().getVersionNameFromPackage(this) + "_" + ToolUtils.appTool().getAppVersionCode(this) + "\n编译时间:" + BuildConfig.BUILD_DATE);
-
+        infoTextView.setRotation(SettingConfig.getScreenRotateAngle(this));
+        versionInfoTextView.setRotation(SettingConfig.getScreenRotateAngle(this));
         CommandReceiveService.startService(this);
         RegisterManager.getInstance().startToRegister(this);
     }

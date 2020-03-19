@@ -20,6 +20,7 @@ import com.xingyeda.ad.module.datamanager.DownloadManager;
 import com.xingyeda.ad.module.main.widget.ADView;
 import com.xingyeda.ad.module.versionmanager.VersionManager;
 import com.xingyeda.ad.service.socket.CommandMessageData;
+import com.xingyeda.ad.service.socket.CommandReceiveService;
 import com.xingyeda.ad.service.socket.ConnectChangedItem;
 import com.xingyeda.ad.vo.AdItem;
 import com.xingyeda.ad.vo.AdListResponseData;
@@ -65,13 +66,13 @@ public class OneADMainActivity extends BaseActivity {
         unbinder = ButterKnife.bind(this);
         EventBus.getDefault().register(this);
         //设置布局旋转角度
-        rootLayoutLogDebug.setRotation(SettingConfig.getVideoRotateAngle(this));
-        rootLayoutTips.setRotation(SettingConfig.getVideoRotateAngle(this));
+        rootLayoutLogDebug.setRotation(SettingConfig.getScreenRotateAngle(this));
+        rootLayoutTips.setRotation(SettingConfig.getScreenRotateAngle(this));
 
-        if(SettingConfig.getVideoRotateAngle(this) == 90){
+        if(SettingConfig.getScreenRotateAngle(this) == 90){
             adView.setDefaultImage(R.mipmap.bg_defualt_landscape_90);
             adView.setRotation(90f);
-        }else if(SettingConfig.getVideoRotateAngle(this) == 270){
+        }else if(SettingConfig.getScreenRotateAngle(this) == 270){
             adView.setDefaultImage(R.mipmap.bg_defualt_landscape_270);
             adView.setRotation(270f);
         }else{
@@ -106,6 +107,7 @@ public class OneADMainActivity extends BaseActivity {
             }
         });
         requestList();
+        onConnectionChanged(new ConnectChangedItem(CommandReceiveService.isConnected));
     }
     private void requestList() {
         ADListManager.getInstance(getApplicationContext()).setNeedUpdateList();

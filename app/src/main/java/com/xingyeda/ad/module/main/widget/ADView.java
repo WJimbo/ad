@@ -98,6 +98,7 @@ public class ADView extends CustomView {
         super.initView();
         ButterKnife.bind(this, rootView);
         mWeakTvCountSecond = new WeakReference<>(tvCountSecond);
+        tvCountSecond.setRotation(rotation);
         mHandler = new Handler();
         surfaceView.setZOrderMediaOverlay(true);
         SurfaceHolder holder = surfaceView.getHolder();
@@ -310,5 +311,8 @@ public class ADView extends CustomView {
     @Override
     public void setRotation(float rotation) {
         this.rotation = rotation;
+        if(tvCountSecond != null){
+            tvCountSecond.setRotation(rotation);
+        }
     }
 }

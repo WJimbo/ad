@@ -66,7 +66,7 @@ public class SettingConfigManager {
                             if("ADSetting_VideoRotateAngle".equals(settingItem.logo)){
                                 try{
                                     float value = Float.parseFloat(settingItem.value);
-                                    if (value != SettingConfig.getVideoRotateAngle(context)) {
+                                    if (value != SettingConfig.getScreenRotateAngle(context)) {
                                         SettingConfig.setVideoRatateAngle(context,value);
                                         settingChanged = true;
                                     }

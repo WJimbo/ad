@@ -216,6 +216,7 @@ public class CommandReceiveService extends Service {
                 if(currentConnectionState != 1){
                     currentConnectionState = 1;
                     isConnected = true;
+                    LoggerHelper.i("Socket连接成功-->" + client.getAddress().getRemoteIP() + ":" + client.getAddress().getRemotePort());
                     EventBus.getDefault().post(new ConnectChangedItem(isConnected));
                     LogDebugUtil.appendLog("Socket连接成功-->" + client.getAddress().getRemoteIP() + ":" + client.getAddress().getRemotePort());
                 }
@@ -236,7 +237,7 @@ public class CommandReceiveService extends Service {
                     isConnected = false;
                     EventBus.getDefault().post(new ConnectChangedItem(isConnected));
                     LogDebugUtil.appendLog("Socket连接失败，每隔5秒将尝试重连-->" + client.getAddress().getRemoteIP() + ":" + client.getAddress().getRemotePort());
-//                    LoggerHelper.i("Socket连接失败，每隔5秒将尝试重连-->" + client.getAddress().getRemoteIP() + ":" + client.getAddress().getRemotePort());
+                    LoggerHelper.i("Socket连接失败，每隔5秒将尝试重连-->" + client.getAddress().getRemoteIP() + ":" + client.getAddress().getRemotePort());
                 }
                 mainHandler.postDelayed(new Runnable() {
                     @Override
