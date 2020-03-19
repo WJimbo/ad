@@ -10,18 +10,25 @@
         android:layout_height="match_parent"
         android:text="正在启动(预计需要等待15秒)..."
         android:gravity="center"
-        android:textSize="30sp"
+        android:textSize="20sp"
         android:textColor="@color/Black"
         android:textStyle="bold"
         />
-    <TextView
-        android:id="@+id/versionInfoTextView"
-        android:textColor="@color/DarkGray"
-        android:textSize="14sp"
-        android:text="版本号"
+    <com.xingyeda.ad.widget.SquareHeightRelativeLayout
+        android:id="@+id/rootLayout_Versions"
         android:gravity="bottom"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/versionInfoTextView"
+            android:textColor="@color/DarkGray"
+            android:textSize="14sp"
+            android:text="版本号"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.xingyeda.ad.widget.SquareHeightRelativeLayout>
+
 </RelativeLayout>

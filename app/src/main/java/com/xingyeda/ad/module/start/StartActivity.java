@@ -4,16 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xingyeda.ad.base.BaseActivity;
 import com.xingyeda.ad.BuildConfig;
 import com.xingyeda.ad.R;
+import com.xingyeda.ad.base.BaseActivity;
 import com.xingyeda.ad.config.SettingConfig;
 import com.xingyeda.ad.module.main.OneADMainActivity;
 import com.xingyeda.ad.module.register.RegisterManager;
 import com.xingyeda.ad.service.socket.CommandReceiveService;
 import com.xingyeda.ad.util.MyLog;
+import com.xingyeda.ad.widget.SquareHeightRelativeLayout;
 import com.zz9158.app.common.utils.ToolUtils;
 
 import butterknife.BindView;
@@ -31,13 +33,15 @@ public class StartActivity extends BaseActivity {
     TextView infoTextView;
     @BindView(R.id.versionInfoTextView)
     TextView versionInfoTextView;
+    @BindView(R.id.rootLayout_Versions)
+    SquareHeightRelativeLayout rootLayoutVersions;
 
     private CountDownTimer countDownTimer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(isStarted){
+        if (isStarted) {
             MyLog.i("StartActivity被重复启动:" + this.toString());
             finish();
             return;
@@ -76,18 +80,31 @@ public class StartActivity extends BaseActivity {
         };
         countDownTimer.start();
         versionInfoTextView.setText("版本号:" + ToolUtils.appTool().getVersionNameFromPackage(this) + "_" + ToolUtils.appTool().getAppVersionCode(this) + "\n编译时间:" + BuildConfig.BUILD_DATE);
+
+
         infoTextView.setRotation(SettingConfig.getScreenRotateAngle(this));
-        versionInfoTextView.setRotation(SettingConfig.getScreenRotateAngle(this));
+        rootLayoutVersions.setRotation(SettingConfig.getScreenRotateAngle(this));
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)rootLayoutVersions.getLayoutParams();
+        if(SettingConfig.getScreenRotateAngle(this) == 90){
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        }else if(SettingConfig.getScreenRotateAngle(this) == 270){
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        }else if(SettingConfig.getScreenRotateAngle(this) == 0){
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        }else{
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        }
+        rootLayoutVersions.setLayoutParams(layoutParams);
+
         CommandReceiveService.startService(this);
         RegisterManager.getInstance().startToRegister(this);
     }
 
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(countDownTimer != null){
+        if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;
         }
