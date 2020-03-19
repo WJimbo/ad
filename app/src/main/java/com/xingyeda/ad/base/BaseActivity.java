@@ -9,7 +9,10 @@ import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.xingyeda.ad.module.versionmanager.VersionManager;
 import com.xingyeda.ad.receiver.InnerReceiver;
+import com.zz9158.app.common.utils.ToastUtils;
+import com.zz9158.app.common.utils.ToolUtils;
 
 import top.wuhaojie.installerlibrary.AutoInstaller;
 
@@ -30,29 +33,53 @@ public class BaseActivity extends Activity {
         //注册键盘
         receiverHome();
 
-        autoInstaller = new AutoInstaller.Builder(this)
-                .setMode(AutoInstaller.MODE.AUTO_ONLY)
-                .build();
 
-        autoInstaller.setOnStateChangedListener(new AutoInstaller.OnStateChangedListener() {
-            @Override
-            public void onStart() {
-                // 当后台安装线程开始时回调
-            }
+    }
 
+    protected void checkVersions(){
+        VersionManager.checkNewVersions(this, ToolUtils.getVersionCode(getApplicationContext()), new VersionManager.OnCheckCallBack() {
             @Override
-            public void onComplete() {
-                // 当请求安装完成时回调
-            }
-
-            @Override
-            public void onNeed2OpenService() {
-                // 当需要用户手动打开 `辅助功能服务` 时回调
-                // 可以在这里提示用户打开辅助功能
-                Toast.makeText(getApplicationContext(), "请打开辅助功能服务", Toast.LENGTH_SHORT).show();
+            public void callBack(boolean hasViewVersions, String downloadUrl, String errorInfo) {
+                if(hasViewVersions){
+                    if(!ToolUtils.string().isEmpty(downloadUrl)){
+                        installNewVersion(downloadUrl);
+                        ToastUtils.showToastLong(getApplicationContext(),"检测到升级版本");
+                    }else{
+                        ToastUtils.showToastLong(getApplicationContext(),"检测到升级，但是升级地址为空");
+                    }
+                }else{
+                    ToastUtils.showToastLong(getApplicationContext(),errorInfo);
+                }
             }
         });
+    }
+    private void installNewVersion(String downloadUrl){
+        if(autoInstaller == null){
+            autoInstaller = new AutoInstaller.Builder(this)
+                    .setMode(AutoInstaller.MODE.AUTO_ONLY)
+                    .setOnStateChangedListener(new AutoInstaller.OnStateChangedListener() {
+                        @Override
+                        public void onStart() {
+                            // 当后台安装线程开始时回调
+                            ToastUtils.showToastLong(getApplicationContext(),"开始安装");
+                        }
 
+                        @Override
+                        public void onComplete() {
+                            // 当请求安装完成时回调
+                            ToastUtils.showToastLong(getApplicationContext(),"安装完成");
+                        }
+
+                        @Override
+                        public void onNeed2OpenService() {
+                            // 当需要用户手动打开 `辅助功能服务` 时回调
+                            // 可以在这里提示用户打开辅助功能
+                            ToastUtils.showToastLong(getApplicationContext(),"请打开辅助功能服务");
+                        }
+                    })
+                    .build();
+        }
+        autoInstaller.installFromUrl(downloadUrl);
     }
 
     @Override

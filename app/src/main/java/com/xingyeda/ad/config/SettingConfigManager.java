@@ -16,7 +16,6 @@ import java.util.List;
 
 public class SettingConfigManager {
 
-
     private boolean isStartTimer = false;
     private static SettingConfigManager instance;
     private final static int AUTO_UPDATE_SETTINGCONFIG_TIME = 60 * 60 * 1000;
@@ -42,10 +41,15 @@ public class SettingConfigManager {
                 }
             };
             SimpleTimerTaskHandler.getInstance().sendTask(401, loopTask);
+            updateSettingForNet(appContext);
         }
     }
-
-    public  void updateSettingForNet(final Context context){
+    private boolean isRequesting = false;
+    private synchronized void updateSettingForNet(final Context context){
+        if(isRequesting){
+            return;
+        }
+        isRequesting = true;
         HttpRequestData requestData = new HttpRequestData();
         requestData.setRequestURL( URLConfig.getPath(context, URLConfig.USERSET_PATH));
         requestData.setRequestMode(HttpRequestData.RequestModeType.GET);
@@ -90,6 +94,7 @@ public class SettingConfigManager {
                         if(settingChanged){
                             EventBus.getDefault().post(new SettingConfig.VideoRotateAngleChangedEventData());
                         }
+                        isRequesting = false;
                     }
                 }
             }

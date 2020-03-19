@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xingyeda.ad.R;
@@ -18,14 +19,12 @@ import com.xingyeda.ad.logdebug.LogDebugUtil;
 import com.xingyeda.ad.module.datamanager.ADListManager;
 import com.xingyeda.ad.module.datamanager.DownloadManager;
 import com.xingyeda.ad.module.main.widget.ADView;
-import com.xingyeda.ad.module.versionmanager.VersionManager;
 import com.xingyeda.ad.service.socket.CommandMessageData;
 import com.xingyeda.ad.service.socket.CommandReceiveService;
 import com.xingyeda.ad.service.socket.ConnectChangedItem;
 import com.xingyeda.ad.vo.AdItem;
 import com.xingyeda.ad.vo.AdListResponseData;
 import com.xingyeda.ad.widget.SquareHeightRelativeLayout;
-import com.zz9158.app.common.utils.ToastUtils;
 import com.zz9158.app.common.utils.ToolUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -66,8 +65,30 @@ public class OneADMainActivity extends BaseActivity {
         unbinder = ButterKnife.bind(this);
         EventBus.getDefault().register(this);
         //设置布局旋转角度
-        rootLayoutLogDebug.setRotation(SettingConfig.getScreenRotateAngle(this));
-        rootLayoutTips.setRotation(SettingConfig.getScreenRotateAngle(this));
+        float rotateAngle = SettingConfig.getScreenRotateAngle(this);
+
+        rootLayoutLogDebug.setRotation(rotateAngle);
+        rootLayoutTips.setRotation(rotateAngle);
+
+        RelativeLayout.LayoutParams debugLayoutParams = (RelativeLayout.LayoutParams)rootLayoutLogDebug.getLayoutParams();
+        RelativeLayout.LayoutParams tipsLayoutParams = (RelativeLayout.LayoutParams)rootLayoutTips.getLayoutParams();
+        if(SettingConfig.getScreenRotateAngle(this) == 90){
+            debugLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            tipsLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        }else if(SettingConfig.getScreenRotateAngle(this) == 270){
+            debugLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            tipsLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        }else if(SettingConfig.getScreenRotateAngle(this) == 0){
+            debugLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            tipsLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        }else{
+            debugLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            tipsLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        }
+        rootLayoutLogDebug.setLayoutParams(debugLayoutParams);
+        rootLayoutTips.setLayoutParams(tipsLayoutParams);
+
+
 
         if(SettingConfig.getScreenRotateAngle(this) == 90){
             adView.setDefaultImage(R.mipmap.bg_defualt_landscape_90);
@@ -108,6 +129,7 @@ public class OneADMainActivity extends BaseActivity {
         });
         requestList();
         onConnectionChanged(new ConnectChangedItem(CommandReceiveService.isConnected));
+        checkVersions();
     }
     private void requestList() {
         ADListManager.getInstance(getApplicationContext()).setNeedUpdateList();
@@ -178,20 +200,7 @@ public class OneADMainActivity extends BaseActivity {
 
         //软件更新
         if (command.equals("A545")) {
-            VersionManager.checkNewVersions(this, ToolUtils.getVersionCode(this), new VersionManager.OnCheckCallBack() {
-                @Override
-                public void callBack(boolean hasViewVersions, String downloadUrl, String errorInfo) {
-                    if(hasViewVersions){
-                        if(!ToolUtils.string().isEmpty(downloadUrl)){
-                            autoInstaller.installFromUrl(downloadUrl);
-                        }else{
-                            ToastUtils.showToastLong(mContext,"检测到升级，但是升级地址为空");
-                        }
-                    }else{
-                        ToastUtils.showToastLong(mContext,errorInfo);
-                    }
-                }
-            });
+            checkVersions();
         }
 
         //通告更新
@@ -224,4 +233,5 @@ public class OneADMainActivity extends BaseActivity {
         }
 
     }
+
 }

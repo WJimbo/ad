@@ -5,8 +5,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:padding="8dp"
-    android:background="@color/Black"
-    tools:context="com.xingyeda.ad.MainActivity">
+    android:background="@color/Black">
 
 
     <com.xingyeda.ad.module.main.widget.ADView
@@ -19,8 +18,6 @@
         android:id="@+id/rootLayout_LogDebug"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:rotation="270"
-        android:layout_alignParentRight="true"
         android:gravity="bottom"
         >
 
@@ -43,8 +40,6 @@
         android:id="@+id/rootLayout_Tips"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:rotation="270"
-        android:layout_alignParentRight="true"
         android:gravity="bottom"
         >
         <TextView

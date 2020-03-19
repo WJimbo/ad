@@ -13,6 +13,6 @@ public class GlideUtil {
     }
 
     public static void loadImage(Context context, final File file, final ImageView imageView, RotateTransformation rotateTransformation) {
-        Glide.with(context).load(file).animate(android.R.anim.slide_in_left).transform(rotateTransformation).into(imageView);
+        Glide.with(context).load(file).animate(android.R.anim.fade_in).transform(rotateTransformation).into(imageView);
     }
 }

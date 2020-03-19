@@ -11,12 +11,14 @@ import com.xingyeda.ad.BuildConfig;
 import com.xingyeda.ad.R;
 import com.xingyeda.ad.base.BaseActivity;
 import com.xingyeda.ad.config.SettingConfig;
+import com.xingyeda.ad.config.SettingConfigManager;
 import com.xingyeda.ad.module.main.OneADMainActivity;
 import com.xingyeda.ad.module.register.RegisterManager;
 import com.xingyeda.ad.service.socket.CommandReceiveService;
 import com.xingyeda.ad.util.MyLog;
 import com.xingyeda.ad.widget.SquareHeightRelativeLayout;
 import com.zz9158.app.common.utils.ToolUtils;
+import com.zz9158.app.common.utils.UIUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,6 +67,12 @@ public class StartActivity extends BaseActivity {
         if (BuildConfig.DEBUG) {
             waitTime = 3 * 1000;
         }
+        UIUtils.runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                SettingConfigManager.getInstance().startUpdateSettingTimer(getApplicationContext());
+            }
+        },waitTime / 2);
         countDownTimer = new CountDownTimer(waitTime, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
