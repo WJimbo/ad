@@ -1,6 +1,6 @@
 package com.xingyeda.ad.util;
 
-import com.xingyeda.ad.vo.AdItem;
+import com.xingyeda.ad.module.addata.AdItem;
 
 import java.io.File;
 import java.io.FileInputStream;

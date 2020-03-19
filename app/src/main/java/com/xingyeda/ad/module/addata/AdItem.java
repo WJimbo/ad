@@ -1,4 +1,4 @@
-package com.xingyeda.ad.vo;
+package com.xingyeda.ad.module.addata;
 
 
 
@@ -22,7 +22,7 @@ public class AdItem {
 //            "bindtype": "1",       //表示广告的绑定类型，0代表绑定类型为区域，1代表绑定类型为设备
 //            "flagid": 11       //代表绑定类型的标识，广告绑定类型为区域时，标识值为市，广告绑定类型为设备时，标识值为设备的id
 //            "flietype" : 1	   //0: 图片 1 ：音频 2：视频
-
+    public static float VideoRotateAngle = 0;
 
     private int id;
     private String starttime;
@@ -38,7 +38,7 @@ public class AdItem {
 
     public String getLocationFileName(){
         if("2".equals(filetype)){
-            return fileUrl.hashCode() + ".mp4";
+            return (VideoRotateAngle + "video_") + fileUrl.hashCode() + ".mp4";
         }else if("0".equals(filetype)){
             return fileUrl.hashCode() + ".jpg";
         }else if("1".equals(filetype)){

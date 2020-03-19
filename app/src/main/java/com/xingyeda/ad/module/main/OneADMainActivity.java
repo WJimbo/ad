@@ -16,14 +16,14 @@ import com.xingyeda.ad.config.DeviceUUIDManager;
 import com.xingyeda.ad.config.SettingConfig;
 import com.xingyeda.ad.logdebug.LogDebugItem;
 import com.xingyeda.ad.logdebug.LogDebugUtil;
-import com.xingyeda.ad.module.datamanager.ADListManager;
-import com.xingyeda.ad.module.datamanager.DownloadManager;
+import com.xingyeda.ad.module.addata.ADListManager;
+import com.xingyeda.ad.module.addata.DownloadManager;
 import com.xingyeda.ad.module.main.widget.ADView;
 import com.xingyeda.ad.service.socket.CommandMessageData;
 import com.xingyeda.ad.service.socket.CommandReceiveService;
 import com.xingyeda.ad.service.socket.ConnectChangedItem;
-import com.xingyeda.ad.vo.AdItem;
-import com.xingyeda.ad.vo.AdListResponseData;
+import com.xingyeda.ad.module.addata.AdItem;
+import com.xingyeda.ad.module.addata.AdListResponseData;
 import com.xingyeda.ad.widget.SquareHeightRelativeLayout;
 import com.zz9158.app.common.utils.ToolUtils;
 

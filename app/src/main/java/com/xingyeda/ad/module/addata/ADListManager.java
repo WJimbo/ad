@@ -1,4 +1,4 @@
-package com.xingyeda.ad.module.datamanager;
+package com.xingyeda.ad.module.addata;
 
 import android.content.Context;
 import android.os.Environment;
@@ -7,9 +7,9 @@ import com.gavinrowe.lgw.library.SimpleTimerTask;
 import com.gavinrowe.lgw.library.SimpleTimerTaskHandler;
 import com.mazouri.tools.Tools;
 import com.xingyeda.ad.config.DeviceUUIDManager;
+import com.xingyeda.ad.config.SettingConfig;
 import com.xingyeda.ad.config.URLConfig;
 import com.xingyeda.ad.logdebug.LogDebugUtil;
-import com.xingyeda.ad.vo.AdListResponseData;
 import com.zz9158.app.common.utils.GsonUtil;
 import com.zz9158.app.common.utils.http.BaseRequestData;
 import com.zz9158.app.common.utils.http.BaseResponseData;
@@ -102,6 +102,7 @@ public class ADListManager {
             public void onResponse(BaseResponseData responseData) {
                 isUpdatingList = false;
                 if(responseData.isOperationSuccess()){
+                    AdItem.VideoRotateAngle = SettingConfig.getScreenRotateAngle(context);
                     adListResponseData = (AdListResponseData)responseData;
                     saveListToLocation();
                     LogDebugUtil.appendLog("调用广告数据成功:" + adListResponseData.getObj().size() + "条");

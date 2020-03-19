@@ -1,4 +1,4 @@
-package com.xingyeda.ad.vo;
+package com.xingyeda.ad.module.addata;
 import com.xingyeda.ad.util.httputil.HttpObjResponseData;
 
 import java.util.List;

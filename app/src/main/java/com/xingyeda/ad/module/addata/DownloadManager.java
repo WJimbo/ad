@@ -1,4 +1,4 @@
-package com.xingyeda.ad.module.datamanager;
+package com.xingyeda.ad.module.addata;
 
 import android.content.Context;
 import android.os.Environment;
@@ -128,7 +128,7 @@ public class DownloadManager {
                         MyLog.d("下载完成:" + task.getUrl());
                         LogDebugUtil.appendLog("下载完成:" + task.getUrl());
                         if("2".equals(downloadItem.fileType) && downloadItem.videoRotateAngle > 0){
-                            RotateVideoAsyncTask rotateVideoAsyncTask = new RotateVideoAsyncTask(downloadItem.getTempDownloadPath().getPath(),downloadItem.savePath.getPath());
+                            RotateVideoAsyncTask rotateVideoAsyncTask = new RotateVideoAsyncTask(downloadItem.getTempDownloadPath().getPath(),downloadItem.savePath.getPath(),downloadItem.videoRotateAngle);
                             rotateVideoAsyncTask.setCallback(new RotateVideoAsyncTask.Callback() {
                                 @Override
                                 public void rotateVideoFinish(boolean success) {

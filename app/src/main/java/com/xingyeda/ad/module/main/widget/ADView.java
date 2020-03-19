@@ -20,14 +20,14 @@ import com.aliyun.player.AliPlayerFactory;
 import com.aliyun.player.IPlayer;
 import com.aliyun.player.bean.ErrorInfo;
 import com.aliyun.player.source.UrlSource;
-import com.xingyeda.ad.module.datamanager.ADListManager;
-import com.xingyeda.ad.module.datamanager.DownloadManager;
+import com.xingyeda.ad.module.addata.ADListManager;
+import com.xingyeda.ad.module.addata.DownloadManager;
 import com.xingyeda.ad.R;
 import com.xingyeda.ad.util.GlideUtil;
 import com.xingyeda.ad.util.MyLog;
 import com.xingyeda.ad.util.RotateTransformation;
-import com.xingyeda.ad.vo.AdItem;
-import com.xingyeda.ad.vo.AdListResponseData;
+import com.xingyeda.ad.module.addata.AdItem;
+import com.xingyeda.ad.module.addata.AdListResponseData;
 import com.zz9158.app.common.utils.LoggerHelper;
 import com.zz9158.app.common.widget.CustomView;
 
