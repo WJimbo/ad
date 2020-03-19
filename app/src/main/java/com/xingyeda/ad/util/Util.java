@@ -1,13 +1,6 @@
 package com.xingyeda.ad.util;
 
-import android.content.Context;
-import android.provider.Settings;
-import android.view.View;
-import android.widget.ImageView;
-
-import com.bumptech.glide.Glide;
 import com.xingyeda.ad.vo.AdItem;
-import com.xingyeda.ad.R;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,13 +14,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class Util {
-    public static void loadImage(Context context, final String imageUrl, final ImageView imageView, RotateTransformation rotateTransformation) {
-        Glide.with(context).load(imageUrl).animate(android.R.anim.fade_in).transform(rotateTransformation).into(imageView);
-    }
-
-    public static void loadImage(Context context, final File file, final ImageView imageView, RotateTransformation rotateTransformation) {
-        Glide.with(context).load(file).animate(android.R.anim.slide_in_left).transform(rotateTransformation).into(imageView);
-    }
 
     public static int compareDate(String DATE2) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -48,10 +34,6 @@ public class Util {
         return 0;
     }
 
-    public static String getAndroidId(Context context) {
-        String ANDROID_ID = Settings.System.getString(context.getContentResolver(), Settings.System.ANDROID_ID);
-        return ANDROID_ID;
-    }
 
     public static String getFileMD5(File file) {
         if (!file.isFile()) {
@@ -75,14 +57,6 @@ public class Util {
         BigInteger bigInt = new BigInteger(1, digest.digest());
         return bigInt.toString(16);
     }
-
-    public static void orientation() {
-        /*Configuration mConfiguration = this.getResources().getConfiguration(); //获取设置的配置信息
-        if (mConfiguration.orientation == mConfiguration.ORIENTATION_LANDSCAPE) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//强制为竖屏
-        }*/
-    }
-
 
     public static Map<Integer, AdItem> sortMapByKey(Map<Integer, AdItem> map) {
         if (map == null || map.isEmpty()) {

@@ -19,10 +19,12 @@ import com.aliyun.player.AliPlayerFactory;
 import com.aliyun.player.IPlayer;
 import com.aliyun.player.bean.ErrorInfo;
 import com.aliyun.player.source.UrlSource;
-import com.xingyeda.ad.ADListManager;
+import com.xingyeda.ad.module.datamanager.ADListManager;
+import com.xingyeda.ad.module.datamanager.DownloadManager;
 import com.xingyeda.ad.R;
-import com.xingyeda.ad.module.main.util.GlideUtil;
+import com.xingyeda.ad.util.GlideUtil;
 import com.xingyeda.ad.util.MyLog;
+import com.xingyeda.ad.util.RotateTransformation;
 import com.xingyeda.ad.vo.AdItem;
 import com.xingyeda.ad.vo.AdListResponseData;
 import com.zz9158.app.common.utils.LoggerHelper;
@@ -41,7 +43,8 @@ public class ADView extends CustomView {
     public interface IADViewCallBack{
         void playAd(String sourceID);
     }
-
+    //旋转角度
+    private float rotation = 0;
     @BindView(R.id.surfaceView)
     SurfaceView surfaceView;
     @BindView(R.id.videoViewRootLayout)
@@ -242,7 +245,7 @@ public class ADView extends CustomView {
                 surfaceView.setVisibility(View.INVISIBLE);
                 imageView.setVisibility(View.VISIBLE);
                 stopVideo();
-                GlideUtil.loadImage(getContext(), adItem.locationFile(DownloadManager.getDownloadRootPath(getContext())), imageView);
+                GlideUtil.loadImage(getContext(), adItem.locationFile(DownloadManager.getDownloadRootPath(getContext())),imageView,new RotateTransformation(getContext(),rotation));
             }
             delayTime = adItem.getDuration() * 1000;
         }
@@ -253,6 +256,11 @@ public class ADView extends CustomView {
     }
     public void setDefaultImage(@DrawableRes int resID){
         ivDefualt.setImageResource(resID);
+    }
+    public void setCountDownTitleColor(int color){
+        if(tvCountSecond != null){
+            tvCountSecond.setTextColor(color);
+        }
     }
     private synchronized AdItem getNextADItem() {
         AdItem adItem = null;
@@ -297,5 +305,10 @@ public class ADView extends CustomView {
     @Override
     public void setVisibility(int visibility) {
         super.setVisibility(visibility);
+    }
+
+    @Override
+    public void setRotation(float rotation) {
+        this.rotation = rotation;
     }
 }

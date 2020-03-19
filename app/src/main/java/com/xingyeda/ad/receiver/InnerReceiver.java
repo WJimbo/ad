@@ -1,4 +1,4 @@
-package com.xingyeda.ad;
+package com.xingyeda.ad.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

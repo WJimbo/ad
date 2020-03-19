@@ -1,6 +1,7 @@
-package com.xingyeda.ad;
+package com.xingyeda.ad.module.datamanager;
 
 import android.content.Context;
+import android.os.Environment;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
@@ -23,8 +24,7 @@ public class DownloadManager {
         public File getTempDownloadPath(){
             return new File(savePath.getParent(), "tmp_" + savePath.getName());
         }
-        public boolean rotateVideo = false;
-
+        public float videoRotateAngle = 0;
         @Override
         public boolean equals(Object obj) {
             if(!(obj instanceof DownloadItem)){
@@ -32,7 +32,7 @@ public class DownloadManager {
             }
             if (url.equals(((DownloadItem) obj).url)
                     && savePath.getPath().equals(((DownloadItem) obj).savePath.getPath())
-                    && rotateVideo == ((DownloadItem) obj).rotateVideo
+                    && videoRotateAngle == ((DownloadItem) obj).videoRotateAngle
                     && fileType.equals(((DownloadItem) obj).fileType)) {
                 return true;
             }
@@ -54,6 +54,29 @@ public class DownloadManager {
     public void setContext(Context context) {
         this.context = context;
     }
+
+
+    private static String DOWNLOAD_ROOT_PATH = null;
+    public static synchronized String getDownloadRootPath(Context context) {
+        if(DOWNLOAD_ROOT_PATH == null){
+            String rootPath;
+            if (Environment.getExternalStorageState().equals(
+                    Environment.MEDIA_MOUNTED)) {// 优先保存到SD卡中
+                rootPath = Environment.getExternalStorageDirectory()
+                        .getAbsolutePath();
+            } else {// 如果SD卡不存在，就保存到本应用的目录下
+                rootPath = context.getFilesDir().getAbsolutePath();
+            }
+            DOWNLOAD_ROOT_PATH = rootPath + File.separator + "XYD_AD" + File.separator + "download";
+            File rootFilePath = new File(DOWNLOAD_ROOT_PATH);
+            if (!rootFilePath.exists()) {
+                rootFilePath.mkdirs();
+            }
+        }
+        return DOWNLOAD_ROOT_PATH;
+    }
+
+
 
     private boolean isFileDownloading(DownloadItem downloadItem){
         return downloadingList.contains(downloadItem);
@@ -104,7 +127,7 @@ public class DownloadManager {
                     protected void completed(BaseDownloadTask task) {
                         MyLog.d("下载完成:" + task.getUrl());
                         LogDebugUtil.appendLog("下载完成:" + task.getUrl());
-                        if("2".equals(downloadItem.fileType) && downloadItem.rotateVideo){
+                        if("2".equals(downloadItem.fileType) && downloadItem.videoRotateAngle > 0){
                             RotateVideoAsyncTask rotateVideoAsyncTask = new RotateVideoAsyncTask(downloadItem.getTempDownloadPath().getPath(),downloadItem.savePath.getPath());
                             rotateVideoAsyncTask.setCallback(new RotateVideoAsyncTask.Callback() {
                                 @Override

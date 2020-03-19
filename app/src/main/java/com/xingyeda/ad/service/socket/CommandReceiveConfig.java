@@ -2,6 +2,10 @@ package com.xingyeda.ad.service.socket;
 
 public class CommandReceiveConfig {
     /**
+     * socket IP地址
+     */
+    public static final String SOCKET_HOST = "120.25.245.234";
+    /**
      * 端口
      */
     public static final int SOCKET_PORT = 5888;

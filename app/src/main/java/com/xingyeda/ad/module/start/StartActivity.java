@@ -6,10 +6,12 @@ import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.widget.TextView;
 
-import com.xingyeda.ad.BaseActivity;
+import com.xingyeda.ad.base.BaseActivity;
 import com.xingyeda.ad.BuildConfig;
 import com.xingyeda.ad.R;
 import com.xingyeda.ad.module.main.OneADMainActivity;
+import com.xingyeda.ad.module.register.RegisterManager;
+import com.xingyeda.ad.service.socket.CommandReceiveService;
 import com.xingyeda.ad.util.MyLog;
 import com.zz9158.app.common.utils.ToolUtils;
 
@@ -81,7 +83,12 @@ public class StartActivity extends BaseActivity {
         };
         countDownTimer.start();
         versionInfoTextView.setText("版本号:" + ToolUtils.appTool().getVersionNameFromPackage(this) + "_" + ToolUtils.appTool().getAppVersionCode(this) + "\n编译时间:" + BuildConfig.BUILD_DATE);
+
+        CommandReceiveService.startService(this);
+        RegisterManager.getInstance().startToRegister(this);
     }
+
+
 
     @Override
     protected void onDestroy() {

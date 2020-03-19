@@ -1,17 +1,14 @@
-package com.xingyeda.ad;
+package com.xingyeda.ad.module.datamanager;
 
 import android.content.Context;
 import android.os.Environment;
-import android.util.Log;
-
 
 import com.gavinrowe.lgw.library.SimpleTimerTask;
 import com.gavinrowe.lgw.library.SimpleTimerTaskHandler;
 import com.mazouri.tools.Tools;
-
-
+import com.xingyeda.ad.config.DeviceUUIDManager;
+import com.xingyeda.ad.config.URLConfig;
 import com.xingyeda.ad.logdebug.LogDebugUtil;
-
 import com.xingyeda.ad.vo.AdListResponseData;
 import com.zz9158.app.common.utils.GsonUtil;
 import com.zz9158.app.common.utils.http.BaseRequestData;
@@ -19,8 +16,6 @@ import com.zz9158.app.common.utils.http.BaseResponseData;
 import com.zz9158.app.common.utils.http.HttpRequestModel;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ADListManager {
     public interface OnDataChangeCallBackListener{
@@ -31,6 +26,10 @@ public class ADListManager {
     public void setOnDataChangeCallBackListener(OnDataChangeCallBackListener onDataChangeCallBackListener) {
         this.onDataChangeCallBackListener = onDataChangeCallBackListener;
     }
+    /**
+     * 自动请求广告接口列表间隔时间
+     */
+    private static final long AUTO_REQUEST_ADLIST_TIME = 5 * 60 * 1000;
 
     private static ADListManager instance;
     private AdListResponseData adListResponseData;
@@ -43,7 +42,7 @@ public class ADListManager {
         readListFromLocation();
         //开始请求数据
         //容错，怕偶尔收不到服务器推送，采用轮询的方式获取数据。
-        SimpleTimerTask loopTask = new SimpleTimerTask(BaseApplication.AUTO_REQUEST_ADLIST_TIME) {
+        SimpleTimerTask loopTask = new SimpleTimerTask(AUTO_REQUEST_ADLIST_TIME) {
             @Override
             public void run() {
                 setNeedUpdateList();
@@ -78,7 +77,7 @@ public class ADListManager {
         }
         rootPath = rootPath + File.separator + "XYD_AD" + File.separator + "data";
         File rootFile = new File(rootPath);
-        locationSaveFile = new File(rootPath,BaseApplication.andoridId + "_adList.db");
+        locationSaveFile = new File(rootPath,DeviceUUIDManager.generateUUID(context) + "_adList.db");
         if (!rootFile.exists()) {
             rootFile.mkdirs();
         }
@@ -95,8 +94,9 @@ public class ADListManager {
         LogDebugUtil.appendLog("正在开始调用广告数据");
         isUpdatingList = true;
         final BaseRequestData requestData = new BaseRequestData();
-        requestData.setRequestURL(BaseApplication.www + "GetAdversitingByMac/R?mac=" + BaseApplication.andoridId);
+        requestData.setRequestURL(URLConfig.getPath(context, URLConfig.REQUEST_AD_LIST));
         requestData.setRequestMode(BaseRequestData.RequestModeType.GET);
+        requestData.addRequestParams("mac", DeviceUUIDManager.generateUUID(context));
         HttpRequestModel.asynRequestData(requestData, AdListResponseData.class, new HttpRequestModel.OnLYHttpRequestResponseListener() {
             @Override
             public void onResponse(BaseResponseData responseData) {

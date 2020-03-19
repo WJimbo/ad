@@ -11,11 +11,12 @@
 
     <com.xingyeda.ad.module.main.widget.ADView
         android:id="@+id/adView"
-        android:visibility="invisible"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
     <com.xingyeda.ad.widget.SquareHeightRelativeLayout
+        android:id="@+id/rootLayout_LogDebug"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:rotation="270"
@@ -39,6 +40,7 @@
 
 
     <com.xingyeda.ad.widget.SquareHeightRelativeLayout
+        android:id="@+id/rootLayout_Tips"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:rotation="270"

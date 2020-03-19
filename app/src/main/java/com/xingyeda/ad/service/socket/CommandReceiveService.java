@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 
-
 import com.vilyever.socketclient.SocketClient;
 import com.vilyever.socketclient.helper.SocketClientAddress;
 import com.vilyever.socketclient.helper.SocketClientDelegate;
@@ -17,11 +16,8 @@ import com.vilyever.socketclient.helper.SocketPacket;
 import com.vilyever.socketclient.helper.SocketPacketHelper;
 import com.vilyever.socketclient.helper.SocketResponsePacket;
 import com.vilyever.socketclient.util.CharsetUtil;
-
-
-import com.xingyeda.ad.BaseApplication;
+import com.xingyeda.ad.config.DeviceUUIDManager;
 import com.xingyeda.ad.logdebug.LogDebugUtil;
-import com.xingyeda.ad.util.Util;
 import com.zz9158.app.common.utils.GsonUtil;
 import com.zz9158.app.common.utils.LoggerHelper;
 
@@ -52,14 +48,14 @@ public class CommandReceiveService extends Service {
     private String heartBeatMessage = "";
     private void refreshHeatBeatMessage(){
         CommandMessageData messageData = new CommandMessageData();
-        messageData.setToken(Util.getAndroidId(this) + System.currentTimeMillis());
+        messageData.setToken(DeviceUUIDManager.generateUUID(this) + System.currentTimeMillis());
         messageData.setCommond("M999");
-        messageData.setmId(Util.getAndroidId(this));
+        messageData.setmId(DeviceUUIDManager.generateUUID(this));
         messageData.setConverType("ad");
         heartBeatMessage = GsonUtil.gson.toJson(messageData);
     }
     private void initSocketClient(){
-        socketClient = new SocketClient(new SocketClientAddress(BaseApplication.HOST,CommandReceiveConfig.SOCKET_PORT,CommandReceiveConfig.CONNECTION_TIMEOUT_MILL));
+        socketClient = new SocketClient(new SocketClientAddress(CommandReceiveConfig.SOCKET_HOST,CommandReceiveConfig.SOCKET_PORT,CommandReceiveConfig.CONNECTION_TIMEOUT_MILL));
         /**
          * 设置自动转换String类型到byte[]类型的编码
          * 如未设置（默认为null），将不能使用{@link SocketClient#sendString(String)}发送消息

@@ -1,4 +1,9 @@
 package com.zz9158.app.common.utils;
+
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+
 import com.mazouri.tools.Tools;
 
 import java.io.File;
@@ -27,5 +32,19 @@ public class ToolUtils extends Tools {
 
         }
         return content;
+    }
+    /*
+获取版本号
+*/
+    public static int getVersionCode(Context context) {
+        int versionCode = 0;
+        try {
+            PackageManager manager = context.getPackageManager();
+            PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
+            versionCode = info.versionCode;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return versionCode;
     }
 }
