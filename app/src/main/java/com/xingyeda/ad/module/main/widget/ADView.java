@@ -143,13 +143,13 @@ public class ADView extends CustomView {
                     playNextAd();
                 }
             });
-
-            mAliyunVodPlayer.setOnPreparedListener(new IPlayer.OnPreparedListener() {
+            mAliyunVodPlayer.setOnRenderingStartListener(new IPlayer.OnRenderingStartListener() {
                 @Override
-                public void onPrepared() {
+                public void onRenderingStart() {
                     imageView.setVisibility(View.INVISIBLE);
                 }
             });
+
             mAliyunVodPlayer.setDisplay(surfaceView.getHolder());
             mHandler.postDelayed(toNextAdRunnable, 2 * 1000);
         }catch (Exception ex){
