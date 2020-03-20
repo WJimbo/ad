@@ -31,13 +31,6 @@ public class DeviceUUIDManager {
         }
         return deviceId;
     }
-    private static String getAndroidID(Context context){
-        String androidID = Settings.Secure.getString(context.getContentResolver(),Settings.Secure.ANDROID_ID );
-        if(androidID == null) {
-            androidID = "";
-        }
-        return androidID;
-    }
     /*
      *获取mac地址
      */
@@ -78,11 +71,7 @@ public class DeviceUUIDManager {
         }
         return str;
     }
-    private static String uuidPrefix = "";
 
-    public static void setUuidPrefix(String uuidPrefix) {
-        DeviceUUIDManager.uuidPrefix = uuidPrefix;
-    }
 
     private static String uuid;
     public static void setUUID(String tempUuid){
@@ -99,19 +88,24 @@ public class DeviceUUIDManager {
 
         if(ToolUtils.string().isEmpty(uuid)){
             ToolUtils.file().deleteFile(uuidFilePath);
-            String content = getMacAddress(context);
-            if(ToolUtils.string().isEmpty(content) || "020000000000".equals(content)){
+            uuid = getAndroidId(context);
+            if(ToolUtils.string().isEmpty(uuid)){
+                String content = getMacAddress(context);
+                if(ToolUtils.string().isEmpty(content) || "020000000000".equals(content)){
 //                content += getDeviceID(context) + getAndroidID(context) + System.currentTimeMillis();
-                uuid = uuidPrefix + getRandomValue(12);//ToolUtils.secureMD5().getMD5Code(content);
-            }else{
-                uuid = uuidPrefix + content;
+                    uuid = getRandomValue(12);//ToolUtils.secureMD5().getMD5Code(content);
+                }else{
+                    uuid = content;
+                }
             }
-
             ToolUtils.file().createOrExistsFile(uuidFilePath);
             ToolUtils.file().writeFileFromString(uuidFilePath,uuid,false);
         }
 
         return uuid;
     }
-
+    private static String getAndroidId(Context context) {
+        String ANDROID_ID = Settings.System.getString(context.getContentResolver(), Settings.System.ANDROID_ID);
+        return ANDROID_ID;
+    }
 }

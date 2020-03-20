@@ -29,7 +29,7 @@ public class SettingConfig {
     /**
      * 主界面日志调试接口
      */
-    private static final boolean DEFAULT_SHOW_DEBUGVIEW = true;
+    private static final boolean DEFAULT_SHOW_DEBUGVIEW = false;
     private static final String KEY_SHOW_DEBUGVIEW =  "KEY_SHOW_DEBUGVIEW";
 
     public static boolean isShowDebugView(Context context){

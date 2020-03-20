@@ -2,7 +2,6 @@ package com.xingyeda.ad.module.main;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -14,16 +13,17 @@ import com.xingyeda.ad.R;
 import com.xingyeda.ad.base.BaseActivity;
 import com.xingyeda.ad.config.DeviceUUIDManager;
 import com.xingyeda.ad.config.SettingConfig;
+import com.xingyeda.ad.config.SettingConfigManager;
 import com.xingyeda.ad.logdebug.LogDebugItem;
 import com.xingyeda.ad.logdebug.LogDebugUtil;
 import com.xingyeda.ad.module.addata.ADListManager;
+import com.xingyeda.ad.module.addata.AdItem;
+import com.xingyeda.ad.module.addata.AdListResponseData;
 import com.xingyeda.ad.module.addata.DownloadManager;
 import com.xingyeda.ad.module.main.widget.ADView;
 import com.xingyeda.ad.service.socket.CommandMessageData;
 import com.xingyeda.ad.service.socket.CommandReceiveService;
 import com.xingyeda.ad.service.socket.ConnectChangedItem;
-import com.xingyeda.ad.module.addata.AdItem;
-import com.xingyeda.ad.module.addata.AdListResponseData;
 import com.xingyeda.ad.widget.SquareHeightRelativeLayout;
 import com.zz9158.app.common.utils.ToolUtils;
 
@@ -216,21 +216,25 @@ public class OneADMainActivity extends BaseActivity {
 
         //另一个方向的竖屏
         if (command.equals("A548")) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
+            SettingConfigManager.getInstance().updateSettingForNet(this);
+//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
         }
         //另一个方向的横屏
         if (command.equals("A551")) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+            SettingConfigManager.getInstance().updateSettingForNet(this);
+//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
         }
 
         //横屏
         if (command.equals("A549")) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            SettingConfigManager.getInstance().updateSettingForNet(this);
+//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
 
         //竖屏
         if (command.equals("A550")) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            SettingConfigManager.getInstance().updateSettingForNet(this);
+//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
 
     }

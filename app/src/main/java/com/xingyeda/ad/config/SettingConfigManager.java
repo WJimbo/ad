@@ -45,7 +45,7 @@ public class SettingConfigManager {
         }
     }
     private boolean isRequesting = false;
-    private synchronized void updateSettingForNet(final Context context){
+    public synchronized void updateSettingForNet(final Context context){
         if(isRequesting){
             return;
         }
