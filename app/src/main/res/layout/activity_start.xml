@@ -24,6 +24,7 @@
             android:textColor="@color/DarkGray"
             android:textSize="14sp"
             android:text="版本号"
+            android:padding="15dp"
             android:gravity="center"
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
