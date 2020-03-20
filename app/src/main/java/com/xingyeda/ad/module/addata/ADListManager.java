@@ -103,9 +103,19 @@ public class ADListManager {
                 isUpdatingList = false;
                 if(responseData.isOperationSuccess()){
                     AdItem.VideoRotateAngle = SettingConfig.getScreenRotateAngle(context);
+                    String lastStr = "";
+                    if(adListResponseData != null && adListResponseData.getJsonValueString() != null){
+                        lastStr = adListResponseData.getJsonValueString();
+                    }
                     adListResponseData = (AdListResponseData)responseData;
-                    saveListToLocation();
                     LogDebugUtil.appendLog("调用广告数据成功:" + adListResponseData.getObj().size() + "条");
+//                    MyLog.i("调用广告数据成功:" + adListResponseData.getObj().size() + "条");
+                    if(!lastStr.equals(responseData.getJsonValueString())){
+                        saveListToLocation();
+                    }else{
+//                        MyLog.i("广告数据接口请求成功，无需保存");
+                    }
+
                     if(onDataChangeCallBackListener != null){
                         onDataChangeCallBackListener.dataChanged(adListResponseData);
                     }
