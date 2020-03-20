@@ -34,12 +34,12 @@ public class VersionManager {
                         }
                     }else{
                         if(checkCallBack != null){
-                            checkCallBack.callBack(false,null,"服务器未返回有效数据");
+                            checkCallBack.callBack(false,null,"升级接口：服务器未返回有效数据");
                         }
                     }
                 }else{
                     if(checkCallBack != null){
-                        checkCallBack.callBack(false,null,responseData.getErrorMsg());
+                        checkCallBack.callBack(false,null,"升级接口：" + responseData.getErrorMsg());
                     }
                 }
             }
