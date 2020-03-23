@@ -8,8 +8,8 @@ android {
         applicationId "com.xingyeda.ad"
         minSdkVersion 19
         targetSdkVersion 22
-        versionCode 20032321 //格式20031914  20年03月19日14时
-        versionName "2.0.0"
+        versionCode 1915232295 //格式20031914  20年03月19日14时
+        versionName "2.0.1"
         buildConfigField "String", "BUILD_DATE", "\"${new SimpleDateFormat().format(new Date())}\""
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk{
