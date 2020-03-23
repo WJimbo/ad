@@ -30,4 +30,8 @@ public class RotateTransformation extends BitmapTransformation {
     public String getId() {
         return "rotate" + rotateRotationAngle;
     }
+
+    public float getRotateRotationAngle() {
+        return rotateRotationAngle;
+    }
 }

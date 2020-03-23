@@ -146,7 +146,15 @@ public class ADView extends CustomView {
             mAliyunVodPlayer.setOnRenderingStartListener(new IPlayer.OnRenderingStartListener() {
                 @Override
                 public void onRenderingStart() {
-                    imageView.setVisibility(View.INVISIBLE);
+
+                }
+            });
+            mAliyunVodPlayer.setOnStateChangedListener(new IPlayer.OnStateChangedListener() {
+                @Override
+                public void onStateChanged(int i) {
+                    if(i == IPlayer.started){
+                        imageView.setVisibility(View.INVISIBLE);
+                    }
                 }
             });
 

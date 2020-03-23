@@ -39,6 +39,7 @@ public class ADListManager {
     private ADListManager(Context context){
         this.context = context;
         init();
+        AdItem.VideoRotateAngle = SettingConfig.getScreenRotateAngle(context);
         readListFromLocation();
         //开始请求数据
         //容错，怕偶尔收不到服务器推送，采用轮询的方式获取数据。
