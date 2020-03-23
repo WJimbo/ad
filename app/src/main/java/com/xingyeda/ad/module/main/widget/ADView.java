@@ -250,6 +250,7 @@ public class ADView extends CustomView {
             ivDefualt.setVisibility(View.INVISIBLE);
             if ("2".equals(adItem.getFiletype())) {
 //                pic.setVisibility(View.VISIBLE);
+                imageView.setImageDrawable(null);
                 playLocalVideo(new File(DownloadManager.getDownloadRootPath(getContext()), adItem.getLocationFileName()));
             } else {
                 surfaceView.setVisibility(View.INVISIBLE);
