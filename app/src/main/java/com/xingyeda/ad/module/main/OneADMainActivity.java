@@ -56,6 +56,7 @@ public class OneADMainActivity extends BaseActivity {
     Unbinder unbinder;
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, OneADMainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
         context.startActivity(intent);
     }
 

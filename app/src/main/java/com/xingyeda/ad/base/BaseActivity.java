@@ -1,16 +1,20 @@
 package com.xingyeda.ad.base;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.xingyeda.ad.broadcast.BroadCasetKeys;
 import com.xingyeda.ad.module.versionmanager.VersionManager;
 import com.xingyeda.ad.receiver.InnerReceiver;
+import com.xingyeda.ad.util.DeviceUtil;
 import com.zz9158.app.common.utils.ToastUtils;
 import com.zz9158.app.common.utils.ToolUtils;
 
@@ -31,8 +35,6 @@ public class BaseActivity extends Activity {
 
         //注册键盘
         receiverHome();
-
-
     }
 
 
@@ -60,6 +62,44 @@ public class BaseActivity extends Activity {
         registerReceiver(innerReceiver, intentFilter);
     }
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        registerBoradcastReceiver();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
+    }
+    private BroadcastReceiver mBroadcastReceiver =  new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {//Socket广播获取
+            String action = intent.getAction();
+            if (action.equals(BroadCasetKeys.UPDATE_DEVICE)) {//版本更新
+                VersionManager.checkVersions(BaseActivity.this);
+            }
+        }
+
+    };
+    private void registerBoradcastReceiver() {//广播注册
+        IntentFilter intent = new IntentFilter();
+        intent.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+        intent.addAction(BroadCasetKeys.UPDATE_DEVICE);//更新设备
+        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, intent);
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();

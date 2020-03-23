@@ -20,8 +20,7 @@ public class VersionManager {
     interface OnCheckCallBack{
         void callBack(boolean hasViewVersions,String downloadUrl,String errorInfo);
     }
-    public static void checkVersions(final Context c){
-        final Context context = c.getApplicationContext();
+    public static void checkVersions(final Context context){
         VersionManager.checkNewVersions(context, ToolUtils.getVersionCode(context), new VersionManager.OnCheckCallBack() {
             @Override
             public void callBack(boolean hasViewVersions, String downloadUrl, String errorInfo) {

@@ -21,7 +21,7 @@ public class URLConfig {
     public static final String UPLOAD_LOG = "submitLog";
     //用户设置
     public static final String USERSET_PATH = "econfig";
-    public static final String CHECK_NEW_VERSION = "getServerVersionfor9";
+    public static final String CHECK_NEW_VERSION = "getServerVersionByAD";
 
     public static final String REQUEST_AD_LIST = "GetAdversitingByMac/R";
 

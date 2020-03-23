@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.xingyeda.ad.broadcast.BroadCasetKeys;
 import com.xingyeda.ad.config.SettingConfigManager;
 import com.xingyeda.ad.module.addata.ADListManager;
 import com.xingyeda.ad.module.versionmanager.VersionManager;
@@ -19,7 +20,7 @@ public class CommandDealUtil {
         String command = commandMessageData.getCommond();
         if (ServiceCommond.UPDATE_DEVICE.equals(command))//更新设备
         {
-            VersionManager.checkVersions(context);
+            sendBroadcast(context,BroadCasetKeys.UPDATE_DEVICE);
         }  else if (ServiceCommond.RELOADIMG.equals(command))//刷新广告等
         {
             ADListManager.getInstance(context).setNeedUpdateList();

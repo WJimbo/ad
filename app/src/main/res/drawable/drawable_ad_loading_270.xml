@@ -5,7 +5,7 @@
         <bitmap
             android:gravity="center"
             android:scaleType="centerInside"
-            android:src="@drawable/ad_loading"
+            android:src="@drawable/ad_loading_270"
             android:tileMode="disabled" />
     </item>
 </layer-list>

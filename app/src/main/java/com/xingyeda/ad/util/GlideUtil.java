@@ -22,11 +22,11 @@ public class GlideUtil {
             if(rotateTransformation.getRotateRotationAngle() == 0){
                 drawableRequestBuilder.placeholder(R.drawable.drawable_ad_loading);
             }else if(rotateTransformation.getRotateRotationAngle() == 90){
-                drawableRequestBuilder.placeholder(R.drawable.drawable_ad_loading);
+                drawableRequestBuilder.placeholder(R.drawable.drawable_ad_loading_90);
             }else if(rotateTransformation.getRotateRotationAngle() == 180){
-                drawableRequestBuilder.placeholder(R.drawable.drawable_ad_loading);
+                drawableRequestBuilder.placeholder(R.drawable.drawable_ad_loading_180);
             }else if(rotateTransformation.getRotateRotationAngle() == 270){
-                drawableRequestBuilder.placeholder(R.drawable.drawable_ad_loading);
+                drawableRequestBuilder.placeholder(R.drawable.drawable_ad_loading_270);
             }
         }
         drawableRequestBuilder.into(imageView);

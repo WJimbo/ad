@@ -105,7 +105,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
         Log.e(TAG, ex.toString());
 
         final Throwable exx = ex;
-        MyLog.e("很抱歉,程序出现异常,即将退出." + exx.getLocalizedMessage());
+        MyLog.e("很抱歉,程序出现异常,即将退出:" + ex.getMessage());
 //        使用Toast来显示异常信息
         new Thread() {
             @Override

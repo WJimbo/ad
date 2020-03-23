@@ -43,16 +43,26 @@
             android:screenOrientation="landscape"
             />
 
-        <receiver
-            android:name=".receiver.BootBroadcastReceiver"
-            android:enabled="true"
-            android:exported="true">
+        <!--软件安装卸载广播  静默更新系统将自动重启-->
+        <receiver android:name=".broadcast.system.PackageEventBroadcastReceiver"
+            >
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <category android:name="android.intent.category.HOME" />
+                <action android:name="android.intent.action.PACKAGE_REPLACED"/>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <data android:scheme="package"/>
             </intent-filter>
+
         </receiver>
 
+        <!--开机启动广播-->
+        <receiver android:name=".broadcast.system.PhoneLauncherBroadcasetReceiver"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </receiver>
 
         <service
             android:name=".service.socket.CommandReceiveService"
