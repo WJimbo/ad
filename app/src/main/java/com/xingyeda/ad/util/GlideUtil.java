@@ -20,13 +20,13 @@ public class GlideUtil {
             drawableRequestBuilder.placeholder(imageView.getDrawable());
         }else{
             if(rotateTransformation.getRotateRotationAngle() == 0){
-                drawableRequestBuilder.placeholder(R.mipmap.bg_defualt_portrait);
+                drawableRequestBuilder.placeholder(R.drawable.drawable_ad_loading);
             }else if(rotateTransformation.getRotateRotationAngle() == 90){
-                drawableRequestBuilder.placeholder(R.mipmap.bg_defualt_landscape_90);
+                drawableRequestBuilder.placeholder(R.drawable.drawable_ad_loading);
             }else if(rotateTransformation.getRotateRotationAngle() == 180){
-                drawableRequestBuilder.placeholder(R.mipmap.bg_defualt_portrait_180);
+                drawableRequestBuilder.placeholder(R.drawable.drawable_ad_loading);
             }else if(rotateTransformation.getRotateRotationAngle() == 270){
-                drawableRequestBuilder.placeholder(R.mipmap.bg_defualt_landscape_270);
+                drawableRequestBuilder.placeholder(R.drawable.drawable_ad_loading);
             }
         }
         drawableRequestBuilder.into(imageView);

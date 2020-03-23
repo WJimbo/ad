@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.xingyeda.ad.BuildConfig;
 import com.xingyeda.ad.R;
 import com.xingyeda.ad.base.BaseActivity;
+import com.xingyeda.ad.config.DeviceUUIDManager;
 import com.xingyeda.ad.config.SettingConfig;
 import com.xingyeda.ad.config.SettingConfigManager;
 import com.xingyeda.ad.module.main.OneADMainActivity;
@@ -87,7 +88,7 @@ public class StartActivity extends BaseActivity {
             }
         };
         countDownTimer.start();
-        versionInfoTextView.setText("版本号:" + ToolUtils.appTool().getVersionNameFromPackage(this) + "_" + ToolUtils.appTool().getAppVersionCode(this) + "\n编译时间:" + BuildConfig.BUILD_DATE);
+        versionInfoTextView.setText("MAC:" + DeviceUUIDManager.generateUUID(this) + "\n版本号:" + ToolUtils.appTool().getVersionNameFromPackage(this) + "_" + ToolUtils.appTool().getAppVersionCode(this) + "\n编译时间:" + BuildConfig.BUILD_DATE);
 
 
         infoTextView.setRotation(SettingConfig.getScreenRotateAngle(this));

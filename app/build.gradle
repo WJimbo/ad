@@ -8,7 +8,7 @@ android {
         applicationId "com.xingyeda.ad"
         minSdkVersion 19
         targetSdkVersion 22
-        versionCode 20032315 //格式20031914  20年03月19日14时
+        versionCode 20032321 //格式20031914  20年03月19日14时
         versionName "2.0.0"
         buildConfigField "String", "BUILD_DATE", "\"${new SimpleDateFormat().format(new Date())}\""
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -18,6 +18,24 @@ android {
         packagingOptions {
             //解决编译时com.android.builder.merge.DuplicateRelativeFileException: More than one file was found with OS independent path 'META-INF/rxjava.properties'这个错误
             exclude 'META-INF/rxjava.properties'
+        }
+    }
+    signingConfigs {
+        config {
+            storeFile file('adtv_keystore_xyd12345.jks')
+            storePassword 'xyd12345'
+            keyAlias 'key0'
+            keyPassword 'xyd12345'
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.config
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug{
+            signingConfig signingConfigs.config
         }
     }
     buildTypes {
@@ -87,6 +105,7 @@ dependencies {
     implementation 'cn.ittiger:tigerdb:1.0'
     testImplementation 'junit:junit:4.12'
     implementation project(':lansongsdk')
+    implementation project(':okhttp')
     implementation project(':zz_common_utils')
     implementation project(':zz_common_widget')
     implementation 'com.alivc.conan:AlivcConan:0.9.5'

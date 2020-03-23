@@ -21,6 +21,7 @@ import com.xingyeda.ad.module.addata.AdItem;
 import com.xingyeda.ad.module.addata.AdListResponseData;
 import com.xingyeda.ad.module.addata.DownloadManager;
 import com.xingyeda.ad.module.main.widget.ADView;
+import com.xingyeda.ad.module.versionmanager.VersionManager;
 import com.xingyeda.ad.service.socket.CommandMessageData;
 import com.xingyeda.ad.service.socket.CommandReceiveService;
 import com.xingyeda.ad.service.socket.ConnectChangedItem;
@@ -100,6 +101,7 @@ public class OneADMainActivity extends BaseActivity {
             adView.setRotation(0f);
         }
         tvLogDebug.setVisibility(SettingConfig.isShowDebugView(this) ? View.VISIBLE : View.GONE);
+        tips.setVisibility(SettingConfig.isShowDebugView(this) ? View.VISIBLE:View.GONE);
 
         tips.setText("MAC:" + DeviceUUIDManager.generateUUID(this)
                 + " 版本信息:" + ToolUtils.getVersionCode(this)
@@ -130,7 +132,7 @@ public class OneADMainActivity extends BaseActivity {
         });
         requestList();
         onConnectionChanged(new ConnectChangedItem(CommandReceiveService.isConnected));
-        checkVersions();
+        VersionManager.checkVersions(this);
     }
     private void requestList() {
         ADListManager.getInstance(getApplicationContext()).setNeedUpdateList();
@@ -183,60 +185,4 @@ public class OneADMainActivity extends BaseActivity {
         unbinder.unbind();
         EventBus.getDefault().unregister(this);
     }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessage(CommandMessageData messageData) {
-        String command = messageData.getCommond();
-        LogDebugUtil.appendLog("接收到服务器心跳命令:" + command);
-        //更新数据，增加发送廣告
-        if (command.equals("A543")) {
-            requestList();
-        }
-        if (command.equals("A531")) {
-            ADListManager.getInstance(getApplicationContext()).setNeedUpdateList();
-        }
-        //重启
-        if (command.equals("A544")) {
-        }
-
-        //软件更新
-        if (command.equals("A545")) {
-            checkVersions();
-        }
-
-        //通告更新
-        if (command.equals("A547")) {
-        }
-
-        if (command.equals("A666")) {
-            Intent intent = new Intent(Settings.ACTION_SETTINGS);
-            startActivity(intent);
-        }
-
-
-        //另一个方向的竖屏
-        if (command.equals("A548")) {
-            SettingConfigManager.getInstance().updateSettingForNet(this);
-//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
-        }
-        //另一个方向的横屏
-        if (command.equals("A551")) {
-            SettingConfigManager.getInstance().updateSettingForNet(this);
-//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
-        }
-
-        //横屏
-        if (command.equals("A549")) {
-            SettingConfigManager.getInstance().updateSettingForNet(this);
-//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        }
-
-        //竖屏
-        if (command.equals("A550")) {
-            SettingConfigManager.getInstance().updateSettingForNet(this);
-//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
-
-    }
-
 }

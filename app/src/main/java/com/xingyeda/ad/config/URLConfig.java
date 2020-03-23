@@ -17,14 +17,13 @@ public class URLConfig {
     //    public static final String HOST_PATH = HOST + "xydServer/servlet/";
     private static final String IP_HOST_PATH = ":8080/xydServer/servlet/";
     private static final String DOMAIN_HOST_PATH = "/servlet/";
-
-
+    //上传日志
+    public static final String UPLOAD_LOG = "submitLog";
     //用户设置
     public static final String USERSET_PATH = "econfig";
+    public static final String CHECK_NEW_VERSION = "getServerVersionfor9";
 
     public static final String REQUEST_AD_LIST = "GetAdversitingByMac/R";
-
-    public static final String CHECK_NEW_VERSIONS = "getServerVersionByAD";
 
     public static final String BIND_EQ_BY_MAC = "insertEqByMac/C";
 

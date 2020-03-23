@@ -5,6 +5,7 @@ import android.app.Application;
 
 import com.lansosdk.videoeditor.LanSoEditor;
 import com.liulishuo.filedownloader.FileDownloader;
+import com.xingyeda.ad.config.DeviceUUIDManager;
 import com.xingyeda.ad.util.CrashHandler;
 import com.xingyeda.ad.util.MyLog;
 import com.zz9158.app.common.utils.ApplicationUtil;
@@ -18,7 +19,7 @@ public class MainApplication extends Application {
         super.onCreate();
         if(BuildConfig.DEBUG){
 //            DeviceUUIDManager.setUUID("6c21a218fb77");
-//            DeviceUUIDManager.setUUID("73e4a4fda9a9f73c");
+            DeviceUUIDManager.setUUID("73e4a4fda9a9f73c");
 //            DeviceUUIDManager.setUUID("c44cede2765a169b");
         }
         if(ApplicationUtil.isMainProcess(this)) {

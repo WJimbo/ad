@@ -18,6 +18,7 @@ import com.vilyever.socketclient.helper.SocketResponsePacket;
 import com.vilyever.socketclient.util.CharsetUtil;
 import com.xingyeda.ad.config.DeviceUUIDManager;
 import com.xingyeda.ad.logdebug.LogDebugUtil;
+import com.xingyeda.ad.service.CommandDealUtil;
 import com.zz9158.app.common.utils.GsonUtil;
 import com.zz9158.app.common.utils.LoggerHelper;
 
@@ -263,7 +264,7 @@ public class CommandReceiveService extends Service {
                     try {
                         CommandMessageData messageData = GsonUtil.gson.fromJson(message,CommandMessageData.class);
                         LoggerHelper.i("Socket接收到命令：" + messageData.getCommond());
-                        EventBus.getDefault().post(messageData);
+                        CommandDealUtil.dealCommand(CommandReceiveService.this,messageData);
                         messageData.setCommond("M077");
                         socketClient.sendString(GsonUtil.gson.toJson(messageData));
                     }catch (Exception ex){

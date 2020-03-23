@@ -266,6 +266,7 @@ public class ADView extends CustomView {
         lastTryToPlayNextAdTimeMillis = System.currentTimeMillis();
     }
     public void setDefaultImage(@DrawableRes int resID){
+        imageView.setImageResource(resID);
         ivDefualt.setImageResource(resID);
     }
     public void setCountDownTitleColor(int color){
