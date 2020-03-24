@@ -87,9 +87,17 @@ public class SettingConfigManager {
                                 }catch (Exception ex){
 
                                 }
+                            }else if("ADSetting_ADShowMode".equals(settingItem.logo)){
+                                try {
+                                    int num = Integer.parseInt(settingItem.value);
+                                    if(num != SettingConfig.getADScreenNum(context)){
+                                        SettingConfig.setADScreenNum(context,num);
+                                        settingChanged = true;
+                                    }
+                                }catch (Exception ex){
+
+                                }
                             }
-
-
                         }
                         if(settingChanged){
                             EventBus.getDefault().post(new SettingConfig.VideoRotateAngleChangedEventData());

@@ -38,4 +38,14 @@ public class SettingConfig {
     public static void setShowDebugView(Context context,boolean show){
          SharedPreUtil.put(context,KEY_SHOW_DEBUGVIEW,show);
     }
+
+    private static final int DEFAULT_AD_SCREEN_NUM_MODEL = 1;
+    private static final String KEY_AD_SCREEN_NUM_MODEL = "KEY_AD_SCREEN_NUM_MODEL";
+
+    public static int getADScreenNum(Context context){
+        return SharedPreUtil.getInt(context,KEY_AD_SCREEN_NUM_MODEL,DEFAULT_AD_SCREEN_NUM_MODEL);
+    }
+    public static void setADScreenNum(Context context,int num){
+        SharedPreUtil.put(context,KEY_AD_SCREEN_NUM_MODEL, num);
+    }
 }

@@ -10,18 +10,18 @@ import com.xingyeda.ad.module.main.widget.ADView;
 
 import butterknife.BindView;
 
-public class OneADMainActivity extends BaseADActivity {
+public class NineADMainActivity extends BaseADActivity {
     @BindView(R.id.adView)
     ADView adView;
     public static void startActivity(Context context) {
-        Intent intent = new Intent(context, OneADMainActivity.class);
+        Intent intent = new Intent(context, NineADMainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
         context.startActivity(intent);
     }
 
     @Override
     protected int getLayout() {
-        return R.layout.activity_main_one_ad;
+        return R.layout.activity_main_nine_ad;
     }
     @Override
     protected void initView(Bundle saveInstanceState) {

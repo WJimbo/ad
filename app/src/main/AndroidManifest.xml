@@ -42,6 +42,10 @@
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:screenOrientation="landscape"
             />
+        <activity android:name=".module.main.NineADMainActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:screenOrientation="landscape"
+            />
 
         <!--软件安装卸载广播  静默更新系统将自动重启-->
         <receiver android:name=".broadcast.system.PackageEventBroadcastReceiver"

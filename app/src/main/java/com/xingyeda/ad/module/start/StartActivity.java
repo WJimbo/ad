@@ -13,6 +13,7 @@ import com.xingyeda.ad.base.BaseActivity;
 import com.xingyeda.ad.config.DeviceUUIDManager;
 import com.xingyeda.ad.config.SettingConfig;
 import com.xingyeda.ad.config.SettingConfigManager;
+import com.xingyeda.ad.module.main.NineADMainActivity;
 import com.xingyeda.ad.module.main.OneADMainActivity;
 import com.xingyeda.ad.module.register.RegisterManager;
 import com.xingyeda.ad.service.socket.CommandReceiveService;
@@ -84,7 +85,13 @@ public class StartActivity extends BaseActivity {
 
             @Override
             public void onFinish() {
-                OneADMainActivity.startActivity(mContext);
+                if(SettingConfig.getADScreenNum(getApplicationContext()) == 9){
+                    NineADMainActivity.startActivity(mContext);
+                }else{
+                    OneADMainActivity.startActivity(mContext);
+                }
+
+                finish();
             }
         };
         countDownTimer.start();
