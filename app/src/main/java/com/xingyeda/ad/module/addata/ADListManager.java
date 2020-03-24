@@ -16,16 +16,10 @@ import com.zz9158.app.common.utils.http.BaseResponseData;
 import com.zz9158.app.common.utils.http.HttpRequestModel;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ADListManager {
-    public interface OnDataChangeCallBackListener{
-        void dataChanged(AdListResponseData adListResponseData);
-    }
-    private OnDataChangeCallBackListener onDataChangeCallBackListener;
-
-    public void setOnDataChangeCallBackListener(OnDataChangeCallBackListener onDataChangeCallBackListener) {
-        this.onDataChangeCallBackListener = onDataChangeCallBackListener;
-    }
     /**
      * 自动请求广告接口列表间隔时间
      */
@@ -116,10 +110,7 @@ public class ADListManager {
                     }else{
 //                        MyLog.i("广告数据接口请求成功，无需保存");
                     }
-
-                    if(onDataChangeCallBackListener != null){
-                        onDataChangeCallBackListener.dataChanged(adListResponseData);
-                    }
+                    downloadADFiles();
                 }else{
                     LogDebugUtil.appendLog("调用广告数据失败:" + responseData.getErrorMsg());
                 }
@@ -139,12 +130,29 @@ public class ADListManager {
         String locationStr = Tools.file().readFile2String(locationSaveFile,null);
         if(!Tools.string().isEmpty(locationStr)){
             try {
-                 adListResponseData = GsonUtil.gson.fromJson(locationStr,AdListResponseData.class);
-                if(onDataChangeCallBackListener != null){
-                    onDataChangeCallBackListener.dataChanged(adListResponseData);
-                }
+                adListResponseData = GsonUtil.gson.fromJson(locationStr,AdListResponseData.class);
+                downloadADFiles();
             }catch (Exception ex){
 
+            }
+        }
+    }
+
+    private void downloadADFiles(){
+        if (adListResponseData != null && adListResponseData.getObj() != null) {
+            List<AdItem> adItems = new ArrayList<>();
+            adItems.addAll(adListResponseData.getObj());
+            for (AdItem adItem : adItems) {
+                //不支持视频模式的时候 过滤掉视频文件的下载
+                String downloadRootPath = DownloadManager.getDownloadRootPath(context);
+                if (!adItem.isFileExsits(downloadRootPath)) {
+                    DownloadManager.DownloadItem downloadItem = new DownloadManager.DownloadItem();
+                    downloadItem.url = adItem.getFileUrl();
+                    downloadItem.fileType = adItem.getFiletype();
+                    downloadItem.savePath = adItem.locationFile(downloadRootPath);
+                    downloadItem.videoRotateAngle =  AdItem.VideoRotateAngle;
+                    DownloadManager.getInstance().downloadWithUrl(downloadItem);
+                }
             }
         }
     }

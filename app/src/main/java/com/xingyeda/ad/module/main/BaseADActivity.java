@@ -14,9 +14,6 @@ import com.xingyeda.ad.config.SettingConfig;
 import com.xingyeda.ad.logdebug.LogDebugItem;
 import com.xingyeda.ad.logdebug.LogDebugUtil;
 import com.xingyeda.ad.module.addata.ADListManager;
-import com.xingyeda.ad.module.addata.AdItem;
-import com.xingyeda.ad.module.addata.AdListResponseData;
-import com.xingyeda.ad.module.addata.DownloadManager;
 import com.xingyeda.ad.service.socket.ConnectChangedItem;
 import com.xingyeda.ad.widget.SquareHeightRelativeLayout;
 import com.zz9158.app.common.utils.ToolUtils;
@@ -27,9 +24,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -52,30 +47,6 @@ public abstract class BaseADActivity extends BaseActivity {
         initTipsView();
         initDebugView();
         rotationViews(SettingConfig.getScreenRotateAngle(this));
-
-        ADListManager.getInstance(this).setOnDataChangeCallBackListener(new ADListManager.OnDataChangeCallBackListener() {
-            @Override
-            public void dataChanged(AdListResponseData adListResponseData) {
-                if (isFinishing()) {
-                    return;
-                }
-                if (adListResponseData != null && adListResponseData.getObj() != null) {
-                    List<AdItem> adItems = new ArrayList<>();
-                    adItems.addAll(adListResponseData.getObj());
-                    for (AdItem adItem : adItems) {
-                        //不支持视频模式的时候 过滤掉视频文件的下载
-                        if (!adItem.isFileExsits(DownloadManager.getDownloadRootPath(getApplicationContext()))) {
-                            DownloadManager.DownloadItem downloadItem = new DownloadManager.DownloadItem();
-                            downloadItem.url = adItem.getFileUrl();
-                            downloadItem.fileType = adItem.getFiletype();
-                            downloadItem.savePath = adItem.locationFile(DownloadManager.getDownloadRootPath(getApplicationContext()));
-                            downloadItem.videoRotateAngle = SettingConfig.getScreenRotateAngle(getApplicationContext());
-                            DownloadManager.getInstance().downloadWithUrl(downloadItem);
-                        }
-                    }
-                }
-            }
-        });
         requestList();
     }
     private void requestList() {
