@@ -17,16 +17,16 @@
     </FrameLayout>
 
     <ImageView
-        android:visibility="visible"
+        android:visibility="invisible"
         android:id="@+id/imageView"
         android:background="@color/Black"
         android:scaleType="fitXY"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     <ImageView
-        android:background="@color/Black"
         android:id="@+id/iv_Defualt"
-        android:scaleType="fitXY"
+        android:scaleType="centerInside"
+        android:background="@color/White"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

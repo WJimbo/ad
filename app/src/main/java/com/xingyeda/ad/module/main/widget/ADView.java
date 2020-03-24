@@ -342,4 +342,18 @@ public class ADView extends CustomView {
 
         tvCountSecond.setLayoutParams(layoutParams);
     }
+    public void onDestroy(){
+        if(countDownTimer != null){
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
+        if(mAliyunVodPlayer != null){
+            stopVideo();
+            mAliyunVodPlayer.release();
+            mAliyunVodPlayer = null;
+        }
+        if(mHandler != null && toNextAdRunnable != null){
+            mHandler.removeCallbacks(toNextAdRunnable);
+        }
+    }
 }

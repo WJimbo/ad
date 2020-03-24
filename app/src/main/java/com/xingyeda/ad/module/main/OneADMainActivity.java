@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -13,7 +12,6 @@ import com.xingyeda.ad.R;
 import com.xingyeda.ad.base.BaseActivity;
 import com.xingyeda.ad.config.DeviceUUIDManager;
 import com.xingyeda.ad.config.SettingConfig;
-import com.xingyeda.ad.config.SettingConfigManager;
 import com.xingyeda.ad.logdebug.LogDebugItem;
 import com.xingyeda.ad.logdebug.LogDebugUtil;
 import com.xingyeda.ad.module.addata.ADListManager;
@@ -22,7 +20,6 @@ import com.xingyeda.ad.module.addata.AdListResponseData;
 import com.xingyeda.ad.module.addata.DownloadManager;
 import com.xingyeda.ad.module.main.widget.ADView;
 import com.xingyeda.ad.module.versionmanager.VersionManager;
-import com.xingyeda.ad.service.socket.CommandMessageData;
 import com.xingyeda.ad.service.socket.CommandReceiveService;
 import com.xingyeda.ad.service.socket.ConnectChangedItem;
 import com.xingyeda.ad.widget.SquareHeightRelativeLayout;
@@ -98,8 +95,12 @@ public class OneADMainActivity extends BaseActivity {
         }else if(SettingConfig.getScreenRotateAngle(this) == 270){
             adView.setDefaultImage(R.mipmap.bg_defualt_landscape_270);
             adView.setRotation(270f);
+        }else if(SettingConfig.getScreenRotateAngle(this) == 180){
+            adView.setRotation(180f);
+            adView.setDefaultImage(R.mipmap.bg_defualt_portrait_180);
         }else{
             adView.setRotation(0f);
+            adView.setDefaultImage(R.mipmap.bg_defualt_portrait);
         }
         tvLogDebug.setVisibility(SettingConfig.isShowDebugView(this) ? View.VISIBLE : View.GONE);
         tips.setVisibility(SettingConfig.isShowDebugView(this) ? View.VISIBLE:View.GONE);
@@ -185,5 +186,6 @@ public class OneADMainActivity extends BaseActivity {
         super.onDestroy();
         unbinder.unbind();
         EventBus.getDefault().unregister(this);
+        adView.onDestroy();
     }
 }
