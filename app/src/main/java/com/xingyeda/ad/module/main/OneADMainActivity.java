@@ -6,11 +6,14 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import com.xingyeda.ad.R;
+import com.xingyeda.ad.module.addata.AdItem;
+import com.xingyeda.ad.module.dataprovider.OneADDataProvider;
 import com.xingyeda.ad.module.main.widget.ADView;
 
 import butterknife.BindView;
 
 public class OneADMainActivity extends BaseADActivity {
+    private OneADDataProvider dataProvider;
     @BindView(R.id.adView)
     ADView adView;
     public static void startActivity(Context context) {
@@ -25,7 +28,14 @@ public class OneADMainActivity extends BaseADActivity {
     }
     @Override
     protected void initView(Bundle saveInstanceState) {
-
+        dataProvider = new OneADDataProvider();
+        dataProvider.registerDataProvider(this);
+        adView.setDataSourceListener(new ADView.IADDataSourceListener() {
+            @Override
+            public AdItem getNextAD(AdItem finishPlayItem) {
+                return dataProvider.getNextADItem(getApplicationContext());
+            }
+        });
     }
     @Override
     protected void rotationADViews(float rotateAngle) {
@@ -66,5 +76,6 @@ public class OneADMainActivity extends BaseADActivity {
     protected void onDestroy() {
         super.onDestroy();
         adView.onDestroy();
+        dataProvider.unRegisterDataProvider(this);
     }
 }

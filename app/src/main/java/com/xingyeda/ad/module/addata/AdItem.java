@@ -36,6 +36,20 @@ public class AdItem {
     private String fileUrl;
     private String MD5;
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof AdItem){
+            AdItem adItem = (AdItem)obj;
+            if(adItem.fileUrl.equals(fileUrl)
+                    && adItem.filetype.equals(filetype)
+                    && adItem.duration == duration
+                    && adItem.id == id){
+                return true;
+            }
+        }
+        return super.equals(obj);
+    }
+
     public String getLocationFileName(){
         if("2".equals(filetype)){
             return (VideoRotateAngle + "video_") + fileUrl.hashCode() + ".mp4";

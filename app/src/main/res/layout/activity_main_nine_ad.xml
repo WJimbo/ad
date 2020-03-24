@@ -1,61 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:padding="8dp"
     android:background="@color/Black">
 
-
-    <com.xingyeda.ad.module.main.widget.ADView
-        android:id="@+id/adView"
-        android:visibility="visible"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-    <com.xingyeda.ad.widget.SquareHeightRelativeLayout
-        android:id="@+id/rootLayout_LogDebug"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="bottom"
-        >
-
-
-
-        <TextView
-            android:visibility="gone"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_weight="1"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#8000"
-            android:padding="10dp"
-            android:id="@+id/tv_LogDebug"
-            android:textSize="12sp"
-            android:textColor="@color/White"
-            />
-    </com.xingyeda.ad.widget.SquareHeightRelativeLayout>
-
-
-    <com.xingyeda.ad.widget.SquareHeightRelativeLayout
-        android:id="@+id/rootLayout_Tips"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="bottom"
-        >
-        <TextView
-            android:visibility="gone"
-            android:gravity="bottom|center"
-            android:padding="5dp"
-            android:id="@+id/tips"
-            android:textColor="@color/Red"
+            android:layout_height="match_parent">
+            <com.xingyeda.ad.module.main.widget.ADView
+                android:layout_weight="1"
+                android:id="@+id/adView1"
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <com.xingyeda.ad.module.main.widget.ADView
+                android:layout_weight="1"
+                android:id="@+id/adView2"
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <com.xingyeda.ad.module.main.widget.ADView
+                android:layout_weight="1"
+                android:id="@+id/adView3"
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="0dp"
-            android:layout_marginRight="0dp"
-            android:text="mac" />
-    </com.xingyeda.ad.widget.SquareHeightRelativeLayout>
+            android:layout_height="match_parent">
+            <com.xingyeda.ad.module.main.widget.ADView
+                android:layout_weight="1"
+                android:id="@+id/adView4"
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <com.xingyeda.ad.module.main.widget.ADView
+                android:layout_weight="1"
+                android:id="@+id/adView5"
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <com.xingyeda.ad.module.main.widget.ADView
+                android:layout_weight="1"
+                android:id="@+id/adView6"
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <com.xingyeda.ad.module.main.widget.ADView
+                android:layout_weight="1"
+                android:id="@+id/adView7"
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <com.xingyeda.ad.module.main.widget.ADView
+                android:layout_weight="1"
+                android:id="@+id/adView8"
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <com.xingyeda.ad.module.main.widget.ADView
+                android:layout_weight="1"
+                android:id="@+id/adView9"
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+    </LinearLayout>
 
-
-    
+   <include layout="@layout/layout_main_tools"
+       android:layout_height="match_parent"
+       android:layout_width="match_parent"/>
 </RelativeLayout>
 

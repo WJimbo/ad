@@ -20,6 +20,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ADListManager {
+    public interface OnAdListChangedListener{
+        void adListChanged(List<AdItem> adItems);
+    }
+
+    private List<OnAdListChangedListener> onAdListChangedListenerList = new ArrayList<>();
+    private final static Object lockObject = new Object();
+    public void addOnAdListChangedListener(OnAdListChangedListener adListChangedListener){
+        synchronized (lockObject){
+            if(adListChangedListener != null){
+                onAdListChangedListenerList.add(adListChangedListener);
+            }
+        }
+    }
+    public void removeAdListChangedListener(OnAdListChangedListener onAdListChangedListener){
+        synchronized (lockObject){
+            if(onAdListChangedListener != null){
+                onAdListChangedListenerList.remove(onAdListChangedListener);
+            }
+        }
+    }
+
+    private void sendEventToDataChangedListeners(){
+        synchronized (lockObject){
+            for(OnAdListChangedListener listChangedListener : onAdListChangedListenerList){
+                try {
+                    if(adListResponseData != null && adListResponseData.getObj() != null){
+                        listChangedListener.adListChanged(adListResponseData.getObj());
+                    }else{
+                        listChangedListener.adListChanged(new ArrayList<AdItem>());
+                    }
+                }catch (Exception ex){
+
+                }
+            }
+        }
+    }
+
     /**
      * 自动请求广告接口列表间隔时间
      */
@@ -107,6 +144,7 @@ public class ADListManager {
 //                    MyLog.i("调用广告数据成功:" + adListResponseData.getObj().size() + "条");
                     if(!lastStr.equals(responseData.getJsonValueString())){
                         saveListToLocation();
+                        sendEventToDataChangedListeners();
                     }else{
 //                        MyLog.i("广告数据接口请求成功，无需保存");
                     }
@@ -132,6 +170,7 @@ public class ADListManager {
             try {
                 adListResponseData = GsonUtil.gson.fromJson(locationStr,AdListResponseData.class);
                 downloadADFiles();
+                sendEventToDataChangedListeners();
             }catch (Exception ex){
 
             }

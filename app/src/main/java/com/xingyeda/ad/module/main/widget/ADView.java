@@ -21,9 +21,9 @@ import com.aliyun.player.IPlayer;
 import com.aliyun.player.bean.ErrorInfo;
 import com.aliyun.player.source.UrlSource;
 import com.xingyeda.ad.R;
-import com.xingyeda.ad.module.addata.ADListManager;
+
 import com.xingyeda.ad.module.addata.AdItem;
-import com.xingyeda.ad.module.addata.AdListResponseData;
+
 import com.xingyeda.ad.module.addata.DownloadManager;
 import com.xingyeda.ad.util.GlideUtil;
 import com.xingyeda.ad.util.MyLog;
@@ -41,8 +41,8 @@ import butterknife.ButterKnife;
 
 public class ADView extends CustomView {
 
-    public interface IADViewCallBack{
-        void playAd(String sourceID);
+    public interface IADDataSourceListener{
+        AdItem getNextAD(AdItem finishPlayItem);
     }
     //旋转角度
     private float rotation = 0;
@@ -60,14 +60,12 @@ public class ADView extends CustomView {
     private AliPlayer mAliyunVodPlayer;
     private Handler mHandler;
 
-    private IADViewCallBack iadViewCallBack;
+    private IADDataSourceListener dataSourceListener;
 
     private WeakReference<TextView> mWeakTvCountSecond; //显示倒计时的文字  用弱引用 防止内存泄漏
 
-
-
-    public void setIadViewCallBack(IADViewCallBack iadViewCallBack) {
-        this.iadViewCallBack = iadViewCallBack;
+    public void setDataSourceListener(IADDataSourceListener dataSourceListener) {
+        this.dataSourceListener = dataSourceListener;
     }
 
     public ADView(@NonNull Context context) {
@@ -195,6 +193,10 @@ public class ADView extends CustomView {
         countDownTimer.start();
     }
 
+    private void startCountDownTimer(){
+
+    }
+
 
     private void stopVideo() {
         if(mAliyunVodPlayer != null){
@@ -223,10 +225,11 @@ public class ADView extends CustomView {
         }
     }
 
-    private int currentShowAdIndex = -1;
+
     private CountDownTimer countDownTimer;
     private long lastTryToPlayNextAdTimeMillis = 0;
     private long currentADEndTimeMillis = 0;
+    private AdItem currentADItem = null;
     private synchronized void playNextAd() {
         //避免视频广告播放后 导致后续广告过来两处理回调异常  一个是定时器发出的 一个是播放结束发出的
         if(System.currentTimeMillis() - lastTryToPlayNextAdTimeMillis < 500){
@@ -234,20 +237,37 @@ public class ADView extends CustomView {
         }
         long delayTime = 0;
         mHandler.removeCallbacks(toNextAdRunnable);
-        AdItem adItem = getNextADItem();
+        AdItem adItem = null;
+        if(dataSourceListener != null){
+            adItem = dataSourceListener.getNextAD(currentADItem);
+        }
         if(isPause){
             adItem = null;
         }
-        if (adItem == null) {
+        currentADItem = adItem;
+        if (adItem == null) {//无广告，广告位是空的  则显示默认图片
             ivDefualt.setVisibility(View.VISIBLE);
             imageView.setVisibility(View.INVISIBLE);
             surfaceView.setVisibility(View.INVISIBLE);
             stopVideo();
             delayTime = 10000;
-        } else {
-            if(iadViewCallBack != null){
-                iadViewCallBack.playAd(adItem.getId() + "");
+        }else if(!adItem.isFileExsits(DownloadManager.getDownloadRootPath(getContext().getApplicationContext()))){
+            //有广告，但是广告还没下载完成
+            ivDefualt.setVisibility(View.INVISIBLE);
+            imageView.setVisibility(View.VISIBLE);
+            if(rotation == 0){
+                imageView.setImageResource(R.drawable.drawable_ad_loading);
+            }else if(rotation == 90){
+                imageView.setImageResource(R.drawable.drawable_ad_loading_90);
+            }else if(rotation == 180){
+                imageView.setImageResource(R.drawable.drawable_ad_loading_180);
+            }else if(rotation == 270){
+                imageView.setImageResource(R.drawable.drawable_ad_loading_270);
             }
+            surfaceView.setVisibility(View.INVISIBLE);
+            stopVideo();
+            delayTime = 10000;
+        } else {//广告已经下载完成了，可以正常显示了
             ivDefualt.setVisibility(View.INVISIBLE);
             if ("2".equals(adItem.getFiletype())) {
 //              等视频开始渲染了在隐藏图片控件
@@ -274,35 +294,7 @@ public class ADView extends CustomView {
             tvCountSecond.setTextColor(color);
         }
     }
-    private synchronized AdItem getNextADItem() {
-        AdItem adItem = null;
-        List<AdItem> tempAdItemList = new ArrayList<>();
-        AdListResponseData adListResponseData = ADListManager.getInstance(getContext()).getAdListResponseData();
 
-        if (adListResponseData != null && adListResponseData.getObj() != null) {
-            tempAdItemList.addAll(adListResponseData.getObj());
-        }
-        int tempShowIndex = -1;
-        for (int index = 0; index < tempAdItemList.size(); index++) {
-            AdItem tempAdItem = tempAdItemList.get(index);
-            if (index > currentShowAdIndex) {
-                if (tempAdItem.isFileExsits(DownloadManager.getDownloadRootPath(getContext()))) {
-                    adItem = tempAdItem;
-                    tempShowIndex = index;
-                    break;
-                }
-            } else {
-                if (adItem == null) {
-                    if (tempAdItem.isFileExsits(DownloadManager.getDownloadRootPath(getContext()))) {
-                        adItem = tempAdItem;
-                        tempShowIndex = index;
-                    }
-                }
-            }
-        }
-        currentShowAdIndex = tempShowIndex;
-        return adItem;
-    }
     private boolean isPause = false;
     public void resumeAD() {
         isPause = false;
