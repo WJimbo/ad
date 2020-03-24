@@ -134,7 +134,6 @@ public class OneADMainActivity extends BaseActivity {
         });
         requestList();
         onConnectionChanged(new ConnectChangedItem(CommandReceiveService.isConnected));
-        VersionManager.checkVersions(this);
     }
     private void requestList() {
         ADListManager.getInstance(getApplicationContext()).setNeedUpdateList();
