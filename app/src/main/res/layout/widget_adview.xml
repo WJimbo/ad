@@ -17,12 +17,14 @@
     </FrameLayout>
 
     <ImageView
-        android:visibility="invisible"
+        android:visibility="visible"
         android:id="@+id/imageView"
+        android:background="@color/Black"
         android:scaleType="fitXY"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     <ImageView
+        android:background="@color/Black"
         android:id="@+id/iv_Defualt"
         android:scaleType="fitXY"
         android:layout_width="match_parent"
@@ -30,13 +32,12 @@
 
     <TextView
         android:gravity="center"
-        android:padding="5dp"
         android:id="@+id/tv_CountSecond"
         android:textColor="@color/White"
         android:textSize="10sp"
         android:textStyle="bold"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
 
         android:layout_margin="5dp"
         android:background="#8000"

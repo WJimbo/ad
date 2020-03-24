@@ -20,14 +20,14 @@ import com.aliyun.player.AliPlayerFactory;
 import com.aliyun.player.IPlayer;
 import com.aliyun.player.bean.ErrorInfo;
 import com.aliyun.player.source.UrlSource;
-import com.xingyeda.ad.module.addata.ADListManager;
-import com.xingyeda.ad.module.addata.DownloadManager;
 import com.xingyeda.ad.R;
+import com.xingyeda.ad.module.addata.ADListManager;
+import com.xingyeda.ad.module.addata.AdItem;
+import com.xingyeda.ad.module.addata.AdListResponseData;
+import com.xingyeda.ad.module.addata.DownloadManager;
 import com.xingyeda.ad.util.GlideUtil;
 import com.xingyeda.ad.util.MyLog;
 import com.xingyeda.ad.util.RotateTransformation;
-import com.xingyeda.ad.module.addata.AdItem;
-import com.xingyeda.ad.module.addata.AdListResponseData;
 import com.zz9158.app.common.utils.LoggerHelper;
 import com.zz9158.app.common.widget.CustomView;
 
@@ -154,6 +154,7 @@ public class ADView extends CustomView {
                 public void onStateChanged(int i) {
                     if(i == IPlayer.started){
                         imageView.setVisibility(View.INVISIBLE);
+                        imageView.setImageDrawable(null);
                     }
                 }
             });
@@ -249,8 +250,7 @@ public class ADView extends CustomView {
             }
             ivDefualt.setVisibility(View.INVISIBLE);
             if ("2".equals(adItem.getFiletype())) {
-//                pic.setVisibility(View.VISIBLE);
-                imageView.setImageDrawable(null);
+//              等视频开始渲染了在隐藏图片控件
                 playLocalVideo(new File(DownloadManager.getDownloadRootPath(getContext()), adItem.getLocationFileName()));
             } else {
                 surfaceView.setVisibility(View.INVISIBLE);
