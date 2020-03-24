@@ -5,16 +5,16 @@ package com.xingyeda.ad.service;
  * 服务器命令
  */
 public class ServiceCommond {
-//    远程推送配置
+    //      远程推送配置
     public static String REMOTE_CONFIG = "M004";
-    //重启
+    //      重启
     public static String PC_RESTART = "M9527";
 
-    //更新广告 通告 绑定信息
+    //      更新广告 通告 绑定信息
     public static String RELOADIMG = "M148";
 
 
-    //更新设备
+    //      更新设备
     public static String UPDATE_DEVICE = "ME41";
 
     /**
