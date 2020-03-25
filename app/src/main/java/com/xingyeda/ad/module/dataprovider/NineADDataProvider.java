@@ -3,6 +3,7 @@ package com.xingyeda.ad.module.dataprovider;
 import android.content.Context;
 
 import com.xingyeda.ad.module.addata.AdItem;
+import com.xingyeda.ad.module.addata.DownloadManager;
 
 import java.util.ArrayList;
 
@@ -41,18 +42,32 @@ public class NineADDataProvider extends BaseADDataProvider {
                 for (int index = 0; index < mAdDataList.size(); index++) {
                     AdItem tempAdItem = mAdDataList.get(index);
                     if (index > currentShowAdIndex) {
-                        if (!currentShowADItemList.contains(tempAdItem)) {
+                        if(adItem == null){
+                            if (!currentShowADItemList.contains(tempAdItem)) {
+                                adItem = tempAdItem;
+                                tempShowIndex = index;
+                                if(adItem.isFileExsits()){
+                                    break;
+                                }
+                            }
+                        }else if(!adItem.isFileExsits()
+                                && tempAdItem.isFileExsits()
+                                && !currentShowADItemList.contains(tempAdItem)){
                             adItem = tempAdItem;
                             tempShowIndex = index;
                             break;
                         }
-
                     } else {
                         if (adItem == null) {
                             if (!currentShowADItemList.contains(tempAdItem)) {
                                 adItem = tempAdItem;
                                 tempShowIndex = index;
                             }
+                        }else if(!adItem.isFileExsits()
+                                && tempAdItem.isFileExsits()
+                                && !currentShowADItemList.contains(tempAdItem)){
+                            adItem = tempAdItem;
+                            tempShowIndex = index;
                         }
                     }
                 }

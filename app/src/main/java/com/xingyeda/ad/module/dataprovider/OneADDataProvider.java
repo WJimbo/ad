@@ -22,14 +22,14 @@ public class OneADDataProvider extends BaseADDataProvider {
             for (int index = 0; index < mAdDataList.size(); index++) {
                 AdItem tempAdItem = mAdDataList.get(index);
                 if (index > currentShowAdIndex) {
-                    if (tempAdItem.isFileExsits(DownloadManager.getDownloadRootPath(mContext))) {
+                    if (tempAdItem.isFileExsits()) {
                         adItem = tempAdItem;
                         tempShowIndex = index;
                         break;
                     }
                 } else {
                     if (adItem == null) {
-                        if (tempAdItem.isFileExsits(DownloadManager.getDownloadRootPath(mContext))) {
+                        if (tempAdItem.isFileExsits()) {
                             adItem = tempAdItem;
                             tempShowIndex = index;
                         }

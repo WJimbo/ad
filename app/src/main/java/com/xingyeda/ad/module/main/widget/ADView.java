@@ -263,7 +263,7 @@ public class ADView extends CustomView {
             stopVideo();
             delayTime = ((int)(Math.random() * 4 + 3)) * 1000;
 
-        }else if(!adItem.isFileExsits(DownloadManager.getDownloadRootPath(getContext().getApplicationContext()))){
+        }else if(!adItem.isFileExsits()){
             //有广告，但是广告还没下载完成
             ivDefualt.setVisibility(View.INVISIBLE);
             imageView.setVisibility(View.VISIBLE);
@@ -279,9 +279,9 @@ public class ADView extends CustomView {
             surfaceView.setVisibility(View.INVISIBLE);
             stopVideo();
             if("0".equals(adItem.getFiletype())){
-                delayTime = ((int)(Math.random() * 3 + 2)) * 1000;
+                delayTime = ((int)(Math.random() * 3 + 5)) * 1000;
             }else{
-                delayTime = ((int)(Math.random() * 5 + 2)) * 1000;
+                delayTime = ((int)(Math.random() * 5 + 5)) * 1000;
             }
             if(autoFadeInWhenNoAD){
                 setAlpha(0.3f);
@@ -298,7 +298,7 @@ public class ADView extends CustomView {
                 surfaceView.setVisibility(View.INVISIBLE);
                 imageView.setVisibility(View.VISIBLE);
                 stopVideo();
-                GlideUtil.loadImage(getContext(), adItem.locationFile(DownloadManager.getDownloadRootPath(getContext())),imageView,new RotateTransformation(getContext(),rotation));
+                GlideUtil.loadImage(getContext(), adItem.locationFile(),imageView,new RotateTransformation(getContext(),rotation));
             }
             delayTime = adItem.getDuration() * 1000;
         }

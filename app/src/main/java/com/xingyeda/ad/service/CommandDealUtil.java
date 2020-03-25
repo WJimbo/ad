@@ -18,6 +18,7 @@ import java.io.File;
 public class CommandDealUtil {
     public static void dealCommand(Context context, CommandMessageData commandMessageData){
         String command = commandMessageData.getCommond();
+        MyLog.i("Command received :" + command);
         if (ServiceCommond.UPDATE_DEVICE.equals(command))//更新设备
         {
             sendBroadcast(context,BroadCasetKeys.UPDATE_DEVICE);

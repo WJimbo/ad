@@ -85,6 +85,7 @@ public class StartActivity extends BaseActivity {
 
             @Override
             public void onFinish() {
+                MyLog.i("StartActivity finish");
                 if(SettingConfig.getADScreenNum(getApplicationContext()) == 9){
                     NineADMainActivity.startActivity(mContext);
                 }else{

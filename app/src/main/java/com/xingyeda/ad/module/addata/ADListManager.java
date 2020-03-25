@@ -70,6 +70,7 @@ public class ADListManager {
     private ADListManager(Context context){
         this.context = context;
         init();
+        AdItem.DownloadRootPath = DownloadManager.getDownloadRootPath(context);
         AdItem.VideoRotateAngle = SettingConfig.getScreenRotateAngle(context);
         readListFromLocation();
         //开始请求数据
@@ -177,22 +178,23 @@ public class ADListManager {
         }
     }
 
-    private void downloadADFiles(){
+    private synchronized void downloadADFiles(){
         if (adListResponseData != null && adListResponseData.getObj() != null) {
             List<AdItem> adItems = new ArrayList<>();
             adItems.addAll(adListResponseData.getObj());
+            List<DownloadManager.DownloadItem> downloadItemList = new ArrayList<>();
             for (AdItem adItem : adItems) {
                 //不支持视频模式的时候 过滤掉视频文件的下载
-                String downloadRootPath = DownloadManager.getDownloadRootPath(context);
-                if (!adItem.isFileExsits(downloadRootPath)) {
+                if (!adItem.isFileExsits()) {
                     DownloadManager.DownloadItem downloadItem = new DownloadManager.DownloadItem();
                     downloadItem.url = adItem.getFileUrl();
                     downloadItem.fileType = adItem.getFiletype();
-                    downloadItem.savePath = adItem.locationFile(downloadRootPath);
+                    downloadItem.savePath = adItem.locationFile();
                     downloadItem.videoRotateAngle =  AdItem.VideoRotateAngle;
-                    DownloadManager.getInstance().downloadWithUrl(downloadItem);
+                    downloadItemList.add(downloadItem);
                 }
             }
+            DownloadManager.getInstance().startDownLoadWithList(downloadItemList);
         }
     }
 }

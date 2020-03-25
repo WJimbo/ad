@@ -80,99 +80,109 @@ public class DownloadManager {
     private boolean isFileDownloading(DownloadItem downloadItem){
         return downloadingList.contains(downloadItem);
     }
-    public void downloadWithUrl(DownloadItem downloadItem){
-        if (!isFileDownloading(downloadItem)) {
-            downloadingList.add(downloadItem);
-            LogDebugUtil.appendLog("加入到视频下载队列：" + downloadItem.getTempDownloadPath());
-            startDownload(downloadItem);
-        }else{
-            LogDebugUtil.appendLog("已在下载队列中：" + downloadItem.getTempDownloadPath());
+
+    public void startDownLoadWithList(List<DownloadItem> list){
+        List<DownloadItem> needDownloadItemList = new ArrayList<>();
+        for(DownloadItem downloadItem : list){
+            if (!isFileDownloading(downloadItem)) {
+                downloadingList.add(downloadItem);
+                needDownloadItemList.add(downloadItem);
+                LogDebugUtil.appendLog("加入到视频下载队列：" + downloadItem.getTempDownloadPath());
+            }else{
+                LogDebugUtil.appendLog("已在下载队列中：" + downloadItem.getTempDownloadPath());
+            }
         }
-    }
+        if(needDownloadItemList.size() > 0){
+            final FileDownloadListener queueTarget =new FileDownloadListener() {
+                @Override
+                protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                    MyLog.d("开始下载文件:" + task.getUrl());
+                    LogDebugUtil.appendLog("开始下载文件:" + task.getUrl());
+                }
 
-    private void startDownload(final DownloadItem downloadItem){
-        FileDownloader.getImpl().create(downloadItem.url)
-                .setPath(downloadItem.getTempDownloadPath().getPath())
-                //.setForceReDownload(true)
-                .setAutoRetryTimes(5)
-                .setListener(new FileDownloadListener() {
-                    @Override
-                    protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-                        MyLog.d("开始下载文件:" + task.getUrl());
-                        LogDebugUtil.appendLog("开始下载文件:" + task.getUrl());
-                    }
+                @Override
+                protected void connected(BaseDownloadTask task, String etag, boolean isContinue, int soFarBytes, int totalBytes) {
+                    MyLog.d( "资源地址链接成功:" + task.getUrl());
+                }
 
-                    @Override
-                    protected void connected(BaseDownloadTask task, String etag, boolean isContinue, int soFarBytes, int totalBytes) {
-                        MyLog.d( "资源地址链接成功:" + task.getUrl());
-                    }
+                @Override
+                protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                }
 
-                    @Override
-                    protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-                    }
+                @Override
+                protected void blockComplete(BaseDownloadTask task) {
+                }
 
-                    @Override
-                    protected void blockComplete(BaseDownloadTask task) {
-                    }
+                @Override
+                protected void retry(final BaseDownloadTask task, final Throwable ex, final int retryingTimes, final int soFarBytes) {
+                }
 
-                    @Override
-                    protected void retry(final BaseDownloadTask task, final Throwable ex, final int retryingTimes, final int soFarBytes) {
-                    }
-
-                    //下载成功
-                    @Override
-                    protected void completed(BaseDownloadTask task) {
-                        MyLog.d("下载完成:" + task.getUrl());
-                        LogDebugUtil.appendLog("下载完成:" + task.getUrl());
-                        if("2".equals(downloadItem.fileType) && downloadItem.videoRotateAngle > 0){
-                            RotateVideoAsyncTask rotateVideoAsyncTask = new RotateVideoAsyncTask(downloadItem.getTempDownloadPath().getPath(),downloadItem.savePath.getPath(),downloadItem.videoRotateAngle);
-                            rotateVideoAsyncTask.setCallback(new RotateVideoAsyncTask.Callback() {
-                                @Override
-                                public void rotateVideoFinish(boolean success) {
-                                    LogDebugUtil.appendLog("视频旋转完成：" + downloadItem.savePath.getName());
-                                    downloadingList.remove(downloadItem);
-                                    ToolUtils.file().deleteFile(downloadItem.getTempDownloadPath());
-                                }
-                            });
-                            rotateVideoAsyncTask.execute();
-                        }else if("0".equals(downloadItem.fileType)){
-                            CompressImageAsyncTask compressImageAsyncTask = new CompressImageAsyncTask(context,downloadItem.getTempDownloadPath().getPath(),downloadItem.savePath.getPath());
-                            compressImageAsyncTask.setCallback(new CompressImageAsyncTask.Callback() {
-                                @Override
-                                public void compressImageFinish(boolean success) {
-                                    LogDebugUtil.appendLog("图片压缩完成：" + downloadItem.savePath.getName());
-                                    downloadingList.remove(downloadItem);
-                                    ToolUtils.file().deleteFile(downloadItem.getTempDownloadPath());
-                                }
-                            });
-                            compressImageAsyncTask.execute();
-                        }else{
-                            Tools.file().rename(downloadItem.getTempDownloadPath(),downloadItem.savePath.getName());
-                            downloadingList.remove(downloadItem);
-                        }
-
-                    }
-
-                    @Override
-                    protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-                    }
-
-                    @Override
-                    protected void error(BaseDownloadTask task, Throwable e) {
-                        MyLog.d("下载出错:" + task.getUrl() +"\n" + e.getMessage());
+                //下载成功
+                @Override
+                protected void completed(BaseDownloadTask task) {
+                    final DownloadItem downloadItem = (DownloadItem)task.getTag();
+                    MyLog.d("下载完成:" + task.getUrl());
+                    LogDebugUtil.appendLog("下载完成:" + task.getUrl());
+                    if("2".equals(downloadItem.fileType) && downloadItem.videoRotateAngle > 0){
+                        RotateVideoAsyncTask rotateVideoAsyncTask = new RotateVideoAsyncTask(downloadItem.getTempDownloadPath().getPath(),downloadItem.savePath.getPath(),downloadItem.videoRotateAngle);
+                        rotateVideoAsyncTask.setCallback(new RotateVideoAsyncTask.Callback() {
+                            @Override
+                            public void rotateVideoFinish(boolean success) {
+                                LogDebugUtil.appendLog("视频旋转完成：" + downloadItem.savePath.getName());
+                                downloadingList.remove(downloadItem);
+                                ToolUtils.file().deleteFile(downloadItem.getTempDownloadPath());
+                            }
+                        });
+                        rotateVideoAsyncTask.execute();
+                    }else if("0".equals(downloadItem.fileType)){
+                        CompressImageAsyncTask compressImageAsyncTask = new CompressImageAsyncTask(context,downloadItem.getTempDownloadPath().getPath(),downloadItem.savePath.getPath());
+                        compressImageAsyncTask.setCallback(new CompressImageAsyncTask.Callback() {
+                            @Override
+                            public void compressImageFinish(boolean success) {
+                                LogDebugUtil.appendLog("图片压缩完成：" + downloadItem.savePath.getName());
+                                downloadingList.remove(downloadItem);
+                                ToolUtils.file().deleteFile(downloadItem.getTempDownloadPath());
+                            }
+                        });
+                        compressImageAsyncTask.execute();
+                    }else{
+                        Tools.file().rename(downloadItem.getTempDownloadPath(),downloadItem.savePath.getName());
                         downloadingList.remove(downloadItem);
-                        LogDebugUtil.appendLog("下载出错:" + task.getUrl() +"\n" + e.getMessage());
                     }
 
-                    @Override
-                    protected void warn(BaseDownloadTask task) {
+                }
+
+                @Override
+                protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                }
+
+                @Override
+                protected void error(BaseDownloadTask task, Throwable e) {
+                    final DownloadItem downloadItem = (DownloadItem)task.getTag();
+                    MyLog.d("下载出错:" + task.getUrl() +"\n" + e.getMessage());
+                    downloadingList.remove(downloadItem);
+                    LogDebugUtil.appendLog("下载出错:" + task.getUrl() +"\n" + e.getMessage());
+                }
+
+                @Override
+                protected void warn(BaseDownloadTask task) {
 //                        continueDownLoad(task);
-                    }
-                }).start();
-    }
-    private void continueDownLoad(BaseDownloadTask task) {
-        while (task.getSmallFileSoFarBytes() != task.getSmallFileTotalBytes()) {
-            int percent = (int) ((double) task.getSmallFileSoFarBytes() / (double) task.getSmallFileTotalBytes() * 100);
+                }
+            };
+            for(DownloadItem downloadItem : needDownloadItemList){
+                FileDownloader.getImpl().create(downloadItem.url)
+                        .setPath(downloadItem.getTempDownloadPath().getPath())
+                        .setCallbackProgressTimes(0) // 由于是队列任务, 这里是我们假设了现在不需要每个任务都回调`FileDownloadListener#progress`, 我们只关系每个任务是否完成, 所以这里这样设置可以很有效的减少ipc.
+                        //.setForceReDownload(true)
+                        .setTag(downloadItem)
+                        .setAutoRetryTimes(2)
+                        .setListener(queueTarget)
+                        .asInQueueTask()
+                        .enqueue();
+            }
+            FileDownloader.getImpl().start(queueTarget, true);
         }
     }
+
+
 }

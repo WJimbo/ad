@@ -23,7 +23,7 @@ public class AdItem {
 //            "flagid": 11       //代表绑定类型的标识，广告绑定类型为区域时，标识值为市，广告绑定类型为设备时，标识值为设备的id
 //            "flietype" : 1	   //0: 图片 1 ：音频 2：视频
     public static float VideoRotateAngle = 0;
-
+    public static String DownloadRootPath = "";
     private int id;
     private String starttime;
     private String endtime;
@@ -61,11 +61,11 @@ public class AdItem {
         return fileUrl.hashCode() + ".unknow";
     }
 
-    public boolean isFileExsits(String rootPath){
-        return ToolUtils.file().isFileExists(new File(rootPath,getLocationFileName()));
+    public boolean isFileExsits(){
+        return ToolUtils.file().isFileExists(new File(DownloadRootPath,getLocationFileName()));
     }
-    public File locationFile(String rootPath){
-        return new File(rootPath,getLocationFileName());
+    public File locationFile(){
+        return new File(DownloadRootPath,getLocationFileName());
     }
 
     public String getMD5() {
