@@ -75,7 +75,7 @@ public class StartActivity extends BaseActivity {
                 SettingConfigManager.getInstance().startUpdateSettingTimer(getApplicationContext());
             }
         },waitTime / 2);
-        countDownTimer = new CountDownTimer(waitTime, 1000) {
+        countDownTimer = new CountDownTimer(waitTime, 300) {
             @Override
             public void onTick(long millisUntilFinished) {
                 if (infoTextView != null) {
