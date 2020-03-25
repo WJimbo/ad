@@ -1,12 +1,10 @@
 package com.xingyeda.ad.module.addata;
 import android.os.AsyncTask;
 
-
 import com.lansosdk.videoeditor.MediaInfo;
 import com.lansosdk.videoeditor.VideoEditor;
 import com.mazouri.tools.Tools;
 import com.xingyeda.ad.logdebug.LogDebugUtil;
-import com.zz9158.app.common.utils.LoggerHelper;
 
 import java.io.File;
 
@@ -71,7 +69,6 @@ public class RotateVideoAsyncTask extends AsyncTask<Object, Object, Boolean> {
                 dstAngle = info.vRotateAngle;
             }
             LogDebugUtil.appendLog("旋转视频成功,旋转后角度:"  + dstAngle);
-            LoggerHelper.i("旋转视频地址:" + dstVideo);
             Tools.file().deleteFile(dstPath);
             Tools.file().deleteFile(srcPath);
             Tools.file().moveFile(dstVideo, srcPath);

@@ -38,8 +38,8 @@
         android:textStyle="bold"
         android:layout_width="30dp"
         android:layout_height="30dp"
-
+        android:singleLine="true"
         android:layout_margin="5dp"
-        android:background="#8000"
+        android:background="#7000"
         android:text="" />
 </RelativeLayout>

@@ -46,11 +46,20 @@ public class NineADMainActivity extends BaseADActivity {
     }
 
     @Override
-    protected void initView(Bundle saveInstanceState) {
+    protected void initView(Bundle saveInstanceState,float screenAngle) {
         dataProvider = new NineADDataProvider(this);
         dataProvider.registerDataProvider();
         dataProvider.setMaxADViewNum(9);
-        adViewList = new ADView[]{adView1,adView2,adView3,adView4,adView5,adView6,adView7,adView8,adView9};
+        if(screenAngle == 90){
+            adViewList = new ADView[]{adView3,adView6,adView9,adView2,adView5,adView8,adView1,adView4,adView7};
+        }else if(screenAngle == 180){
+            adViewList = new ADView[]{adView9,adView8,adView7,adView6,adView5,adView4,adView3,adView2,adView1};
+        }else if(screenAngle == 270){
+            adViewList = new ADView[]{adView7,adView4,adView1,adView8,adView5,adView2,adView9,adView6,adView3};
+        }else{
+            adViewList = new ADView[]{adView1,adView2,adView3,adView4,adView5,adView6,adView7,adView8,adView9};
+        }
+
         for(int index = 0;index < adViewList.length;index++){
             final int tempIndex = index;
             //9广告位视频播放静音
@@ -61,6 +70,9 @@ public class NineADMainActivity extends BaseADActivity {
                     return dataProvider.getNextADItem(tempIndex,finishPlayItem);
                 }
             });
+            adViewList[index].setTvCountSecondSize(15,15);
+            adViewList[index].setTvCountSecondTextSize(6);
+            adViewList[index].setAutoFadeInWhenNoAD(true);
         }
     }
 

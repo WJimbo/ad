@@ -4,6 +4,8 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Debug;
 
+import com.zz9158.app.common.utils.LoggerHelper;
+
 import org.greenrobot.eventbus.EventBus;
 
 import java.text.SimpleDateFormat;
@@ -19,7 +21,7 @@ public class LogDebugUtil {
         int maxMemory = (int) (Runtime.getRuntime().maxMemory() * 1.0/ (1024 * 1024));
         //当前分配的总内存
         int totalMemory = (int) (Runtime.getRuntime().totalMemory() * 1.0/ (1024 * 1024));
-
+        LoggerHelper.i(logMessage);
         EventBus.getDefault().post(new LogDebugItem( currentDate()+"(" + getMemory() + "/" + maxMemory+  "):" + logMessage));
     }
 

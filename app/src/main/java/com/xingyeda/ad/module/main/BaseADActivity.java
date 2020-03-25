@@ -14,6 +14,7 @@ import com.xingyeda.ad.config.SettingConfig;
 import com.xingyeda.ad.logdebug.LogDebugItem;
 import com.xingyeda.ad.logdebug.LogDebugUtil;
 import com.xingyeda.ad.module.addata.ADListManager;
+import com.xingyeda.ad.service.socket.CommandReceiveService;
 import com.xingyeda.ad.service.socket.ConnectChangedItem;
 import com.xingyeda.ad.widget.SquareHeightRelativeLayout;
 import com.zz9158.app.common.utils.ToolUtils;
@@ -43,10 +44,11 @@ public abstract class BaseADActivity extends BaseActivity {
         EventBus.getDefault().register(this);
         setContentView(getLayout());
         unbinder = ButterKnife.bind(this);
-        initView(savedInstanceState);
+        initView(savedInstanceState,SettingConfig.getScreenRotateAngle(this));
         initTipsView();
         initDebugView();
         rotationViews(SettingConfig.getScreenRotateAngle(this));
+        onConnectionChanged(CommandReceiveService.isConnected);
         requestList();
     }
     private void requestList() {
@@ -87,7 +89,7 @@ public abstract class BaseADActivity extends BaseActivity {
     }
 
     protected abstract  @LayoutRes int getLayout();
-    protected abstract void initView(Bundle saveInstanceState);
+    protected abstract void initView(Bundle saveInstanceState,float screenAngle);
 
     protected abstract void rotationADViews(float rotateAngle);
 

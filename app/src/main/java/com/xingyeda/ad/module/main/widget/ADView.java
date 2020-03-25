@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -27,6 +28,7 @@ import com.xingyeda.ad.util.GlideUtil;
 import com.xingyeda.ad.util.MyLog;
 import com.xingyeda.ad.util.RotateTransformation;
 import com.zz9158.app.common.utils.LoggerHelper;
+import com.zz9158.app.common.utils.ToolUtils;
 import com.zz9158.app.common.widget.CustomView;
 
 import java.io.File;
@@ -41,6 +43,7 @@ public class ADView extends CustomView {
         AdItem getNextAD(AdItem finishPlayItem);
     }
     private boolean videoMute = false;//视频静音
+    private boolean autoFadeInWhenNoAD = false;//没有广告的时候 将控件Alpha设置低一些
     //旋转角度
     private float rotation = 0;
     @BindView(R.id.surfaceView)
@@ -63,6 +66,10 @@ public class ADView extends CustomView {
 
     public void setVideoMute(boolean videoMute) {
         this.videoMute = videoMute;
+    }
+
+    public void setAutoFadeInWhenNoAD(boolean autoFadeInWhenNoAD) {
+        this.autoFadeInWhenNoAD = autoFadeInWhenNoAD;
     }
 
     public void setDataSourceListener(IADDataSourceListener dataSourceListener) {
@@ -178,7 +185,7 @@ public class ADView extends CustomView {
                 if (mWeakTvCountSecond.get() != null) {
                     long lastSecond = (currentADEndTimeMillis - System.currentTimeMillis()) / 1000;
                     if(lastSecond >= 0 && lastSecond <= 1000){
-                        mWeakTvCountSecond.get().setText(lastSecond + "秒");
+                        mWeakTvCountSecond.get().setText(lastSecond + "");
                     }else{
                         mWeakTvCountSecond.get().setText("--");
                     }
@@ -249,8 +256,12 @@ public class ADView extends CustomView {
             ivDefualt.setVisibility(View.VISIBLE);
             imageView.setVisibility(View.INVISIBLE);
             surfaceView.setVisibility(View.INVISIBLE);
+            if(autoFadeInWhenNoAD){
+                setAlpha(0.1f);
+            }
             stopVideo();
-            delayTime = 10000;
+            delayTime = ((int)(Math.random() * 4 + 3)) * 1000;
+
         }else if(!adItem.isFileExsits(DownloadManager.getDownloadRootPath(getContext().getApplicationContext()))){
             //有广告，但是广告还没下载完成
             ivDefualt.setVisibility(View.INVISIBLE);
@@ -266,8 +277,18 @@ public class ADView extends CustomView {
             }
             surfaceView.setVisibility(View.INVISIBLE);
             stopVideo();
-            delayTime = 10000;
+            if("0".equals(adItem.getFiletype())){
+                delayTime = ((int)(Math.random() * 3 + 2)) * 1000;
+            }else{
+                delayTime = ((int)(Math.random() * 5 + 2)) * 1000;
+            }
+            if(autoFadeInWhenNoAD){
+                setAlpha(0.3f);
+            }
         } else {//广告已经下载完成了，可以正常显示了
+            if(autoFadeInWhenNoAD){
+                setAlpha(1);
+            }
             ivDefualt.setVisibility(View.INVISIBLE);
             if ("2".equals(adItem.getFiletype())) {
 //              等视频开始渲染了在隐藏图片控件
@@ -347,5 +368,14 @@ public class ADView extends CustomView {
         if(mHandler != null && toNextAdRunnable != null){
             mHandler.removeCallbacks(toNextAdRunnable);
         }
+    }
+    public void setTvCountSecondTextSize(int spTextSize){
+        tvCountSecond.setTextSize(ToolUtils.convert().sp2px(spTextSize));
+    }
+    public void setTvCountSecondSize(int widthDP,int heightDP){
+        ViewGroup.LayoutParams layoutParams = tvCountSecond.getLayoutParams();
+        layoutParams.height = ToolUtils.convert().dp2px(heightDP);
+        layoutParams.width = ToolUtils.convert().dp2px(widthDP);
+        tvCountSecond.setLayoutParams(layoutParams);
     }
 }

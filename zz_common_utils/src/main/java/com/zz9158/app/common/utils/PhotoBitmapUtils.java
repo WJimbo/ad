@@ -39,13 +39,16 @@ public class PhotoBitmapUtils {
     private PhotoBitmapUtils() {
     }
 
-
     public static File compressorFile(Context context, File file){
+        return compressorFile(context,file,100 * 1024,600,800,70);
+    }
+
+    public static File compressorFile(Context context, File file,int maxFileSize,int maxWidth,int maxHeight,int quality){
         try {
-            if(file.exists() && file.length() <= 100 * 1024){
+            if(file.exists() && file.length() <= maxFileSize){
                 return file;
             }
-            File zipFile = new Compressor(context).setMaxWidth(600).setMaxHeight(800).setQuality(70).setCompressFormat(Bitmap.CompressFormat.JPEG).compressToFile(file);
+            File zipFile = new Compressor(context).setMaxWidth(maxWidth).setMaxHeight(maxHeight).setQuality(quality).setCompressFormat(Bitmap.CompressFormat.JPEG).compressToFile(file);
             return zipFile;
         } catch (Exception e) {
             e.printStackTrace();

@@ -27,7 +27,7 @@ public class OneADMainActivity extends BaseADActivity {
         return R.layout.activity_main_one_ad;
     }
     @Override
-    protected void initView(Bundle saveInstanceState) {
+    protected void initView(Bundle saveInstanceState,float screenAngle) {
         dataProvider = new OneADDataProvider(this);
         dataProvider.registerDataProvider();
         adView.setDataSourceListener(new ADView.IADDataSourceListener() {

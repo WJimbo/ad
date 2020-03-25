@@ -9,7 +9,6 @@ import com.liulishuo.filedownloader.FileDownloader;
 import com.mazouri.tools.Tools;
 import com.xingyeda.ad.logdebug.LogDebugUtil;
 import com.xingyeda.ad.util.MyLog;
-import com.zz9158.app.common.utils.LoggerHelper;
 import com.zz9158.app.common.utils.ToolUtils;
 
 import java.io.File;
@@ -84,12 +83,10 @@ public class DownloadManager {
     public void downloadWithUrl(DownloadItem downloadItem){
         if (!isFileDownloading(downloadItem)) {
             downloadingList.add(downloadItem);
-            LoggerHelper.i("加入到视频下载队列：" + downloadItem.getTempDownloadPath());
             LogDebugUtil.appendLog("加入到视频下载队列：" + downloadItem.getTempDownloadPath());
             startDownload(downloadItem);
         }else{
             LogDebugUtil.appendLog("已在下载队列中：" + downloadItem.getTempDownloadPath());
-            LoggerHelper.i("已在下载队列中：" + downloadItem.getTempDownloadPath());
         }
     }
 
@@ -138,6 +135,17 @@ public class DownloadManager {
                                 }
                             });
                             rotateVideoAsyncTask.execute();
+                        }else if("0".equals(downloadItem.fileType)){
+                            CompressImageAsyncTask compressImageAsyncTask = new CompressImageAsyncTask(context,downloadItem.getTempDownloadPath().getPath(),downloadItem.savePath.getPath());
+                            compressImageAsyncTask.setCallback(new CompressImageAsyncTask.Callback() {
+                                @Override
+                                public void compressImageFinish(boolean success) {
+                                    LogDebugUtil.appendLog("图片压缩完成：" + downloadItem.savePath.getName());
+                                    downloadingList.remove(downloadItem);
+                                    ToolUtils.file().deleteFile(downloadItem.getTempDownloadPath());
+                                }
+                            });
+                            compressImageAsyncTask.execute();
                         }else{
                             Tools.file().rename(downloadItem.getTempDownloadPath(),downloadItem.savePath.getName());
                             downloadingList.remove(downloadItem);

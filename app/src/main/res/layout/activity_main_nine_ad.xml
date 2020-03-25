@@ -16,18 +16,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <com.xingyeda.ad.module.main.widget.ADView
+                android:layout_margin="2dp"
                 android:layout_weight="1"
                 android:id="@+id/adView1"
                 android:visibility="visible"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
             <com.xingyeda.ad.module.main.widget.ADView
+                android:layout_margin="2dp"
                 android:layout_weight="1"
                 android:id="@+id/adView2"
                 android:visibility="visible"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
             <com.xingyeda.ad.module.main.widget.ADView
+                android:layout_margin="2dp"
                 android:layout_weight="1"
                 android:id="@+id/adView3"
                 android:visibility="visible"
@@ -40,18 +43,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <com.xingyeda.ad.module.main.widget.ADView
+                android:layout_margin="2dp"
                 android:layout_weight="1"
                 android:id="@+id/adView4"
                 android:visibility="visible"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
             <com.xingyeda.ad.module.main.widget.ADView
+                android:layout_margin="2dp"
                 android:layout_weight="1"
                 android:id="@+id/adView5"
                 android:visibility="visible"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
             <com.xingyeda.ad.module.main.widget.ADView
+                android:layout_margin="2dp"
                 android:layout_weight="1"
                 android:id="@+id/adView6"
                 android:visibility="visible"
@@ -64,18 +70,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <com.xingyeda.ad.module.main.widget.ADView
+                android:layout_margin="2dp"
                 android:layout_weight="1"
                 android:id="@+id/adView7"
                 android:visibility="visible"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
             <com.xingyeda.ad.module.main.widget.ADView
+                android:layout_margin="2dp"
                 android:layout_weight="1"
                 android:id="@+id/adView8"
                 android:visibility="visible"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
             <com.xingyeda.ad.module.main.widget.ADView
+                android:layout_margin="2dp"
                 android:layout_weight="1"
                 android:id="@+id/adView9"
                 android:visibility="visible"
