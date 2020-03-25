@@ -11,7 +11,6 @@ import com.xingyeda.ad.module.dataprovider.NineADDataProvider;
 import com.xingyeda.ad.module.main.widget.ADView;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class NineADMainActivity extends BaseADActivity {
 
@@ -48,8 +47,8 @@ public class NineADMainActivity extends BaseADActivity {
 
     @Override
     protected void initView(Bundle saveInstanceState) {
-        dataProvider = new NineADDataProvider();
-        dataProvider.registerDataProvider(this);
+        dataProvider = new NineADDataProvider(this);
+        dataProvider.registerDataProvider();
         dataProvider.setMaxADViewNum(9);
         adViewList = new ADView[]{adView1,adView2,adView3,adView4,adView5,adView6,adView7,adView8,adView9};
         for(int index = 0;index < adViewList.length;index++){
@@ -57,7 +56,7 @@ public class NineADMainActivity extends BaseADActivity {
             adViewList[index].setDataSourceListener(new ADView.IADDataSourceListener() {
                 @Override
                 public AdItem getNextAD(AdItem finishPlayItem) {
-                    return dataProvider.getNextADItem(getApplicationContext(),tempIndex,finishPlayItem);
+                    return dataProvider.getNextADItem(tempIndex,finishPlayItem);
                 }
             });
         }
@@ -124,7 +123,7 @@ public class NineADMainActivity extends BaseADActivity {
             }
         }
         adViewList = null;
-        dataProvider.unRegisterDataProvider(this);
+        dataProvider.unRegisterDataProvider();
     }
 
 }

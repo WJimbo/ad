@@ -5,21 +5,26 @@ import android.content.Context;
 import com.xingyeda.ad.module.addata.ADListManager;
 import com.xingyeda.ad.module.addata.AdItem;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class BaseADDataProvider implements ADListManager.OnAdListChangedListener {
     protected ArrayList<AdItem> mAdDataList = new ArrayList<AdItem>();
     protected final Object lockObject = new Object();
-    public void registerDataProvider(Context context){
-        ADListManager.getInstance(context.getApplicationContext()).addOnAdListChangedListener(this);
+    protected Context mContext;
+    public BaseADDataProvider(Context context){
+        mContext = context.getApplicationContext();
+        if(ADListManager.getInstance(mContext).getAdListResponseData() != null){
+            if(ADListManager.getInstance(mContext).getAdListResponseData().getObj() != null){
+                mAdDataList.addAll(ADListManager.getInstance(mContext).getAdListResponseData().getObj());
+            }
+        }
     }
-    public void unRegisterDataProvider(Context context){
-        ADListManager.getInstance(context.getApplicationContext()).removeAdListChangedListener(this);
+    public void registerDataProvider(){
+        ADListManager.getInstance(mContext).addOnAdListChangedListener(this);
+    }
+    public void unRegisterDataProvider(){
+        ADListManager.getInstance(mContext).removeAdListChangedListener(this);
     }
 
     @Override

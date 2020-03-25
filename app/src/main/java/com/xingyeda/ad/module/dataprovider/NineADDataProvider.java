@@ -3,7 +3,6 @@ package com.xingyeda.ad.module.dataprovider;
 import android.content.Context;
 
 import com.xingyeda.ad.module.addata.AdItem;
-import com.xingyeda.ad.module.addata.DownloadManager;
 
 import java.util.ArrayList;
 
@@ -12,11 +11,15 @@ public class NineADDataProvider extends BaseADDataProvider {
     private ArrayList<AdItem> currentShowADItemList = new ArrayList<>();
     private int maxADViewNum = 9;
 
+    public NineADDataProvider(Context context) {
+        super(context);
+    }
+
     public void setMaxADViewNum(int maxADViewNum) {
         this.maxADViewNum = maxADViewNum;
     }
 
-    public AdItem getNextADItem(Context context, int defaultIndex,AdItem showItem) {
+    public AdItem getNextADItem(int defaultIndex,AdItem showItem) {
         synchronized (lockObject){
             if(mAdDataList == null){
                 return null;

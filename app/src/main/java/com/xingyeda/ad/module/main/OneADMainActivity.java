@@ -28,12 +28,12 @@ public class OneADMainActivity extends BaseADActivity {
     }
     @Override
     protected void initView(Bundle saveInstanceState) {
-        dataProvider = new OneADDataProvider();
-        dataProvider.registerDataProvider(this);
+        dataProvider = new OneADDataProvider(this);
+        dataProvider.registerDataProvider();
         adView.setDataSourceListener(new ADView.IADDataSourceListener() {
             @Override
             public AdItem getNextAD(AdItem finishPlayItem) {
-                return dataProvider.getNextADItem(getApplicationContext());
+                return dataProvider.getNextADItem();
             }
         });
     }
@@ -76,6 +76,6 @@ public class OneADMainActivity extends BaseADActivity {
     protected void onDestroy() {
         super.onDestroy();
         adView.onDestroy();
-        dataProvider.unRegisterDataProvider(this);
+        dataProvider.unRegisterDataProvider();
     }
 }

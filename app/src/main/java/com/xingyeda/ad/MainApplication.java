@@ -19,8 +19,8 @@ public class MainApplication extends Application {
         super.onCreate();
         if(BuildConfig.DEBUG){
 //            DeviceUUIDManager.setUUID("6c21a218fb77");
-            DeviceUUIDManager.setUUID("73e4a4fda9a9f73c");
-//            DeviceUUIDManager.setUUID("c44cede2765a169b");
+//            DeviceUUIDManager.setUUID("73e4a4fda9a9f73c");
+            DeviceUUIDManager.setUUID("c44cede2765a169b");
         }
         if(ApplicationUtil.isMainProcess(this)) {
             ToolUtils.init(this);
