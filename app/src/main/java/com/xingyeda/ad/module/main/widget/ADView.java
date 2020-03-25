@@ -93,12 +93,7 @@ public class ADView extends CustomView {
         return R.layout.widget_adview;
     }
 
-    private Runnable toNextAdRunnable = new Runnable() {
-        @Override
-        public void run() {
-            playNextAd();
-        }
-    };
+    private Runnable toNextAdRunnable;
 
     @Override
     protected void initView() {
@@ -166,7 +161,7 @@ public class ADView extends CustomView {
             });
 
             mAliyunVodPlayer.setDisplay(surfaceView.getHolder());
-            mHandler.postDelayed(toNextAdRunnable, 2 * 1000);
+
         }catch (Exception ex){
             MyLog.i("ADView---> Exception:" + ex.getMessage());
         }catch (Error error){
@@ -199,12 +194,14 @@ public class ADView extends CustomView {
             }
         };
         countDownTimer.start();
+        toNextAdRunnable = new Runnable() {
+            @Override
+            public void run() {
+                playNextAd();
+            }
+        };
+        mHandler.postDelayed(toNextAdRunnable, 1 * 1000);
     }
-
-    private void startCountDownTimer(){
-
-    }
-
 
     private void stopVideo() {
         if(mAliyunVodPlayer != null){
@@ -319,8 +316,10 @@ public class ADView extends CustomView {
 
     private boolean isPause = false;
     public void resumeAD() {
-        isPause = false;
-        playNextAd();
+        if(isPause){
+            isPause = false;
+            playNextAd();
+        }
     }
 
     public void pauseAD() {
