@@ -21,9 +21,7 @@ import com.aliyun.player.IPlayer;
 import com.aliyun.player.bean.ErrorInfo;
 import com.aliyun.player.source.UrlSource;
 import com.xingyeda.ad.R;
-
 import com.xingyeda.ad.module.addata.AdItem;
-
 import com.xingyeda.ad.module.addata.DownloadManager;
 import com.xingyeda.ad.util.GlideUtil;
 import com.xingyeda.ad.util.MyLog;
@@ -33,8 +31,6 @@ import com.zz9158.app.common.widget.CustomView;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,6 +40,7 @@ public class ADView extends CustomView {
     public interface IADDataSourceListener{
         AdItem getNextAD(AdItem finishPlayItem);
     }
+    private boolean videoMute = false;//视频静音
     //旋转角度
     private float rotation = 0;
     @BindView(R.id.surfaceView)
@@ -63,6 +60,10 @@ public class ADView extends CustomView {
     private IADDataSourceListener dataSourceListener;
 
     private WeakReference<TextView> mWeakTvCountSecond; //显示倒计时的文字  用弱引用 防止内存泄漏
+
+    public void setVideoMute(boolean videoMute) {
+        this.videoMute = videoMute;
+    }
 
     public void setDataSourceListener(IADDataSourceListener dataSourceListener) {
         this.dataSourceListener = dataSourceListener;
@@ -213,10 +214,9 @@ public class ADView extends CustomView {
         if(mAliyunVodPlayer != null){
             mAliyunVodPlayer.setLoop(false);
             mAliyunVodPlayer.setAutoPlay(true);
-
             UrlSource urlSource = new UrlSource();
             urlSource.setUri(path);
-
+            mAliyunVodPlayer.setMute(videoMute);
             mAliyunVodPlayer.setDataSource(urlSource);
             mAliyunVodPlayer.prepare();
             mAliyunVodPlayer.start();

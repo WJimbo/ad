@@ -53,6 +53,8 @@ public class NineADMainActivity extends BaseADActivity {
         adViewList = new ADView[]{adView1,adView2,adView3,adView4,adView5,adView6,adView7,adView8,adView9};
         for(int index = 0;index < adViewList.length;index++){
             final int tempIndex = index;
+            //9广告位视频播放静音
+            adViewList[index].setVideoMute(true);
             adViewList[index].setDataSourceListener(new ADView.IADDataSourceListener() {
                 @Override
                 public AdItem getNextAD(AdItem finishPlayItem) {
