@@ -245,13 +245,14 @@ public class ADView extends CustomView {
         long delayTime = 0;
         mHandler.removeCallbacks(toNextAdRunnable);
         AdItem adItem = null;
-        if(dataSourceListener != null){
-            adItem = dataSourceListener.getNextAD(currentADItem);
-        }
         if(isPause){
             adItem = null;
+        }else{
+            if(dataSourceListener != null){
+                adItem = dataSourceListener.getNextAD(currentADItem);
+            }
+            currentADItem = adItem;
         }
-        currentADItem = adItem;
         if (adItem == null) {//无广告，广告位是空的  则显示默认图片
             ivDefualt.setVisibility(View.VISIBLE);
             imageView.setVisibility(View.INVISIBLE);

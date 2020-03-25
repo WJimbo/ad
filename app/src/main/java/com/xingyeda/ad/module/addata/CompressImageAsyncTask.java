@@ -39,7 +39,7 @@ public class CompressImageAsyncTask extends AsyncTask<Object, Object,Boolean> {
         LogDebugUtil.appendLog("开始压缩图片:" + srcPath);
         ToolUtils.file().deleteFile(dstPath);
         if(srcFile.exists()){
-            File zipFile = PhotoBitmapUtils.compressorFile(mContext,srcFile,300 * 1024,1000,1600,100);
+            File zipFile = PhotoBitmapUtils.compressorFile(mContext,srcFile,300 * 1024,1000,1600,80);
             if(srcFile == zipFile){//无需压缩 直接改文件名字
                 LogDebugUtil.appendLog("图片无需压缩:" + srcPath);
                 Tools.file().rename(srcPath,(new File(dstPath).getName()));

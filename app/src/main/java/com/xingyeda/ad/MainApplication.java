@@ -5,6 +5,7 @@ import android.app.Application;
 
 import com.lansosdk.videoeditor.LanSoEditor;
 import com.liulishuo.filedownloader.FileDownloader;
+import com.xingyeda.ad.module.addata.DownloadManager;
 import com.xingyeda.ad.util.CrashHandler;
 import com.xingyeda.ad.util.MyLog;
 import com.zz9158.app.common.utils.ApplicationUtil;
@@ -22,6 +23,7 @@ public class MainApplication extends Application {
 //            DeviceUUIDManager.setUUID("c44cede2765a169b");
         }
         if(ApplicationUtil.isMainProcess(this)) {
+            DownloadManager.getInstance().setContext(this);
             ToolUtils.init(this);
             LoggerHelper.init();
             MyLog.getInstance(this);
