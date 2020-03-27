@@ -19,12 +19,13 @@ public class URLConfig {
     private static final String DOMAIN_HOST_PATH = "/servlet/";
     //上传日志
     public static final String UPLOAD_LOG = "submitLog";
-    //用户设置
+    //设备配置
     public static final String USERSET_PATH = "econfig";
+    //检测更新版本
     public static final String CHECK_NEW_VERSION = "getServerVersionByAD";
-
+    //获取广告数据
     public static final String REQUEST_AD_LIST = "GetAdversitingByMac/R";
-
+    //提交mac地址到后台
     public static final String BIND_EQ_BY_MAC = "insertEqByMac/C";
 
     //获取地址
