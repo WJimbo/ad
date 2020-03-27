@@ -36,10 +36,10 @@
         android:textColor="@color/White"
         android:textSize="10sp"
         android:textStyle="bold"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:singleLine="true"
         android:layout_margin="5dp"
-        android:background="#7000"
-        android:text="" />
+        android:background="@drawable/shape_circle_black_alpha7"
+        android:text="9" />
 </RelativeLayout>
