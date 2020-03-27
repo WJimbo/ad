@@ -69,14 +69,12 @@ public class NineADDataProvider extends BaseADDataProvider {
                         }
                     }
                 }
+                currentShowAdIndex = tempShowIndex;
             }
             if(adItem != null){//广告显示出去了  就加入到已经显示的队列中  其他广告位播放完就不会抓这个广告了，避免一个广告同时出现
                 currentShowADItemList.add(adItem);
             }
-            currentShowAdIndex++;
-            if(currentShowAdIndex >= mAdDataList.size()){
-                currentShowAdIndex = -1;
-            }
+
             return adItem;
         }
     }
