@@ -3,7 +3,6 @@ package com.xingyeda.ad.module.dataprovider;
 import android.content.Context;
 
 import com.xingyeda.ad.module.addata.AdItem;
-import com.xingyeda.ad.module.addata.DownloadManager;
 
 import java.util.ArrayList;
 
@@ -50,8 +49,7 @@ public class NineADDataProvider extends BaseADDataProvider {
                                     break;
                                 }
                             }
-                        }else if(!adItem.isFileExsits()
-                                && tempAdItem.isFileExsits()
+                        }else if(tempAdItem.isFileExsits()
                                 && !currentShowADItemList.contains(tempAdItem)){
                             adItem = tempAdItem;
                             tempShowIndex = index;
@@ -71,12 +69,14 @@ public class NineADDataProvider extends BaseADDataProvider {
                         }
                     }
                 }
-                currentShowAdIndex = tempShowIndex;
             }
             if(adItem != null){//广告显示出去了  就加入到已经显示的队列中  其他广告位播放完就不会抓这个广告了，避免一个广告同时出现
                 currentShowADItemList.add(adItem);
             }
-
+            currentShowAdIndex++;
+            if(currentShowAdIndex >= mAdDataList.size()){
+                currentShowAdIndex = -1;
+            }
             return adItem;
         }
     }
