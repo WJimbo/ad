@@ -1,4 +1,4 @@
-package com.xingyeda.ad.service;
+package com.xingyeda.ad.module.logger;
 
 import android.content.Context;
 

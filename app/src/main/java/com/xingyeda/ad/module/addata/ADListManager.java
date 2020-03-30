@@ -62,7 +62,7 @@ public class ADListManager {
     /**
      * 自动请求广告接口列表间隔时间
      */
-    private static final long AUTO_REQUEST_ADLIST_TIME = 5 * 60 * 1000;
+    private static final long AUTO_REQUEST_ADLIST_TIME = 2 * 60 * 1000;
 
     private static ADListManager instance;
     private AdListResponseData adListResponseData;

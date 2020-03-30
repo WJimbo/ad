@@ -5,6 +5,7 @@ import android.app.Application;
 
 import com.lansosdk.videoeditor.LanSoEditor;
 import com.liulishuo.filedownloader.FileDownloader;
+import com.xingyeda.ad.config.DeviceUUIDManager;
 import com.xingyeda.ad.module.addata.DownloadManager;
 import com.xingyeda.ad.util.CrashHandler;
 import com.xingyeda.ad.util.MyLog;
@@ -22,6 +23,7 @@ public class MainApplication extends Application {
 //            DeviceUUIDManager.setUUID("6c21a218fb77");
 //            DeviceUUIDManager.setUUID("73e4a4fda9a9f73c");
 //            DeviceUUIDManager.setUUID("c44cede2765a169b");
+            DeviceUUIDManager.setUUID("10d07a031686");
         }
         if(ApplicationUtil.isMainProcess(this)) {
             TokenMananger.getInstance().init(this,"admin","1");

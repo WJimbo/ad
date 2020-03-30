@@ -1,6 +1,7 @@
 package com.xingyeda.ad.util.httputil;
 
 
+import com.zz9158.app.common.utils.LoggerHelper;
 import com.zz9158.app.common.utils.http.BaseResponseData;
 import com.zz9158.app.common.utils.http.HttpRequestModel;
 
@@ -20,8 +21,9 @@ public class TokenHttpRequestModel{
                     if(success){
                         requestData.setToken(token);
                         HttpRequestModel.asynRequestData(requestData,dataModelClass,listener);
+                    }else {
+                        LoggerHelper.i("获取TOKEN失败，无法进行后续接口访问：" + requestData.getRequestURL());
                     }
-
                 }
             });
         }else{

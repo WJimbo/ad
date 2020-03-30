@@ -1,6 +1,7 @@
 package com.xingyeda.ad.util.httputil;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.xingyeda.ad.config.URLConfig;
 import com.zz9158.app.common.utils.ToolUtils;
@@ -8,24 +9,35 @@ import com.zz9158.app.common.utils.http.BaseRequestData;
 import com.zz9158.app.common.utils.http.BaseResponseData;
 import com.zz9158.app.common.utils.http.HttpRequestModel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TokenMananger {
     public interface CallBack{
         void getToken(boolean success,String token);
     }
+
+    private List<CallBack> callBackList = new ArrayList<>();
+    private static final Object lockObject = new Object();
     private static TokenMananger instance;
     private String token = "";
     private long tokenExpire = 0;
-
-    public void getToken(CallBack callBack){
+    private boolean isRequestToken = false;
+    public void getToken(@NonNull CallBack callBack){
         if(!ToolUtils.string().isEmpty(token) && System.currentTimeMillis() < tokenExpire){
-            if(callBack != null){
-                callBack.getToken(true,token);
-            }
+            callBack.getToken(true,token);
         }else{
-            requestToken(mContext,callBack);
+            synchronized (lockObject){
+                if(!ToolUtils.string().isEmpty(token) && System.currentTimeMillis() < tokenExpire){
+                    callBack.getToken(true,token);
+                }else{
+                    callBackList.add(callBack);
+                    requestToken(mContext);
+                }
+            }
+
         }
     }
 
@@ -42,19 +54,18 @@ public class TokenMananger {
         this.loginName = loginName;
         this.password = password;
         this.mContext = context.getApplicationContext();
-        requestToken(mContext,null);
+        requestToken(mContext);
     }
-    private void requestToken(Context context, final CallBack callBack){
+    private synchronized void requestToken(Context context){
+        if(isRequestToken){
+            return;
+        }
+        isRequestToken = true;
         HttpRequestData requestData = new HttpRequestData();
         requestData.setEnableToken(false);
         requestData.setRequestURL(URLConfig.getPath(context,URLConfig.GET_LOGIN_USER_TOKEN));
         requestData.setRequestMode(BaseRequestData.RequestModeType.POST);
         requestData.setMediaType(BaseRequestData.JSON);
-        Map map = new HashMap();
-        map.put("name",loginName);
-        map.put("pwd",password);
-        map.put("type","3");
-        requestData.addBody("loginDTO",map);
         requestData.addBody("name",loginName);
         requestData.addBody("pwd",password);
         requestData.addBody("type","3");
@@ -65,14 +76,11 @@ public class TokenMananger {
                     TokenResponseData tokenResponseData = (TokenResponseData)baseResponseData;
                     token = tokenResponseData.data.token;
                     tokenExpire = System.currentTimeMillis() + tokenResponseData.data.tokenExpire;
-                    if(callBack != null){
-                        callBack.getToken(true,token);
-                    }
+                    notifyToAllCallBack(true,token);
                 }else{
-                    if(callBack != null){
-                        callBack.getToken(false,token);
-                    }
+                    notifyToAllCallBack(false,token);
                 }
+                isRequestToken = false;
             }
 
             @Override
@@ -85,6 +93,16 @@ public class TokenMananger {
 
             }
         });
+    }
+    private void notifyToAllCallBack(boolean result,String token){
+        synchronized (lockObject){
+            ArrayList<CallBack> callBacks = new ArrayList<>();
+            callBacks.addAll(callBackList);
+            for(CallBack callBack : callBacks){
+                callBackList.remove(callBack);
+                callBack.getToken(result,token);
+            }
+        }
     }
 
     class TokenResponseData extends HttpObjResponseData{
