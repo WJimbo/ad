@@ -105,7 +105,7 @@ public abstract class BaseADActivity extends BaseActivity {
             tips.setVisibility(SettingConfig.isShowDebugView(this) ? View.VISIBLE:View.GONE);
 
             tips.setText("MAC:" + DeviceUUIDManager.generateUUID(this)
-                    + " 版本信息:" + ToolUtils.getVersionCode(this)
+                    + " 版本信息:" + ToolUtils.getVersionName(this) + "_" +ToolUtils.getVersionCode(this)
                     + "\n启动时间:" + SimpleDateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM).format(new Date()));
         }
     }

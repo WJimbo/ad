@@ -7,18 +7,25 @@ import java.util.Map;
  */
 
 public class BaseResponseData {
-    private String errorMsg;
     private int response_status;//请求状态
-    protected Map<String, Object> returnMap;
-    protected String jsonValueString = "";
+    private String errorMsg;
+    private Map<String, Object> returnMap;
+    private String jsonValueString = "";
 
-    public String getJsonValueString() {
-        return jsonValueString;
+
+    void setResponseModelFromMap(Map<String, Object> map,String jsonValueString) {
+        try {
+            this.returnMap = map;
+            this.jsonValueString = jsonValueString;
+            initData(map);
+        }catch (Exception ex){
+            this.response_status = HTTP_RESPONSE_STATUS.OPERATIONERROR;
+            this.setErrorMsg("数据处理异常");
+        }
     }
 
-    public void setResponseModelFromMap(Map<String, Object> map, String jsonValueString) {
-        this.returnMap = map;
-        this.jsonValueString = jsonValueString;
+    protected void initData(Map<String,Object> map){
+
     }
     public boolean isOperationSuccess(){
         return response_status == HTTP_RESPONSE_STATUS.OK;
@@ -31,11 +38,28 @@ public class BaseResponseData {
         this.response_status = response_status;
     }
 
-    public String getErrorMsg() {
-        return errorMsg;
+
+    public Map<String, Object> getReturnMap() {
+        return returnMap;
+    }
+
+    public void setReturnMap(Map<String, Object> returnMap) {
+        this.returnMap = returnMap;
+    }
+
+    public String getJsonValueString() {
+        return jsonValueString;
+    }
+
+    public void setJsonValueString(String jsonValueString) {
+        this.jsonValueString = jsonValueString;
     }
 
     public void setErrorMsg(String errorMsg) {
         this.errorMsg = errorMsg;
+    }
+
+    public String getErrorMsg() {
+        return errorMsg;
     }
 }

@@ -33,18 +33,38 @@ public class ToolUtils extends Tools {
         }
         return content;
     }
-    /*
-获取版本号
-*/
-    public static int getVersionCode(Context context) {
-        int versionCode = 0;
+    /**
+     * [获取应用程序版本名称信息]
+     * @param context
+     * @return 当前应用的版本名称
+     */
+    public static synchronized String getVersionName(Context context) {
         try {
-            PackageManager manager = context.getPackageManager();
-            PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
-            versionCode = info.versionCode;
+            PackageManager packageManager = context.getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageInfo(
+                    context.getPackageName(), 0);
+            return packageInfo.versionName;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return versionCode;
+        return null;
+    }
+
+
+    /**
+     * [获取应用程序版本名称信息]
+     * @param context
+     * @return 当前应用的版本名称
+     */
+    public static synchronized int getVersionCode(Context context) {
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageInfo(
+                    context.getPackageName(), 0);
+            return packageInfo.versionCode;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }

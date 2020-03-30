@@ -10,6 +10,8 @@ import com.xingyeda.ad.config.DeviceUUIDManager;
 import com.xingyeda.ad.config.SettingConfig;
 import com.xingyeda.ad.config.URLConfig;
 import com.xingyeda.ad.logdebug.LogDebugUtil;
+import com.xingyeda.ad.util.httputil.HttpRequestData;
+import com.xingyeda.ad.util.httputil.TokenHttpRequestModel;
 import com.zz9158.app.common.utils.GsonUtil;
 import com.zz9158.app.common.utils.http.BaseRequestData;
 import com.zz9158.app.common.utils.http.BaseResponseData;
@@ -126,24 +128,25 @@ public class ADListManager {
         }
         LogDebugUtil.appendLog("正在开始调用广告数据");
         isUpdatingList = true;
-        final BaseRequestData requestData = new BaseRequestData();
+        final HttpRequestData requestData = new HttpRequestData();
         requestData.setRequestURL(URLConfig.getPath(context, URLConfig.REQUEST_AD_LIST));
-        requestData.setRequestMode(BaseRequestData.RequestModeType.GET);
+        requestData.setRequestMode(BaseRequestData.RequestModeType.POST);
+        requestData.setEnableToken(true);
         requestData.addRequestParams("mac", DeviceUUIDManager.generateUUID(context));
-        HttpRequestModel.asynRequestData(requestData, AdListResponseData.class, new HttpRequestModel.OnLYHttpRequestResponseListener() {
+        TokenHttpRequestModel.asynTokenRequestData(requestData, AdListResponseData.class, new HttpRequestModel.RequestCallBack() {
             @Override
-            public void onResponse(BaseResponseData responseData) {
+            public void onResponseMainThread(BaseResponseData baseResponseData) {
                 isUpdatingList = false;
-                if(responseData.isOperationSuccess()){
+                if(baseResponseData.isOperationSuccess()){
                     AdItem.VideoRotateAngle = SettingConfig.getScreenRotateAngle(context);
                     String lastStr = "";
                     if(adListResponseData != null && adListResponseData.getJsonValueString() != null){
                         lastStr = adListResponseData.getJsonValueString();
                     }
-                    adListResponseData = (AdListResponseData)responseData;
+                    adListResponseData = (AdListResponseData)baseResponseData;
                     LogDebugUtil.appendLog("调用广告数据成功:" + adListResponseData.getObj().size() + "条");
 //                    MyLog.i("调用广告数据成功:" + adListResponseData.getObj().size() + "条");
-                    if(!lastStr.equals(responseData.getJsonValueString())){
+                    if(!lastStr.equals(baseResponseData.getJsonValueString())){
                         saveListToLocation();
                         sendEventToDataChangedListeners();
                     }else{
@@ -151,8 +154,18 @@ public class ADListManager {
                     }
                     downloadADFiles();
                 }else{
-                    LogDebugUtil.appendLog("调用广告数据失败:" + responseData.getErrorMsg());
+                    LogDebugUtil.appendLog("调用广告数据失败:" + baseResponseData.getErrorMsg());
                 }
+            }
+
+            @Override
+            public void onResponseBackgroundThread(BaseResponseData baseResponseData) {
+
+            }
+
+            @Override
+            public void dealBusinessError(boolean errorInMainThread, Exception ex) {
+
             }
         });
     }

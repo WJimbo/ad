@@ -1,73 +1,156 @@
 package com.xingyeda.ad.module.versionmanager;
 
 
-import com.xingyeda.ad.util.httputil.HttpStringResponseData;
+import com.xingyeda.ad.util.httputil.HttpObjResponseData;
 
-import java.util.List;
 import java.util.Map;
 
 /**
  * @author tangyongx
  * @date 2018-12-12
  */
-public class AppVersionResponseData extends HttpStringResponseData {
-    private AppVersionBean appVersionBean;
+public class AppVersionResponseData extends HttpObjResponseData {
+    private AppVersionBean data;
 
-    public AppVersionBean getAppVersionBean() {
-        return appVersionBean;
+    public AppVersionBean getData() {
+        return data;
     }
 
+    public void setData(AppVersionBean data) {
+        this.data = data;
+    }
+
+
     @Override
-    public void setResponseModelFromMap(Map<String, Object> map, String jsonValueString) {
-        super.setResponseModelFromMap(map, jsonValueString);
-        appVersionBean = (AppVersionBean)stringToObject(this,AppVersionBean.class);
+    protected void initData(Map<String, Object> map) {
+        super.initData(map);
     }
 
     // FIXME generate failure  field _$Files168
     static class AppVersionBean{
 
         /**
-         * ServerURL  :
-         *  files  : [{"fileName":"app-signed-sdk23-android51.apk","version":"2.0"}]
-         * updateTime : 2016-07-07 12:13:20
-         * versionNumber : 4
+         * createAt :
+         * createBy : 0
+         * deleted : true
+         * devicesVersion :
+         * downloadUrl :
+         * id : 0
+         * isMaster : 0
+         * md5 :
+         * types : 0
+         * updateAt :
+         * updateBy : 0
+         * version : 0
          */
 
-        private String ServerURL;
-        private String updateTime;
-        private int versionNumber;
-        private List<FileItem> files;
+        private String createAt;
+        private int createBy;
+        private boolean deleted;
+        private String devicesVersion;
+        private String downloadUrl;
+        private int id;
+        private int isMaster;
+        private String md5;
+        private int types;
+        private String updateAt;
+        private int updateBy;
+        private int version;
 
-        public List<FileItem> getFiles() {
-            return files;
+        public String getCreateAt() {
+            return createAt;
         }
 
-        public void setFiles(List<FileItem> files) {
-            this.files = files;
+        public void setCreateAt(String createAt) {
+            this.createAt = createAt;
         }
 
-        public String getServerURL() {
-            return ServerURL;
+        public int getCreateBy() {
+            return createBy;
         }
 
-        public void setServerURL(String ServerURL) {
-            this.ServerURL = ServerURL;
+        public void setCreateBy(int createBy) {
+            this.createBy = createBy;
         }
 
-        public String getUpdateTime() {
-            return updateTime;
+        public boolean isDeleted() {
+            return deleted;
         }
 
-        public void setUpdateTime(String updateTime) {
-            this.updateTime = updateTime;
+        public void setDeleted(boolean deleted) {
+            this.deleted = deleted;
         }
 
-        public int getVersionNumber() {
-            return versionNumber;
+        public String getDevicesVersion() {
+            return devicesVersion;
         }
 
-        public void setVersionNumber(int versionNumber) {
-            this.versionNumber = versionNumber;
+        public void setDevicesVersion(String devicesVersion) {
+            this.devicesVersion = devicesVersion;
+        }
+
+        public String getDownloadUrl() {
+            return downloadUrl;
+        }
+
+        public void setDownloadUrl(String downloadUrl) {
+            this.downloadUrl = downloadUrl;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public int getIsMaster() {
+            return isMaster;
+        }
+
+        public void setIsMaster(int isMaster) {
+            this.isMaster = isMaster;
+        }
+
+        public String getMd5() {
+            return md5;
+        }
+
+        public void setMd5(String md5) {
+            this.md5 = md5;
+        }
+
+        public int getTypes() {
+            return types;
+        }
+
+        public void setTypes(int types) {
+            this.types = types;
+        }
+
+        public String getUpdateAt() {
+            return updateAt;
+        }
+
+        public void setUpdateAt(String updateAt) {
+            this.updateAt = updateAt;
+        }
+
+        public int getUpdateBy() {
+            return updateBy;
+        }
+
+        public void setUpdateBy(int updateBy) {
+            this.updateBy = updateBy;
+        }
+
+        public int getVersion() {
+            return version;
+        }
+
+        public void setVersion(int version) {
+            this.version = version;
         }
 
         static class FileItem {

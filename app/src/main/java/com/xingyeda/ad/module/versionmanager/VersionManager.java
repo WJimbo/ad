@@ -3,11 +3,9 @@ package com.xingyeda.ad.module.versionmanager;
 import android.content.Context;
 import android.os.Build;
 
-import com.xingyeda.ad.MainApplication;
-import com.xingyeda.ad.config.SettingConfig;
 import com.xingyeda.ad.config.URLConfig;
-import com.xingyeda.ad.util.httputil.HttpObjResponseData;
 import com.xingyeda.ad.util.httputil.HttpRequestData;
+import com.xingyeda.ad.util.httputil.TokenHttpRequestModel;
 import com.zz9158.app.common.utils.ToastUtils;
 import com.zz9158.app.common.utils.ToolUtils;
 import com.zz9158.app.common.utils.http.BaseRequestData;
@@ -65,35 +63,28 @@ public class VersionManager {
     }
 
     private static void checkNewVersions(Context context, final int currentVersionCode, final OnCheckCallBack checkCallBack){
-        String url = URLConfig.getPath(context,URLConfig.CHECK_NEW_VERSION);
         final HttpRequestData requestData = new HttpRequestData();
+        requestData.setRequestURL(URLConfig.getPath(context,URLConfig.CHECK_NEW_VERSION));
+        requestData.setRequestMode(BaseRequestData.RequestModeType.GET);
+        requestData.setEnableToken(true);
         requestData.addRequestParams("sdkversion","" + Build.VERSION.SDK_INT);//系统版本  21代表5.0的系统  < 21则判断是4.4的机器  >= 21判断是5.0以上机器
-        requestData.addRequestParams("test","0");
-        requestData.addRequestParams("os_model", "ad_tv");
-        requestData.setRequestURL(url);
-        requestData.setRequestMode(HttpRequestData.RequestModeType.GET);
-        HttpRequestModel.asynRequestData(requestData, AppVersionResponseData.class, new HttpRequestModel.OnLYHttpRequestResponseListener() {
+        requestData.addRequestParams("os_model","3"); // Q588=0,3188=1,3288=2,电视广告机=3,桌面广告机=4
+        TokenHttpRequestModel.asynTokenRequestData(requestData, AppVersionResponseData.class, new HttpRequestModel.RequestCallBack() {
             @Override
-            public void onResponse(BaseResponseData responseData) {
-                if(responseData.isOperationSuccess()){
+            public void onResponseMainThread(BaseResponseData baseResponseData) {
+                if(baseResponseData.isOperationSuccess()){
                     try{
-                        AppVersionResponseData appVersionResponseData = (AppVersionResponseData)responseData;
-                        if(appVersionResponseData.getAppVersionBean() != null){
-                            AppVersionResponseData.AppVersionBean versionBean = appVersionResponseData.getAppVersionBean();
-                            if(versionBean.getFiles() != null && versionBean.getFiles().size() > 0) {
-                                if (currentVersionCode < Integer.valueOf(versionBean.getVersionNumber())) {
-                                    String downloadURL = versionBean.getServerURL() + versionBean.getFiles().get(0).getFileName();
-                                    if(checkCallBack != null){
-                                        checkCallBack.callBack(true,downloadURL,null);
-                                    }
-                                }else{
-                                    if(checkCallBack != null){
-                                        checkCallBack.callBack(false,null,"未检测到新版本");
-                                    }
+                        AppVersionResponseData appVersionResponseData = (AppVersionResponseData)baseResponseData;
+                        if(appVersionResponseData.getData() != null){
+                            AppVersionResponseData.AppVersionBean versionBean = appVersionResponseData.getData();
+                            if (currentVersionCode < versionBean.getVersion()) {
+                                String downloadURL = versionBean.getDownloadUrl();
+                                if(checkCallBack != null){
+                                    checkCallBack.callBack(true,downloadURL,null);
                                 }
                             }else{
                                 if(checkCallBack != null){
-                                    checkCallBack.callBack(false,null,"升级接口：服务器未返回有效数据3");
+                                    checkCallBack.callBack(false,null,"未检测到新版本");
                                 }
                             }
 
@@ -110,54 +101,21 @@ public class VersionManager {
 
                 }else{
                     if(checkCallBack != null){
-                        checkCallBack.callBack(false,null,"升级接口：" + responseData.getErrorMsg());
+                        checkCallBack.callBack(false,null,"升级接口：" + baseResponseData.getErrorMsg());
                     }
                 }
             }
+
+            @Override
+            public void onResponseBackgroundThread(BaseResponseData baseResponseData) {
+
+            }
+
+            @Override
+            public void dealBusinessError(boolean errorInMainThread, Exception ex) {
+
+            }
         });
 
-    }
-
-    static class CheckVersionResponseData extends HttpObjResponseData{
-        VersionItem obj;
-
-        public VersionItem getObj() {
-            return obj;
-        }
-
-        public void setObj(VersionItem obj) {
-            this.obj = obj;
-        }
-    }
-    static class VersionItem{
-        private String url;
-
-        private String updateTime;
-
-        private int versionNumber;
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        public String getUpdateTime() {
-            return updateTime;
-        }
-
-        public void setUpdateTime(String updateTime) {
-            this.updateTime = updateTime;
-        }
-
-        public int getVersionNumber() {
-            return versionNumber;
-        }
-
-        public void setVersionNumber(int versionNumber) {
-            this.versionNumber = versionNumber;
-        }
     }
 }

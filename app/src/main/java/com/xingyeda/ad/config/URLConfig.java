@@ -11,10 +11,14 @@ public class URLConfig {
 
     public static final String DOMAIN = "http://";
 
-    //    public static final String HOST = "192.168.10.200";
-    private static final String HOST = "service.xyd999.net";
 
-    //    public static final String HOST_PATH = HOST + "xydServer/servlet/";
+    //    public static final String HOST = "192.168.10.200";
+    private static final String HOST = "ytyty.utools.club";//新后台测试地址
+//    private static final String HOST = "service.xyd999.net";
+
+
+
+/*    //    public static final String HOST_PATH = HOST + "xydServer/servlet/";
     private static final String IP_HOST_PATH = ":8080/xydServer/servlet/";
     private static final String DOMAIN_HOST_PATH = "/servlet/";
     //上传日志
@@ -27,6 +31,28 @@ public class URLConfig {
     public static final String REQUEST_AD_LIST = "GetAdversitingByMac/R";
     //提交mac地址到后台
     public static final String BIND_EQ_BY_MAC = "insertEqByMac/C";
+   */
+
+    private static final String IP_HOST_PATH = ":8080/xydServer/servlet/";
+    private static final String DOMAIN_HOST_PATH = "/api/";
+
+    //为了接口安全性 增加token机制 1111
+    public static final String GET_LOGIN_USER_TOKEN = "user/login";
+
+    //上传日志  111
+    public static final String UPLOAD_LOG = "deviceLog";
+
+    //设备配置  1111
+    public static final String USERSET_PATH = "devices/pointSetting";
+    //检测更新版本 111
+    public static final String CHECK_NEW_VERSION = "devices/firmware/check";
+    //获取广告数据
+    public static final String REQUEST_AD_LIST = "advertising/reAdvertising";
+    //提交mac地址到后台  1111
+    public static final String BIND_EQ_BY_MAC = "devices/register";
+
+
+
 
     //获取地址
     public static String getPath(Context context, String url) {

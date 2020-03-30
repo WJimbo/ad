@@ -4,15 +4,13 @@ import android.content.Context;
 
 import com.gavinrowe.lgw.library.SimpleTimerTask;
 import com.gavinrowe.lgw.library.SimpleTimerTaskHandler;
-import com.google.gson.annotations.SerializedName;
 import com.xingyeda.ad.util.httputil.HttpObjResponseData;
 import com.xingyeda.ad.util.httputil.HttpRequestData;
+import com.xingyeda.ad.util.httputil.TokenHttpRequestModel;
 import com.zz9158.app.common.utils.http.BaseResponseData;
 import com.zz9158.app.common.utils.http.HttpRequestModel;
 
 import org.greenrobot.eventbus.EventBus;
-
-import java.util.List;
 
 public class SettingConfigManager {
 
@@ -53,51 +51,29 @@ public class SettingConfigManager {
         HttpRequestData requestData = new HttpRequestData();
         requestData.setRequestURL( URLConfig.getPath(context, URLConfig.USERSET_PATH));
         requestData.setRequestMode(HttpRequestData.RequestModeType.GET);
-        requestData.addRequestParams("type","select");
-        requestData.addRequestParams("eid", DeviceUUIDManager.generateUUID(context));
-        HttpRequestModel.asynRequestData(requestData, SettingResponseData.class, new HttpRequestModel.OnLYHttpRequestResponseListener() {
+        requestData.setEnableToken(true);
+        requestData.addRequestParams("mac", DeviceUUIDManager.generateUUID(context));
+        TokenHttpRequestModel.asynTokenRequestData(requestData, SettingResponseData.class, new HttpRequestModel.RequestCallBack() {
             @Override
-            public void onResponse(BaseResponseData responseData) {
-                if(responseData.isOperationSuccess()){
-                    SettingResponseData settingResponseData = (SettingResponseData)responseData;
-                    if(settingResponseData.settingItems != null){
+            public void onResponseMainThread(BaseResponseData baseResponseData) {
+                if(baseResponseData.isOperationSuccess()){
+                    SettingResponseData settingResponseData = (SettingResponseData)baseResponseData;
+                    if(settingResponseData.data != null){
+                        SettingResponseData.SettingItem settingItem = settingResponseData.data;
+
                         boolean settingChanged = false;
-                        for (SettingResponseData.SettingItem settingItem : settingResponseData.settingItems){
-                            if(settingItem.logo == null){
-                                continue;
-                            }
-
-                            if("ADSetting_VideoRotateAngle".equals(settingItem.logo)){
-                                try{
-                                    float value = Float.parseFloat(settingItem.value);
-                                    if (value != SettingConfig.getScreenRotateAngle(context)) {
-                                        SettingConfig.setScreenRatateAngle(context,value);
-                                        settingChanged = true;
-                                    }
-                                }catch (Exception ex){
-
-                                }
-                            }else if("ADSetting_ShowDebugView".equals(settingItem.logo)){
-                                try{
-                                    boolean show = "1".equals(settingItem.value);
-                                    if (show != SettingConfig.isShowDebugView(context)) {
-                                        SettingConfig.setShowDebugView(context,show);
-                                        settingChanged = true;
-                                    }
-                                }catch (Exception ex){
-
-                                }
-                            }else if("ADSetting_ADShowMode".equals(settingItem.logo)){
-                                try {
-                                    int num = Integer.parseInt(settingItem.value);
-                                    if(num != SettingConfig.getADScreenNum(context)){
-                                        SettingConfig.setADScreenNum(context,num);
-                                        settingChanged = true;
-                                    }
-                                }catch (Exception ex){
-
-                                }
-                            }
+                        if(settingItem.adsetting_VideoRotateAngle != SettingConfig.getScreenRotateAngle(context)){
+                            SettingConfig.setScreenRatateAngle(context,settingItem.adsetting_VideoRotateAngle);
+                            settingChanged = true;
+                        }
+                        boolean show = settingItem.adsetting_ShowDebugView == 1;
+                        if (show != SettingConfig.isShowDebugView(context)) {
+                            SettingConfig.setShowDebugView(context,show);
+                            settingChanged = true;
+                        }
+                        if(settingItem.adsetting_ADShowMode != SettingConfig.getADScreenNum(context)){
+                            SettingConfig.setADScreenNum(context,settingItem.adsetting_ADShowMode);
+                            settingChanged = true;
                         }
                         if(settingChanged){
                             EventBus.getDefault().post(new SettingConfig.VideoRotateAngleChangedEventData());
@@ -106,55 +82,56 @@ public class SettingConfigManager {
                     }
                 }
             }
+
+            @Override
+            public void onResponseBackgroundThread(BaseResponseData baseResponseData) {
+
+            }
+
+            @Override
+            public void dealBusinessError(boolean errorInMainThread, Exception ex) {
+
+            }
         });
     }
     class SettingResponseData extends HttpObjResponseData {
-        @SerializedName("obj")
-        private List<SettingItem> settingItems;
+        private SettingItem data;
+
+
         class SettingItem{
 
             /**
-             * id : 11509
-             * value : 70
-             * eid : b6a9600f67d1
-             * logo : sipTimeout
+             * adsetting_ADShowMode : 0
+             * adsetting_ShowDebugView : 0
+             * adsetting_VideoRotateAngle : 0
              */
 
-            private int id;
-            private String value;
-            private String eid;
-            private String logo;
+            private int adsetting_ADShowMode;
+            private int adsetting_ShowDebugView;
+            private int adsetting_VideoRotateAngle;
 
-            public int getId() {
-                return id;
+            public int getAdsetting_ADShowMode() {
+                return adsetting_ADShowMode;
             }
 
-            public void setId(int id) {
-                this.id = id;
+            public void setAdsetting_ADShowMode(int adsetting_ADShowMode) {
+                this.adsetting_ADShowMode = adsetting_ADShowMode;
             }
 
-            public String getValue() {
-                return value;
+            public int getAdsetting_ShowDebugView() {
+                return adsetting_ShowDebugView;
             }
 
-            public void setValue(String value) {
-                this.value = value;
+            public void setAdsetting_ShowDebugView(int adsetting_ShowDebugView) {
+                this.adsetting_ShowDebugView = adsetting_ShowDebugView;
             }
 
-            public String getEid() {
-                return eid;
+            public int getAdsetting_VideoRotateAngle() {
+                return adsetting_VideoRotateAngle;
             }
 
-            public void setEid(String eid) {
-                this.eid = eid;
-            }
-
-            public String getLogo() {
-                return logo;
-            }
-
-            public void setLogo(String logo) {
-                this.logo = logo;
+            public void setAdsetting_VideoRotateAngle(int adsetting_VideoRotateAngle) {
+                this.adsetting_VideoRotateAngle = adsetting_VideoRotateAngle;
             }
         }
     }

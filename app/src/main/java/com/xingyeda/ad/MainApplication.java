@@ -8,6 +8,7 @@ import com.liulishuo.filedownloader.FileDownloader;
 import com.xingyeda.ad.module.addata.DownloadManager;
 import com.xingyeda.ad.util.CrashHandler;
 import com.xingyeda.ad.util.MyLog;
+import com.xingyeda.ad.util.httputil.TokenMananger;
 import com.zz9158.app.common.utils.ApplicationUtil;
 import com.zz9158.app.common.utils.LoggerHelper;
 import com.zz9158.app.common.utils.ToolUtils;
@@ -23,6 +24,7 @@ public class MainApplication extends Application {
 //            DeviceUUIDManager.setUUID("c44cede2765a169b");
         }
         if(ApplicationUtil.isMainProcess(this)) {
+            TokenMananger.getInstance().init(this,"admin","1");
             DownloadManager.getInstance().setContext(this);
             ToolUtils.init(this);
             LoggerHelper.init();
