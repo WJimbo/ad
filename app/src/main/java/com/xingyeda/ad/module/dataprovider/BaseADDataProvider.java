@@ -15,8 +15,8 @@ public class BaseADDataProvider implements ADListManager.OnAdListChangedListener
     public BaseADDataProvider(Context context){
         mContext = context.getApplicationContext();
         if(ADListManager.getInstance(mContext).getAdListResponseData() != null){
-            if(ADListManager.getInstance(mContext).getAdListResponseData().getObj() != null){
-                mAdDataList.addAll(ADListManager.getInstance(mContext).getAdListResponseData().getObj());
+            if(ADListManager.getInstance(mContext).getAdListResponseData().getData() != null){
+                mAdDataList.addAll(ADListManager.getInstance(mContext).getAdListResponseData().getData());
             }
         }
     }

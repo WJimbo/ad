@@ -19,7 +19,7 @@ public class DownloadManager {
     public static class DownloadItem{
         public String url;
         public File savePath;
-        public String fileType;//0图片  1音频  2视频
+        public int fileType;//0图片  1音频  2视频
         public File getTempDownloadPath(){
             return new File(savePath.getParent(), "tmp_" + savePath.getName());
         }
@@ -32,7 +32,7 @@ public class DownloadManager {
             if (url.equals(((DownloadItem) obj).url)
                     && savePath.getPath().equals(((DownloadItem) obj).savePath.getPath())
                     && videoRotateAngle == ((DownloadItem) obj).videoRotateAngle
-                    && fileType.equals(((DownloadItem) obj).fileType)) {
+                    && fileType == ((DownloadItem) obj).fileType) {
                 return true;
             }
             return super.equals(obj);

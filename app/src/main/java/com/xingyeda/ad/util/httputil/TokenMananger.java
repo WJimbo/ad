@@ -55,14 +55,16 @@ public class TokenMananger {
         map.put("pwd",password);
         map.put("type","3");
         requestData.addBody("loginDTO",map);
-
+        requestData.addBody("name",loginName);
+        requestData.addBody("pwd",password);
+        requestData.addBody("type","3");
         TokenHttpRequestModel.asynTokenRequestData(requestData, TokenResponseData.class, new HttpRequestModel.RequestCallBack() {
             @Override
             public void onResponseMainThread(BaseResponseData baseResponseData) {
                 if(baseResponseData.isOperationSuccess()){
                     TokenResponseData tokenResponseData = (TokenResponseData)baseResponseData;
                     token = tokenResponseData.data.token;
-                    tokenExpire = System.currentTimeMillis() + (tokenResponseData.data.tokenExpire * 1000);
+                    tokenExpire = System.currentTimeMillis() + tokenResponseData.data.tokenExpire;
                     if(callBack != null){
                         callBack.getToken(true,token);
                     }

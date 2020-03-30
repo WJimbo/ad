@@ -47,8 +47,8 @@ public class ADListManager {
         synchronized (lockObject){
             for(OnAdListChangedListener listChangedListener : onAdListChangedListenerList){
                 try {
-                    if(adListResponseData != null && adListResponseData.getObj() != null){
-                        listChangedListener.adListChanged(adListResponseData.getObj());
+                    if(adListResponseData != null && adListResponseData.getData() != null){
+                        listChangedListener.adListChanged(adListResponseData.getData());
                     }else{
                         listChangedListener.adListChanged(new ArrayList<AdItem>());
                     }
@@ -144,7 +144,7 @@ public class ADListManager {
                         lastStr = adListResponseData.getJsonValueString();
                     }
                     adListResponseData = (AdListResponseData)baseResponseData;
-                    LogDebugUtil.appendLog("调用广告数据成功:" + adListResponseData.getObj().size() + "条");
+                    LogDebugUtil.appendLog("调用广告数据成功:" + adListResponseData.getData().size() + "条");
 //                    MyLog.i("调用广告数据成功:" + adListResponseData.getObj().size() + "条");
                     if(!lastStr.equals(baseResponseData.getJsonValueString())){
                         saveListToLocation();
@@ -192,16 +192,16 @@ public class ADListManager {
     }
 
     private synchronized void downloadADFiles(){
-        if (adListResponseData != null && adListResponseData.getObj() != null) {
+        if (adListResponseData != null && adListResponseData.getData() != null) {
             List<AdItem> adItems = new ArrayList<>();
-            adItems.addAll(adListResponseData.getObj());
+            adItems.addAll(adListResponseData.getData());
             List<DownloadManager.DownloadItem> downloadItemList = new ArrayList<>();
             for (AdItem adItem : adItems) {
                 //不支持视频模式的时候 过滤掉视频文件的下载
                 if (!adItem.isFileExsits()) {
                     DownloadManager.DownloadItem downloadItem = new DownloadManager.DownloadItem();
-                    downloadItem.url = adItem.getFileUrl();
-                    downloadItem.fileType = adItem.getFiletype();
+                    downloadItem.url = adItem.getUrl();
+                    downloadItem.fileType = adItem.getType();
                     downloadItem.savePath = adItem.locationFile();
                     downloadItem.videoRotateAngle =  AdItem.VideoRotateAngle;
                     downloadItemList.add(downloadItem);

@@ -275,7 +275,7 @@ public class ADView extends CustomView {
             }
             surfaceView.setVisibility(View.INVISIBLE);
             stopVideo();
-            if("0".equals(adItem.getFiletype())){
+            if(0 == adItem.getType()){
                 delayTime = ((int)(Math.random() * 3 + 5)) * 1000;
             }else{
                 delayTime = ((int)(Math.random() * 5 + 5)) * 1000;
@@ -288,7 +288,7 @@ public class ADView extends CustomView {
                 setAlpha(1);
             }
             ivDefualt.setVisibility(View.INVISIBLE);
-            if ("2".equals(adItem.getFiletype())) {
+            if (2 == adItem.getType()) {
 //              等视频开始渲染了在隐藏图片控件
                 playLocalVideo(new File(DownloadManager.getDownloadRootPath(getContext()), adItem.getLocationFileName()));
             } else {

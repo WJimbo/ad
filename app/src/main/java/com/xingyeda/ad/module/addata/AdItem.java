@@ -24,24 +24,28 @@ public class AdItem {
 //            "flietype" : 1	   //0: 图片 1 ：音频 2：视频
     public static float VideoRotateAngle = 0;
     public static String DownloadRootPath = "";
+
+    /**
+     * createDate :
+     * id : 0
+     * name :
+     * type : 0
+     * url :
+     */
+
+    private String createDate;
     private int id;
-    private String starttime;
-    private String endtime;
-    private String state;
+    private String name;
+    private int type;
+    private String url;
     private int duration;
-    private String location;
-    private String bindtype;
-    private String flagid;
-    private String filetype;
-    private String fileUrl;
-    private String MD5;
 
     @Override
     public boolean equals(Object obj) {
         if(obj instanceof AdItem){
             AdItem adItem = (AdItem)obj;
-            if(adItem.fileUrl.equals(fileUrl)
-                    && adItem.filetype.equals(filetype)
+            if(adItem.url.equals(url)
+                    && adItem.type == type
                     && adItem.duration == duration
                     && adItem.id == id){
                 return true;
@@ -51,14 +55,14 @@ public class AdItem {
     }
 
     public String getLocationFileName(){
-        if("2".equals(filetype)){
-            return (VideoRotateAngle + "video_") + fileUrl.hashCode() + ".mp4";
-        }else if("0".equals(filetype)){
-            return fileUrl.hashCode() + ".jpg";
-        }else if("1".equals(filetype)){
-            return fileUrl.hashCode() + ".mp3";
+        if("2".equals(type)){
+            return (VideoRotateAngle + "video_") + url.hashCode() + ".mp4";
+        }else if("0".equals(type)){
+            return url.hashCode() + ".jpg";
+        }else if("1".equals(type)){
+            return url.hashCode() + ".mp3";
         }
-        return fileUrl.hashCode() + ".unknow";
+        return url.hashCode() + ".unknow";
     }
 
     public boolean isFileExsits(){
@@ -68,12 +72,21 @@ public class AdItem {
         return new File(DownloadRootPath,getLocationFileName());
     }
 
-    public String getMD5() {
-        return MD5;
+
+    public int getDuration() {
+        return duration;
     }
 
-    public void setMD5(String MD5) {
-        this.MD5 = MD5;
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
     }
 
     public int getId() {
@@ -84,76 +97,28 @@ public class AdItem {
         this.id = id;
     }
 
-    public String getStarttime() {
-        return starttime;
+    public String getName() {
+        return name;
     }
 
-    public void setStarttime(String starttime) {
-        this.starttime = starttime;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getEndtime() {
-        return endtime;
+    public int getType() {
+        return type;
     }
 
-    public void setEndtime(String endtime) {
-        this.endtime = endtime;
+    public void setType(int type) {
+        this.type = type;
     }
 
-    public String getState() {
-        return state;
+    public String getUrl() {
+        return url;
     }
 
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getBindtype() {
-        return bindtype;
-    }
-
-    public void setBindtype(String bindtype) {
-        this.bindtype = bindtype;
-    }
-
-    public String getFlagid() {
-        return flagid;
-    }
-
-    public void setFlagid(String flagid) {
-        this.flagid = flagid;
-    }
-
-    public String getFiletype() {
-        return filetype;
-    }
-
-    public void setFiletype(String filetype) {
-        this.filetype = filetype;
-    }
-
-    public String getFileUrl() {
-        return fileUrl;
-    }
-
-    public void setFileUrl(String fileUrl) {
-        this.fileUrl = fileUrl;
+    public void setUrl(String url) {
+        this.url = url;
     }
 }
 
