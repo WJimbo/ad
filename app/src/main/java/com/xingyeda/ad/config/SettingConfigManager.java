@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.gavinrowe.lgw.library.SimpleTimerTask;
 import com.gavinrowe.lgw.library.SimpleTimerTaskHandler;
+import com.xingyeda.ad.util.DeviceUtil;
 import com.xingyeda.ad.util.httputil.HttpObjResponseData;
 import com.xingyeda.ad.util.httputil.HttpRequestData;
 import com.xingyeda.ad.util.httputil.TokenHttpRequestModel;
@@ -43,6 +44,7 @@ public class SettingConfigManager {
         }
     }
     private boolean isRequesting = false;
+    private String lastSettingJsonValue = "";
     public synchronized void updateSettingForNet(final Context context){
         if(isRequesting){
             return;
@@ -59,6 +61,10 @@ public class SettingConfigManager {
                 if(baseResponseData.isOperationSuccess()){
                     SettingResponseData settingResponseData = (SettingResponseData)baseResponseData;
                     if(settingResponseData.data != null){
+                        if(settingResponseData.getJsonValueString() != null && settingResponseData.getJsonValueString().equals(lastSettingJsonValue)){
+                            //获取设置信息和上次一样 就没必要去做后续的操作了
+                            return;
+                        }
                         SettingResponseData.SettingItem settingItem = settingResponseData.data;
 
                         boolean settingChanged = false;
@@ -75,11 +81,16 @@ public class SettingConfigManager {
                             SettingConfig.setADScreenNum(context,settingItem.adsetting_ADShowMode);
                             settingChanged = true;
                         }
+                        DeviceUtil.setMusicVolume(context,settingItem.adsetting_MusicVolume);
+                        DeviceUtil.setSystemScreenBrightness(context,settingItem.adsetting_SystemScreenBrightness);
+                        DeviceUtil.timingSwitchForADTV(context,settingItem.adsetting_PowerOff,settingItem.adsetting_PowerOn);
+
                         if(settingChanged){
                             EventBus.getDefault().post(new SettingConfig.VideoRotateAngleChangedEventData());
                         }
                         isRequesting = false;
                     }
+                    lastSettingJsonValue = settingResponseData.getJsonValueString();
                 }
             }
 
@@ -109,6 +120,44 @@ public class SettingConfigManager {
             private int adsetting_ADShowMode;
             private int adsetting_ShowDebugView;
             private int adsetting_VideoRotateAngle;
+
+            private String adsetting_MusicVolume;
+            private String adsetting_SystemScreenBrightness;
+
+            private String adsetting_PowerOff;
+            private String adsetting_PowerOn;
+
+            public String getAdsetting_MusicVolume() {
+                return adsetting_MusicVolume;
+            }
+
+            public void setAdsetting_MusicVolume(String adsetting_MusicVolume) {
+                this.adsetting_MusicVolume = adsetting_MusicVolume;
+            }
+
+            public String getAdsetting_SystemScreenBrightness() {
+                return adsetting_SystemScreenBrightness;
+            }
+
+            public void setAdsetting_SystemScreenBrightness(String adsetting_SystemScreenBrightness) {
+                this.adsetting_SystemScreenBrightness = adsetting_SystemScreenBrightness;
+            }
+
+            public String getAdsetting_PowerOff() {
+                return adsetting_PowerOff;
+            }
+
+            public void setAdsetting_PowerOff(String adsetting_PowerOff) {
+                this.adsetting_PowerOff = adsetting_PowerOff;
+            }
+
+            public String getAdsetting_PowerOn() {
+                return adsetting_PowerOn;
+            }
+
+            public void setAdsetting_PowerOn(String adsetting_PowerOn) {
+                this.adsetting_PowerOn = adsetting_PowerOn;
+            }
 
             public int getAdsetting_ADShowMode() {
                 return adsetting_ADShowMode;
