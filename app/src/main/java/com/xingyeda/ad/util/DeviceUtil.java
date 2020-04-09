@@ -85,30 +85,48 @@ public class DeviceUtil {
      */
     public static void timingSwitchForADTV(Context context,String timeoff,String timeon){
         MyLog.i("设置定时关机：" + ToolUtils.string().nullStrToEmpty(timeoff) + "  定时开机:" + timeon);
-        deleteAllTimingSwitchForADTV(context);
+        try {
+            deleteAllTimingSwitchForADTV(context);
 
-        Calendar calendar = Calendar.getInstance();
-        if (!ToolUtils.string().isEmpty(timeoff)) {
-            calendar.setTime(ToolUtils.time().string2Date(timeoff,"HH:mm"));
-            Intent powerDownIntent = new Intent("com.soniq.cybercast.time");
-            powerDownIntent.putExtra("hour", calendar.get(Calendar.HOUR_OF_DAY));
-            powerDownIntent.putExtra("minute", calendar.get(Calendar.MINUTE));
-            powerDownIntent.putExtra("mAttribute", 2);//值为1表明为开机，2为关机。
-            powerDownIntent.putExtra("daysOfWeek", 0x7f);
-            context.sendBroadcast(powerDownIntent);
+            Calendar calendar = Calendar.getInstance();
+            if (!ToolUtils.string().isEmpty(timeoff)) {
+                String offTimes[] = new String[]{timeoff};
+                if(timeoff.contains(";")){
+                    offTimes = timeoff.split(";");
+                }
+                for(String time : offTimes){
+                    if(!ToolUtils.string().isEmpty(time)){
+                        calendar.setTime(ToolUtils.time().string2Date(time,"HH:mm"));
+                        sendDevicePowerBroadcast(context,calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),2);
+                    }
+                }
+            }
+            if (!ToolUtils.string().isEmpty(timeon)) {
+                String onTimes[] = new String[]{timeon};
+                if(timeon.contains(";")){
+                    onTimes = timeon.split(";");
+                }
+                for(String time : onTimes){
+                    if(!ToolUtils.string().isEmpty(time)) {
+                        calendar.setTime(ToolUtils.time().string2Date(time, "HH:mm"));
+                        sendDevicePowerBroadcast(context, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), 1);
+                    }
+                }
+            }
+        }catch (Exception ex){
+            MyLog.i("设置定时开关机 Exception：" + ToolUtils.string().nullStrToEmpty(timeoff) + "  定时开机:" + timeon);
         }
 
-        if(!ToolUtils.string().isEmpty(timeon)){
-            calendar.setTime(ToolUtils.time().string2Date(timeon,"HH:mm"));
-            Intent openDeviceIntent = new Intent("com.soniq.cybercast.time");
-            openDeviceIntent.putExtra("hour", calendar.get(Calendar.HOUR_OF_DAY));
-            openDeviceIntent.putExtra("minute", calendar.get(Calendar.MINUTE));
-            openDeviceIntent.putExtra("mAttribute", 1);//值为1表明为开机，2为关机。
-            openDeviceIntent.putExtra("daysOfWeek", 0x7f);
-            context.sendBroadcast(openDeviceIntent);
-        }
     }
 
+    private static void sendDevicePowerBroadcast(Context context,int hour,int minute,int attribute){
+        Intent intent = new Intent("com.soniq.cybercast.time");
+        intent.putExtra("hour",hour);
+        intent.putExtra("minute", minute);
+        intent.putExtra("mAttribute", attribute);//值为1表明为开机，2为关机。
+        intent.putExtra("daysOfWeek", 0x7f);
+        context.sendBroadcast(intent);
+    }
 
 
     /**
@@ -218,7 +236,7 @@ public class DeviceUtil {
         AudioManager am=(AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
         int maxMusicVolume = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         int musicVolume = (int)(maxMusicVolume *(musicVolumePercent / 100.0));
-        am.setStreamVolume(AudioManager.STREAM_MUSIC,musicVolume , AudioManager.FLAG_PLAY_SOUND);
+        am.setStreamVolume(AudioManager.STREAM_MUSIC,musicVolume , AudioManager.FLAG_PLAY_SOUND|AudioManager.FLAG_SHOW_UI);
         ToastUtils.showToastLong(context,"音量设置成功,当前音量：" + musicVolume + "  系统支持的最大音量为：" + maxMusicVolume);
 //        MyLog.i("音量设置成功,当前音量：" + musicVolume + "  系统支持的最大音量为：" + maxMusicVolume);
     }
@@ -291,6 +309,7 @@ public class DeviceUtil {
         }else if(screenBrightness > 255){
             screenBrightness = 255;
         }
+        ToastUtils.showToast(context,"屏幕亮度调节:" + screenBrightness + " 最大值:" + 255);
         Settings.System.putInt(contentResolver,
                 Settings.System.SCREEN_BRIGHTNESS, screenBrightness);
     }
