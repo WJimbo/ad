@@ -14,7 +14,7 @@ public class URLConfig {
 
     //    public static final String HOST = "192.168.10.200";
 //    private static final String HOST = "ytyty.utools.club";//新后台测试地址
-    private static final String HOST = "xxww.utools.club";
+    private static final String HOST = "test.xyd999.net:7070";
 //    private static final String HOST = "service.xyd999.net";
 
 

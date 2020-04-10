@@ -10,9 +10,7 @@ import com.zz9158.app.common.utils.http.BaseResponseData;
 import com.zz9158.app.common.utils.http.HttpRequestModel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class TokenMananger {
     public interface CallBack{
@@ -25,6 +23,10 @@ public class TokenMananger {
     private String token = "";
     private long tokenExpire = 0;
     private boolean isRequestToken = false;
+    public void resetToken(){
+        token = "";
+        tokenExpire = 0;
+    }
     public void getToken(@NonNull CallBack callBack){
         if(!ToolUtils.string().isEmpty(token) && System.currentTimeMillis() < tokenExpire){
             callBack.getToken(true,token);

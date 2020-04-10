@@ -8,6 +8,7 @@ import com.xingyeda.ad.util.DeviceUtil;
 import com.xingyeda.ad.util.httputil.HttpObjResponseData;
 import com.xingyeda.ad.util.httputil.HttpRequestData;
 import com.xingyeda.ad.util.httputil.TokenHttpRequestModel;
+import com.zz9158.app.common.utils.ToolUtils;
 import com.zz9158.app.common.utils.http.BaseResponseData;
 import com.zz9158.app.common.utils.http.HttpRequestModel;
 
@@ -68,22 +69,38 @@ public class SettingConfigManager {
                         SettingResponseData.SettingItem settingItem = settingResponseData.data;
 
                         boolean settingChanged = false;
-                        if(settingItem.adsetting_VideoRotateAngle != SettingConfig.getScreenRotateAngle(context)){
-                            SettingConfig.setScreenRatateAngle(context,settingItem.adsetting_VideoRotateAngle);
-                            settingChanged = true;
+
+                        if(!ToolUtils.string().isEmpty(settingItem.ad_videoRotateAngle)){
+                            try{
+                                int value = Integer.parseInt(settingItem.ad_videoRotateAngle);
+                                if(value != SettingConfig.getScreenRotateAngle(context)){
+                                    SettingConfig.setScreenRatateAngle(context,value);
+                                    settingChanged = true;
+                                }
+                            }catch (Exception ex){
+
+                            }
                         }
-                        boolean show = settingItem.adsetting_ShowDebugView == 1;
+                        boolean show = "1".equals(settingItem.ad_showDebugView);
                         if (show != SettingConfig.isShowDebugView(context)) {
                             SettingConfig.setShowDebugView(context,show);
                             settingChanged = true;
                         }
-                        if(settingItem.adsetting_ADShowMode != SettingConfig.getADScreenNum(context)){
-                            SettingConfig.setADScreenNum(context,settingItem.adsetting_ADShowMode);
-                            settingChanged = true;
+                        if(!ToolUtils.string().isEmpty(settingItem.ad_showMode)){
+                            try{
+                                int value = Integer.parseInt(settingItem.ad_showMode);
+                                if(value != SettingConfig.getADScreenNum(context)){
+                                    SettingConfig.setADScreenNum(context,value);
+                                    settingChanged = true;
+                                }
+                            }catch (Exception ex){
+
+                            }
+
                         }
-                        DeviceUtil.setMusicVolume(context,settingItem.adsetting_MusicVolume);
-                        DeviceUtil.setSystemScreenBrightness(context,settingItem.adsetting_SystemScreenBrightness);
-                        DeviceUtil.timingSwitchForADTV(context,settingItem.adsetting_PowerOff,settingItem.adsetting_PowerOn);
+                        DeviceUtil.setMusicVolume(context,settingItem.musicVolume);
+                        DeviceUtil.setSystemScreenBrightness(context,settingItem.ad_systemScreenBrightness);
+                        DeviceUtil.timingSwitchForADTV(context,settingItem.shutdown,settingItem.bootup);
 
                         if(settingChanged){
                             EventBus.getDefault().post(new SettingConfig.VideoRotateAngleChangedEventData());
@@ -111,76 +128,119 @@ public class SettingConfigManager {
 
         class SettingItem{
 
+
             /**
-             * adsetting_ADShowMode : 0
-             * adsetting_ShowDebugView : 0
-             * adsetting_VideoRotateAngle : 0
+             * ad_showDebugView :
+             * ad_showMode :
+             * ad_systemScreenBrightness :
+             * ad_videoRotateAngle :
+             * agoraDuration :
+             * agoraTimeout :
+             * aliName :
+             * aliPayQRcode :
+             * bootup :
+             * createAt :
+             * createBy : 0
+             * deleted : true
+             * enableShowFaceInfo :
+             * enableTTS :
+             * id : 0
+             * musicVolume :
+             * pointId :
+             * remarks :
+             * serialNumber :
+             * shutdown :
+             * sipDuration :
+             * sipServer :
+             * sipTimeout :
+             * updateAt :
+             * updateBy : 0
+             * version : 0
+             * wechatName :
+             * wechatPayQRcode :
              */
 
-            private int adsetting_ADShowMode;
-            private int adsetting_ShowDebugView;
-            private int adsetting_VideoRotateAngle;
+            private String ad_showDebugView;
+            private String ad_showMode;
+            private String ad_systemScreenBrightness;
+            private String ad_videoRotateAngle;
+            private String bootup;
+            private String musicVolume;
+            private String serialNumber;
+            private String shutdown;
+            private String sipServer;
 
-            private String adsetting_MusicVolume;
-            private String adsetting_SystemScreenBrightness;
-
-            private String adsetting_PowerOff;
-            private String adsetting_PowerOn;
-
-            public String getAdsetting_MusicVolume() {
-                return adsetting_MusicVolume;
+            public String getAd_showDebugView() {
+                return ad_showDebugView;
             }
 
-            public void setAdsetting_MusicVolume(String adsetting_MusicVolume) {
-                this.adsetting_MusicVolume = adsetting_MusicVolume;
+            public void setAd_showDebugView(String ad_showDebugView) {
+                this.ad_showDebugView = ad_showDebugView;
             }
 
-            public String getAdsetting_SystemScreenBrightness() {
-                return adsetting_SystemScreenBrightness;
+            public String getAd_showMode() {
+                return ad_showMode;
             }
 
-            public void setAdsetting_SystemScreenBrightness(String adsetting_SystemScreenBrightness) {
-                this.adsetting_SystemScreenBrightness = adsetting_SystemScreenBrightness;
+            public void setAd_showMode(String ad_showMode) {
+                this.ad_showMode = ad_showMode;
             }
 
-            public String getAdsetting_PowerOff() {
-                return adsetting_PowerOff;
+            public String getAd_systemScreenBrightness() {
+                return ad_systemScreenBrightness;
             }
 
-            public void setAdsetting_PowerOff(String adsetting_PowerOff) {
-                this.adsetting_PowerOff = adsetting_PowerOff;
+            public void setAd_systemScreenBrightness(String ad_systemScreenBrightness) {
+                this.ad_systemScreenBrightness = ad_systemScreenBrightness;
             }
 
-            public String getAdsetting_PowerOn() {
-                return adsetting_PowerOn;
+            public String getAd_videoRotateAngle() {
+                return ad_videoRotateAngle;
             }
 
-            public void setAdsetting_PowerOn(String adsetting_PowerOn) {
-                this.adsetting_PowerOn = adsetting_PowerOn;
+            public void setAd_videoRotateAngle(String ad_videoRotateAngle) {
+                this.ad_videoRotateAngle = ad_videoRotateAngle;
             }
 
-            public int getAdsetting_ADShowMode() {
-                return adsetting_ADShowMode;
+            public String getBootup() {
+                return bootup;
             }
 
-            public void setAdsetting_ADShowMode(int adsetting_ADShowMode) {
-                this.adsetting_ADShowMode = adsetting_ADShowMode;
+            public void setBootup(String bootup) {
+                this.bootup = bootup;
             }
 
-            public int getAdsetting_ShowDebugView() {
-                return adsetting_ShowDebugView;
+
+            public String getMusicVolume() {
+                return musicVolume;
             }
 
-            public void setAdsetting_ShowDebugView(int adsetting_ShowDebugView) {
-                this.adsetting_ShowDebugView = adsetting_ShowDebugView;
+            public void setMusicVolume(String musicVolume) {
+                this.musicVolume = musicVolume;
             }
 
-            public int getAdsetting_VideoRotateAngle() {
-                return adsetting_VideoRotateAngle;
+            public String getSerialNumber() {
+                return serialNumber;
             }
 
-            public void setAdsetting_VideoRotateAngle(int adsetting_VideoRotateAngle) {
-                this.adsetting_VideoRotateAngle = adsetting_VideoRotateAngle;
+            public void setSerialNumber(String serialNumber) {
+                this.serialNumber = serialNumber;
+            }
+
+            public String getShutdown() {
+                return shutdown;
+            }
+
+            public void setShutdown(String shutdown) {
+                this.shutdown = shutdown;
+            }
+
+            public String getSipServer() {
+                return sipServer;
+            }
+
+            public void setSipServer(String sipServer) {
+                this.sipServer = sipServer;
             }
         }
     }

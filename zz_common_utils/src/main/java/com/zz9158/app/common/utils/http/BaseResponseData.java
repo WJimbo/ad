@@ -11,9 +11,17 @@ public class BaseResponseData {
     private String errorMsg;
     private Map<String, Object> returnMap;
     private String jsonValueString = "";
+    private int errorCode;
 
+    public void setErrorCode(int errorCode) {
+        this.errorCode = errorCode;
+    }
 
-    void setResponseModelFromMap(Map<String, Object> map,String jsonValueString) {
+    public int getErrorCode() {
+        return errorCode;
+    }
+
+    void setResponseModelFromMap(Map<String, Object> map, String jsonValueString) {
         try {
             this.returnMap = map;
             this.jsonValueString = jsonValueString;

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 
 
+import com.xingyeda.ad.config.DeviceUUIDManager;
 import com.zz9158.app.common.utils.LoggerHelper;
 import com.zz9158.app.common.utils.ToolUtils;
 
@@ -70,12 +71,14 @@ public class MyLog {
         log(TAG, text, 'v');
     }
 
+    private static Context mContext;
     /**
      *
      * 初始化目录
      *
      * */
     public void init(Context context) {
+        mContext = context.getApplicationContext();
         if (Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {// 优先保存到SD卡中
             MYLOG_PATH_SDCARD_DIR = Environment.getExternalStorageDirectory()
@@ -130,28 +133,20 @@ public class MyLog {
                 writeLogtoFile(String.valueOf(level), tag, msg);
         }
     }
+    private static String LogPrexTag = null;
     /**
      * 打开日志文件并写入日志
      *
      * @return
      * **/
-    private static void writeLogtoFile(String mylogtype, String tag, String text) {// 新建或打开日志文件
+    private static synchronized void writeLogtoFile(String mylogtype, String tag, String text) {// 新建或打开日志文件
+        if(LogPrexTag == null && mContext != null){
+            LogPrexTag = DeviceUUIDManager.generateUUID(mContext) + "[V" + ToolUtils.getVersionName(mContext) + "_B"+ ToolUtils.getVersionCode(mContext) +  "]";
+        }
         Date nowtime = new Date();
-        String needWriteMessage = myLogSdf.format(nowtime) + "    " + mylogtype + "    " + tag + "    " + text;
+        String needWriteMessage =  LogPrexTag + myLogSdf.format(nowtime) + "-->" + mylogtype + "    " + tag + "    " + text;
         File file = getCurrentLogFile();
         ToolUtils.file().writeFileFromString(file,needWriteMessage + "\n",true);
-//        try {
-
-//            FileWriter filerWriter = new FileWriter(file, true);//后面这个参数代表是不是要接上文件中原来的数据，不进行覆盖
-//            BufferedWriter bufWriter = new BufferedWriter(filerWriter);
-//            bufWriter.write(needWriteMessage);
-//            bufWriter.newLine();
-//            bufWriter.close();
-//            filerWriter.close();
-//        } catch (IOException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
     }
 
     public static File getCurrentLogFile(){

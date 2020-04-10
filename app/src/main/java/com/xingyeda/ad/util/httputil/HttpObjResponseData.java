@@ -18,9 +18,11 @@ public class HttpObjResponseData extends BaseResponseData {
     @Override
     protected void initData(Map<String, Object> map) {
         super.initData(map);
+
         if(code == 0){
             this.setResponse_status(HTTP_RESPONSE_STATUS.OK);
         }else{
+            setErrorCode(code);
             if(msg != null && !msg.isEmpty()){
                 this.setResponse_status(HTTP_RESPONSE_STATUS.OPERATIONERROR);
                 setErrorMsg(msg);
