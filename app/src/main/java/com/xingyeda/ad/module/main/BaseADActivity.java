@@ -157,7 +157,10 @@ public abstract class BaseADActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbinder.unbind();
+        if(unbinder != null){
+            unbinder.unbind();
+        }
+
         EventBus.getDefault().unregister(this);
     }
 }

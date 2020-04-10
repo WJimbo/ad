@@ -75,7 +75,12 @@ public class OneADMainActivity extends BaseADActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        adView.onDestroy();
-        dataProvider.unRegisterDataProvider();
+        if(adView != null){
+            adView.onDestroy();
+        }
+        if(dataProvider != null){
+            dataProvider.unRegisterDataProvider();
+        }
+
     }
 }

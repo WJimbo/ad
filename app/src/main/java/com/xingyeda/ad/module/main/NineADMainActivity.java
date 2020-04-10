@@ -140,7 +140,10 @@ public class NineADMainActivity extends BaseADActivity {
             }
         }
         adViewList = null;
-        dataProvider.unRegisterDataProvider();
+        if(dataProvider != null){
+            dataProvider.unRegisterDataProvider();
+        }
+
     }
 
 }

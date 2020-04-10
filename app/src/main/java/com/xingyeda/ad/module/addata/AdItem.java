@@ -33,12 +33,27 @@ public class AdItem {
      * url :
      */
 
+
     private String createDate;
-    private int id;
+    private String id;
     private String name;
     private int type;
     private String url;
     private int duration;
+    /**
+     * id : 1248553761333792769
+     * type : 0
+     * createDate : null
+     * name : null
+     * stateTime : 2020-04-01 00:00:00
+     * endTime : 2020-04-30 00:00:00
+     * advId : 1248553799220940801
+     * duration : 15
+     */
+
+    private String stateTime;
+    private String endTime;
+    private String advId;
 
     @Override
     public boolean equals(Object obj) {
@@ -47,7 +62,7 @@ public class AdItem {
             if(adItem.url.equals(url)
                     && adItem.type == type
                     && adItem.duration == duration
-                    && adItem.id == id){
+                    && adItem.id.equals(id)){
                 return true;
             }
         }
@@ -89,11 +104,11 @@ public class AdItem {
         this.createDate = createDate;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -119,6 +134,30 @@ public class AdItem {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getStateTime() {
+        return stateTime;
+    }
+
+    public void setStateTime(String stateTime) {
+        this.stateTime = stateTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getAdvId() {
+        return advId;
+    }
+
+    public void setAdvId(String advId) {
+        this.advId = advId;
     }
 }
 
