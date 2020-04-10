@@ -37,19 +37,19 @@ public class URLConfig {
     private static final String IP_HOST_PATH = ":8080/xydServer/servlet/";
     private static final String DOMAIN_HOST_PATH = "/api/";
 
-    //为了接口安全性 增加token机制 1111
+    //为了接口安全性 增加token机制 已测试
     public static final String GET_LOGIN_USER_TOKEN = "user/login";
 
-    //上传日志  111
+    //上传日志  111    // FIXME: 2020-04-10
     public static final String UPLOAD_LOG = "deviceLog";
 
-    //设备配置  1111
+    //设备配置  1111    // FIXME: 2020-04-10
     public static final String USERSET_PATH = "devices/pointSetting";
-    //检测更新版本 111
+    //检测更新版本 111     // FIXME: 2020-04-10
     public static final String CHECK_NEW_VERSION = "devices/firmware/check";
-    //获取广告数据
+    //获取广告数据    // FIXME: 2020-04-10
     public static final String REQUEST_AD_LIST = "advertising/reAdvertising";
-    //提交mac地址到后台  1111
+    //提交mac地址到后台  已测试
     public static final String BIND_EQ_BY_MAC = "devices/register";
 
 
