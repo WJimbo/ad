@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+   >
+    <TextClock
+        android:id="@+id/dateTextClock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:format24Hour ="yyyy.MM.dd\nEEEE  a"
+        android:format12Hour ="yyyy.MM.dd\nEEEE  a"
+        android:textColor="@color/Red"
+        android:textSize="12sp"/>
+    <TextClock
+        android:id="@+id/timeTextClock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:format24Hour ="HH:mm:ss"
+        android:format12Hour ="hh:mm:ss"
+        android:textColor="@color/Red"
+        android:textStyle="bold"
+        android:textSize="26sp" />
+    <EditText
+        android:id="@+id/edit_PowerOff"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:textColor="@color/Black"
+        android:textSize="16sp"
+        android:hint="自动关机时间(格式：HH:mm;HH:mm)"/>
+
+    <EditText
+        android:layout_marginTop="10dp"
+        android:id="@+id/edit_PowerOn"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:textColor="@color/Black"
+        android:textSize="16sp"
+        android:hint="自动开机时间(格式：HH:mm;HH:mm)"/>
+
+    <LinearLayout
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_weight="1"
+            android:id="@+id/btn_Ok"
+            android:text="确定"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
+
+        <Button
+            android:layout_weight="1"
+            android:id="@+id/btn_Close"
+            android:text="关闭"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
+
+    </LinearLayout>
+</LinearLayout>
+

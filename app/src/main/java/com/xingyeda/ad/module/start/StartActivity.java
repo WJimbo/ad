@@ -13,6 +13,7 @@ import com.xingyeda.ad.base.BaseActivity;
 import com.xingyeda.ad.config.DeviceUUIDManager;
 import com.xingyeda.ad.config.SettingConfig;
 import com.xingyeda.ad.config.SettingConfigManager;
+import com.xingyeda.ad.module.PowerTestActivity;
 import com.xingyeda.ad.module.main.NineADMainActivity;
 import com.xingyeda.ad.module.main.OneADMainActivity;
 import com.xingyeda.ad.module.register.RegisterManager;
@@ -85,6 +86,8 @@ public class StartActivity extends BaseActivity {
 
             @Override
             public void onFinish() {
+//                Intent intent = new Intent(mContext, PowerTestActivity.class);
+//                startActivity(intent);
                 MyLog.i("StartActivity finish");
                 if(SettingConfig.getADScreenNum(getApplicationContext()) == 9){
                     NineADMainActivity.startActivity(mContext);

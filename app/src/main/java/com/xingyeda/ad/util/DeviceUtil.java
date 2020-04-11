@@ -113,7 +113,9 @@ public class DeviceUtil {
                     }
                 }
             }
+            ToastUtils.showToast(context,"设置定时开关机成功");
         }catch (Exception ex){
+            ToastUtils.showToast(context,"设置定时开关机 Exception：" + ex.getMessage());
             MyLog.i("设置定时开关机 Exception：" + ToolUtils.string().nullStrToEmpty(timeoff) + "  定时开机:" + timeon);
         }
 
