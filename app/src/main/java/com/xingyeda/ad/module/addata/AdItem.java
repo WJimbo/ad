@@ -70,11 +70,11 @@ public class AdItem {
     }
 
     public String getLocationFileName(){
-        if("2".equals(type)){
+        if(2 == type){
             return (VideoRotateAngle + "video_") + url.hashCode() + ".mp4";
-        }else if("0".equals(type)){
+        }else if(0 == type){
             return url.hashCode() + ".jpg";
-        }else if("1".equals(type)){
+        }else if(1 == type){
             return url.hashCode() + ".mp3";
         }
         return url.hashCode() + ".unknow";
