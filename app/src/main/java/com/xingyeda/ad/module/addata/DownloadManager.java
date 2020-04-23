@@ -123,7 +123,7 @@ public class DownloadManager {
                     final DownloadItem downloadItem = (DownloadItem)task.getTag();
                     MyLog.d("下载完成:" + task.getUrl());
                     LogDebugUtil.appendLog("下载完成:" + task.getUrl());
-                    if("2".equals(downloadItem.fileType) && downloadItem.videoRotateAngle > 0){
+                    if(2 == downloadItem.fileType && downloadItem.videoRotateAngle > 0){
                         RotateVideoAsyncTask rotateVideoAsyncTask = new RotateVideoAsyncTask(downloadItem.getTempDownloadPath().getPath(),downloadItem.savePath.getPath(),downloadItem.videoRotateAngle);
                         rotateVideoAsyncTask.setCallback(new RotateVideoAsyncTask.Callback() {
                             @Override
@@ -134,7 +134,7 @@ public class DownloadManager {
                             }
                         });
                         rotateVideoAsyncTask.execute();
-                    }else if("0".equals(downloadItem.fileType)){
+                    }else if(0 == downloadItem.fileType){
                         CompressImageAsyncTask compressImageAsyncTask = new CompressImageAsyncTask(context,downloadItem.getTempDownloadPath().getPath(),downloadItem.savePath.getPath());
                         compressImageAsyncTask.setCallback(new CompressImageAsyncTask.Callback() {
                             @Override
