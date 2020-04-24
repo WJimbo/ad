@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.gavinrowe.lgw.library.SimpleTimerTask;
 import com.gavinrowe.lgw.library.SimpleTimerTaskHandler;
+import com.xingyeda.ad.util.CustomMainBoardUtil;
 import com.xingyeda.ad.util.DeviceUtil;
 import com.xingyeda.ad.util.httputil.HttpObjResponseData;
 import com.xingyeda.ad.util.httputil.HttpRequestData;
@@ -100,7 +101,7 @@ public class SettingConfigManager {
                         }
                         DeviceUtil.setMusicVolume(context,settingItem.musicVolume);
                         DeviceUtil.setSystemScreenBrightness(context,settingItem.ad_systemScreenBrightness);
-                        DeviceUtil.timingSwitchForADTV(context,settingItem.shutdown,settingItem.bootup);
+                        CustomMainBoardUtil.powerOffAndOn(context,settingItem.shutdown,settingItem.bootup);
 
                         if(settingChanged){
                             EventBus.getDefault().post(new SettingConfig.VideoRotateAngleChangedEventData());

@@ -14,11 +14,7 @@ import android.widget.Toast;
 import com.xingyeda.ad.broadcast.BroadCasetKeys;
 import com.xingyeda.ad.module.versionmanager.VersionManager;
 import com.xingyeda.ad.receiver.InnerReceiver;
-import com.xingyeda.ad.util.DeviceUtil;
-import com.zz9158.app.common.utils.ToastUtils;
-import com.zz9158.app.common.utils.ToolUtils;
 
-import top.wuhaojie.installerlibrary.AutoInstaller;
 
 public class BaseActivity extends Activity {
     protected Context mContext;

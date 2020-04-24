@@ -9,7 +9,8 @@ import com.xingyeda.ad.config.SettingConfigManager;
 import com.xingyeda.ad.module.addata.ADListManager;
 import com.xingyeda.ad.module.logger.LogFileManager;
 import com.xingyeda.ad.service.socket.CommandMessageData;
-import com.xingyeda.ad.util.DeviceUtil;
+import com.xingyeda.ad.util.CustomMainBoardUtil;
+
 import com.xingyeda.ad.util.MyLog;
 import com.zz9158.app.common.utils.ToolUtils;
 
@@ -27,7 +28,7 @@ public class CommandDealUtil {
             ADListManager.getInstance(context).setNeedUpdateList();
         } else if (ServiceCommond.PC_RESTART.equals(command))//重启
         {
-            DeviceUtil.reboot(context);
+            CustomMainBoardUtil.reboot(context);
         }else if(ServiceCommond.UPLOAD_LOGFILES.equals(command)){
             String content = commandMessageData.getContent();
             if(!ToolUtils.string().isEmpty(content)){

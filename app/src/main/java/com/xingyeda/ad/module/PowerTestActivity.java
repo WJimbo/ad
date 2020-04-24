@@ -8,7 +8,8 @@ import android.widget.EditText;
 import com.xingyeda.ad.R;
 import com.xingyeda.ad.base.BaseActivity;
 import com.xingyeda.ad.module.start.StartActivity;
-import com.xingyeda.ad.util.DeviceUtil;
+import com.xingyeda.ad.util.CustomMainBoardUtil;
+
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +33,7 @@ public class PowerTestActivity extends BaseActivity {
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DeviceUtil.timingSwitchForADTV(getApplicationContext(),editPowerOff.getText().toString(),editPowerOn.getText().toString());
+                CustomMainBoardUtil.powerOffAndOn(getApplicationContext(),editPowerOff.getText().toString(),editPowerOn.getText().toString());
             }
         });
 
