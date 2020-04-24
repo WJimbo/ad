@@ -8,8 +8,7 @@ android {
         applicationId "com.xingyeda.ad"
         minSdkVersion 19
         targetSdkVersion 22
-        versionCode 1916092030 //格式20031914  20年03月19日14时
-        versionName "2.1.0"
+
         buildConfigField "String", "BUILD_DATE", "\"${new SimpleDateFormat().format(new Date())}\""
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk{
@@ -47,6 +46,7 @@ android {
         }
     }
     lintOptions {
+        disable 'GoogleAppIndexingWarning'
         checkReleaseBuilds false
         abortOnError false
     }
@@ -56,6 +56,33 @@ android {
         main{
 //            jniLibs.srcDir 'libs'
             //说明so的路径为该libs路径，关联所有地图SDK的so文件
+        }
+    }
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+
+    flavorDimensions "versionCode"
+// productFlavors是为了避免每次运行都把DEX重新加载一遍而设置的两套运行配置
+    productFlavors {
+        //通用主板
+        pro_adtv_main{
+            versionCode 1916092030 //格式20031914  20年03月19日14时
+            versionName "2.1.0"
+            signingConfig signingConfigs.config
+            manifestPlaceholders = [
+                    CHANNEL_VALUE: name
+            ]
+        }
+        //长城电器 朗国主板
+        pro_adtv_lango_tech{
+            versionCode 1916092030 //格式20031914  20年03月19日14时
+            versionName "1.0.0"
+            signingConfig signingConfigs.config
+            manifestPlaceholders = [
+                    CHANNEL_VALUE: name
+            ]
         }
     }
 }

@@ -254,7 +254,7 @@ public class DeviceUtil {
      * 版权声明：本文为CSDN博主「低调小一」的原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。
      * 原文链接：https://blog.csdn.net/wzy_1988/article/details/49472611
      */
-    public static void setScrennManualMode(Context context) {
+    public static void setScreenManualMode(Context context) {
         ContentResolver contentResolver = context.getContentResolver();
         try {
             int mode = Settings.System.getInt(contentResolver,
@@ -304,7 +304,7 @@ public class DeviceUtil {
         }
 
 
-        setScrennManualMode(context);
+        setScreenManualMode(context);
         ContentResolver contentResolver = context.getContentResolver();
         if(screenBrightness < 0){
             screenBrightness = 125;
