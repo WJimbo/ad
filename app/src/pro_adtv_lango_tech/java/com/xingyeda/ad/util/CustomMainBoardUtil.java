@@ -19,8 +19,8 @@ public class CustomMainBoardUtil {
      * @param powerOn
      * @param powerOff
      */
-    public static void powerOffAndOn(Context context,String powerOn,String powerOff){
-        MyLog.i("设置定时关机：" + ToolUtils.string().nullStrToEmpty(timeoff) + "  定时开机:" + timeon);
+    public static void powerOffAndOn(Context context,String powerOff,String powerOn){
+        MyLog.i("设置定时关机：" + ToolUtils.string().nullStrToEmpty(powerOff) + "  定时开机:" + powerOn);
         String datePatten = "yyyy-MM-dd HH:mm:ss";
 
         //开机时间，int数组，如int[] timeonArray = {2014, 10, 1, 8, 30};//下次开机具体日期时间，即在2014.10.1 8:30开机
