@@ -70,7 +70,7 @@ public class TokenMananger {
         requestData.setMediaType(BaseRequestData.JSON);
         requestData.addBody("name",loginName);
         requestData.addBody("pwd",password);
-        requestData.addBody("type","3");
+        requestData.addBody("type","1");  //1设备登陆  2 APP业主登陆  3 后台登陆
         TokenHttpRequestModel.asynTokenRequestData(requestData, TokenResponseData.class, new HttpRequestModel.RequestCallBack() {
             @Override
             public void onResponseMainThread(BaseResponseData baseResponseData) {
