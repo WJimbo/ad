@@ -56,24 +56,4 @@ public class Util {
         BigInteger bigInt = new BigInteger(1, digest.digest());
         return bigInt.toString(16);
     }
-
-    public static Map<Integer, AdItem> sortMapByKey(Map<Integer, AdItem> map) {
-        if (map == null || map.isEmpty()) {
-            return null;
-        }
-        Map<Integer, AdItem> sortMap = new TreeMap<Integer, AdItem>(new Comparator<Integer>() {
-            @Override
-            public int compare(Integer o1, Integer o2) {
-                if (o1.intValue() < o2.intValue())
-                    return -1;
-                else if (o1.intValue() == o2.intValue())
-                    return 0;
-                else
-                    return 1;
-            }
-        });
-        sortMap.putAll(map);
-        return sortMap;
-    }
-
 }
