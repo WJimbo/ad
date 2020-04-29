@@ -13,7 +13,7 @@ import com.xingyeda.ad.config.DeviceUUIDManager;
 import com.xingyeda.ad.config.SettingConfig;
 import com.xingyeda.ad.logdebug.LogDebugItem;
 import com.xingyeda.ad.logdebug.LogDebugUtil;
-import com.xingyeda.ad.module.addata.ADListManager;
+import com.xingyeda.ad.module.ad.data.ADListManager;
 import com.xingyeda.ad.service.socket.CommandReceiveService;
 import com.xingyeda.ad.service.socket.ConnectChangedItem;
 import com.xingyeda.ad.util.MyLog;

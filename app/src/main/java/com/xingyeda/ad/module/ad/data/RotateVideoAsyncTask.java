@@ -1,4 +1,4 @@
-package com.xingyeda.ad.module.addata;
+package com.xingyeda.ad.module.ad.data;
 import android.os.AsyncTask;
 
 import com.lansosdk.videoeditor.MediaInfo;

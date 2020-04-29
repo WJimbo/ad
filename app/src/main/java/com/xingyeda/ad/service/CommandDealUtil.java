@@ -6,7 +6,7 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.xingyeda.ad.broadcast.BroadCasetKeys;
 import com.xingyeda.ad.config.SettingConfigManager;
-import com.xingyeda.ad.module.addata.ADListManager;
+import com.xingyeda.ad.module.ad.data.ADListManager;
 import com.xingyeda.ad.module.logger.LogFileManager;
 import com.xingyeda.ad.service.socket.CommandMessageData;
 import com.xingyeda.ad.util.CustomMainBoardUtil;

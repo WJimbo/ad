@@ -5,7 +5,7 @@ import android.app.Application;
 
 import com.lansosdk.videoeditor.LanSoEditor;
 import com.liulishuo.filedownloader.FileDownloader;
-import com.xingyeda.ad.module.addata.DownloadManager;
+import com.xingyeda.ad.module.ad.data.DownloadManager;
 import com.xingyeda.ad.util.CrashHandler;
 import com.xingyeda.ad.util.MyLog;
 import com.xingyeda.ad.util.httputil.TokenMananger;

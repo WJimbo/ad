@@ -1,8 +1,8 @@
-package com.xingyeda.ad.module.dataprovider;
+package com.xingyeda.ad.module.ad.dataprovider;
 
 import android.content.Context;
 
-import com.xingyeda.ad.module.addata.AdItem;
+import com.xingyeda.ad.module.ad.data.AdItem;
 
 import java.util.ArrayList;
 

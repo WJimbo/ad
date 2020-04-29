@@ -1,8 +1,7 @@
-package com.xingyeda.ad.module.dataprovider;
+package com.xingyeda.ad.module.ad.dataprovider;
 
 import android.content.Context;
-import com.xingyeda.ad.module.addata.AdItem;
-import com.xingyeda.ad.module.addata.DownloadManager;
+import com.xingyeda.ad.module.ad.data.AdItem;
 
 
 public class OneADDataProvider extends BaseADDataProvider {

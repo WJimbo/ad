@@ -6,9 +6,9 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import com.xingyeda.ad.R;
-import com.xingyeda.ad.module.addata.AdItem;
-import com.xingyeda.ad.module.dataprovider.NineADDataProvider;
-import com.xingyeda.ad.module.main.widget.ADView;
+import com.xingyeda.ad.module.ad.data.AdItem;
+import com.xingyeda.ad.module.ad.dataprovider.NineADDataProvider;
+import com.xingyeda.ad.module.ad.widget.ADView;
 import com.xingyeda.ad.util.MyLog;
 
 import butterknife.BindView;

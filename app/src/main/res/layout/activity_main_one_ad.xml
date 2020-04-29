@@ -8,7 +8,7 @@
     android:background="@color/Black">
 
 
-    <com.xingyeda.ad.module.main.widget.ADView
+    <com.xingyeda.ad.module.ad.widget.ADView
         android:id="@+id/adView"
         android:visibility="visible"
         android:layout_width="match_parent"
