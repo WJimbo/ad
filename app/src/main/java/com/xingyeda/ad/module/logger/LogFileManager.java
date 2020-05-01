@@ -26,7 +26,7 @@ public class LogFileManager {
         requestData.setRequestURL(URLConfig.getPath(context,URLConfig.UPLOAD_LOG));
         requestData.setRequestMode(BaseRequestData.RequestModeType.POST);
         requestData.setEnableToken(true);
-        requestData.addRequestParams("mac",DeviceUUIDManager.generateUUID(context));
+        requestData.addRequestParams("deviceId",DeviceUUIDManager.generateUUID(context));
         int exsitFileCount = 0;
         for (String fileName : filenames){
             fileName = fileName + ".txt";
@@ -36,7 +36,7 @@ public class LogFileManager {
                 File logUploadFile = new File(MyLog.getPATH_LOGCAT(),"upload_" + fileName);
                 ToolUtils.file().copyFile(logFile,logUploadFile);
                 exsitFileCount ++;
-                requestData.addUploadFileArray("file",fileName,logUploadFile);
+                requestData.addUploadFileArray("log",fileName,logUploadFile);
             }else{
                 MyLog.i("上传文件" + fileName +"不存在");
             }

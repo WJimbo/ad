@@ -40,7 +40,7 @@ public class URLConfig {
     public static final String GET_LOGIN_USER_TOKEN = "user/login";
 
     //上传日志  111    // FIXME: 2020-04-10
-    public static final String UPLOAD_LOG = "deviceLog";
+    public static final String UPLOAD_LOG = "file/upload/log";
 
     //设备配置  1111    // FIXME: 2020-04-10
     public static final String USERSET_PATH = "devices/pointSetting";
