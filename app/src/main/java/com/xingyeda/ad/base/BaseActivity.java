@@ -39,6 +39,7 @@ public class BaseActivity extends Activity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             Toast.makeText(getApplicationContext(), "返回键无效", Toast.LENGTH_SHORT).show();
+            moveTaskToBack(true);
             return true;//return true;拦截事件传递,从而屏蔽back键。
         }
         if (KeyEvent.KEYCODE_HOME == keyCode) {

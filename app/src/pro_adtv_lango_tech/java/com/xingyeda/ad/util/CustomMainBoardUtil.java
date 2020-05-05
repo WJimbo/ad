@@ -136,8 +136,8 @@ public class CustomMainBoardUtil {
      * @param context
      */
     public static void reboot(Context context){
-        Intent intent = new Intent();  
-        intent.setAction("android.intent.action.reboot");  
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.reboot");
         context.sendBroadcast(intent);
     }
 
@@ -147,7 +147,7 @@ public class CustomMainBoardUtil {
      */
     public static void powerDown(Context context){
         Intent intent = new Intent();
-        intent.setAction("android.intent.action.shutdown");  
+        intent.setAction("android.intent.action.shutdown");
         context.sendBroadcast(intent);
     }
 
