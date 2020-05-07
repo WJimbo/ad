@@ -3,6 +3,7 @@ package com.xingyeda.ad.util;
 import android.content.Context;
 import android.content.Intent;
 
+import com.zz9158.app.common.utils.ToastUtils;
 import com.zz9158.app.common.utils.ToolUtils;
 
 import java.util.Calendar;
@@ -16,8 +17,8 @@ public class CustomMainBoardUtil {
     /**
      * 定时开关机
      * @param context
-     * @param powerOn
-     * @param powerOff
+     * @param powerOn yyyy-MM-dd HH:mm:ss
+     * @param powerOff yyyy-MM-dd HH:mm:ss
      */
     public static void powerOffAndOn(Context context,String powerOff,String powerOn){
         MyLog.i("设置定时关机：" + ToolUtils.string().nullStrToEmpty(powerOff) + "  定时开机:" + powerOn);
@@ -77,6 +78,7 @@ public class CustomMainBoardUtil {
 
                 timeonArray = new int[]{year,month,day,hour,minute};
             }
+            ToastUtils.showToastLong(context,"当前时间:" + ToolUtils.time().date2String(new Date(),datePatten) + " 关机时间:" + powerOff + "  开机时间:" + powerOn);
 
         }
         Intent intent = new Intent();

@@ -13,7 +13,6 @@ import com.xingyeda.ad.base.BaseActivity;
 import com.xingyeda.ad.config.DeviceUUIDManager;
 import com.xingyeda.ad.config.SettingConfig;
 import com.xingyeda.ad.config.SettingConfigManager;
-import com.xingyeda.ad.module.PowerTestActivity;
 import com.xingyeda.ad.module.main.NineADMainActivity;
 import com.xingyeda.ad.module.main.OneADMainActivity;
 import com.xingyeda.ad.module.register.RegisterManager;

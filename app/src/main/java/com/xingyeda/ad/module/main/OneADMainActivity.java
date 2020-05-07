@@ -4,11 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 
 import com.xingyeda.ad.R;
 import com.xingyeda.ad.module.ad.data.AdItem;
 import com.xingyeda.ad.module.ad.dataprovider.OneADDataProvider;
 import com.xingyeda.ad.module.ad.widget.ADView;
+import com.xingyeda.ad.util.CustomMainBoardUtil;
+import com.zz9158.app.common.utils.ToolUtils;
+
+import java.util.Date;
 
 import butterknife.BindView;
 
@@ -34,6 +39,14 @@ public class OneADMainActivity extends BaseADActivity {
             @Override
             public AdItem getNextAD(AdItem finishPlayItem) {
                 return dataProvider.getNextADItem();
+            }
+        });
+        adView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Date powerOffDate = ToolUtils.time().millis2Date(System.currentTimeMillis() + 2 * 60 * 1000);
+                Date powerOnDate = ToolUtils.time().millis2Date(System.currentTimeMillis() + 5 * 60 * 1000);
+                CustomMainBoardUtil.powerOffAndOn(getApplicationContext(), ToolUtils.time().date2String(powerOffDate,"yyyy-MM-dd HH:mm:ss"),ToolUtils.time().date2String(powerOnDate,"yyyy-MM-dd HH:mm:ss"));
             }
         });
     }
