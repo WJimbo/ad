@@ -7,6 +7,7 @@ import com.xingyeda.ad.config.URLConfig;
 import com.xingyeda.ad.util.httputil.HttpObjResponseData;
 import com.xingyeda.ad.util.httputil.HttpRequestData;
 import com.xingyeda.ad.util.httputil.TokenHttpRequestModel;
+import com.xingyeda.config.DeviceConfig;
 import com.zz9158.app.common.utils.ToastUtils;
 import com.zz9158.app.common.utils.ToolUtils;
 import com.zz9158.app.common.utils.http.BaseRequestData;
@@ -50,11 +51,11 @@ public class RegisterManager {
         final HttpRequestData requestData = new HttpRequestData();
         requestData.setRequestMode(BaseRequestData.RequestModeType.POST);
         requestData.setRequestURL(URLConfig.getPath(appContext,URLConfig.BIND_EQ_BY_MAC));
-        requestData.setEnableToken(true);
+        requestData.setEnableToken(false);
         requestData.addRequestParams("command","");
         requestData.addRequestParams("deviceId",DeviceUUIDManager.generateUUID(appContext));
         requestData.addRequestParams("info","");
-        requestData.addRequestParams("os_model","3");//设备型号，Q588=0,3188=1,3288=2,电视广告机=3,桌面广告机=4
+        requestData.addRequestParams("os_model", DeviceConfig.os_model);//设备型号，Q588=0,3188=1,3288=2,电视广告机=3,桌面广告机=4
         requestData.addRequestParams("pushType","");
         requestData.addRequestParams("version",ToolUtils.getVersionName(appContext) + "_" + ToolUtils.getVersionCode(appContext));
         TokenHttpRequestModel.asynTokenRequestData(requestData, HttpObjResponseData.class, new HttpRequestModel.RequestCallBack() {
