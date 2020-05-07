@@ -44,9 +44,9 @@ public class OneADMainActivity extends BaseADActivity {
         adView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Date powerOffDate = ToolUtils.time().millis2Date(System.currentTimeMillis() + 2 * 60 * 1000);
-                Date powerOnDate = ToolUtils.time().millis2Date(System.currentTimeMillis() + 5 * 60 * 1000);
-                CustomMainBoardUtil.powerOffAndOn(getApplicationContext(), ToolUtils.time().date2String(powerOffDate,"yyyy-MM-dd HH:mm:ss"),ToolUtils.time().date2String(powerOnDate,"yyyy-MM-dd HH:mm:ss"));
+//                Date powerOffDate = ToolUtils.time().millis2Date(System.currentTimeMillis() + 2 * 60 * 1000);
+//                Date powerOnDate = ToolUtils.time().millis2Date(System.currentTimeMillis() + 5 * 60 * 1000);
+//                CustomMainBoardUtil.powerOffAndOn(getApplicationContext(), ToolUtils.time().date2String(powerOffDate,"yyyy-MM-dd HH:mm:ss"),ToolUtils.time().date2String(powerOnDate,"yyyy-MM-dd HH:mm:ss"));
             }
         });
     }
