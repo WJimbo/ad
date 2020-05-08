@@ -16,13 +16,17 @@ import com.vilyever.socketclient.helper.SocketPacket;
 import com.vilyever.socketclient.helper.SocketPacketHelper;
 import com.vilyever.socketclient.helper.SocketResponsePacket;
 import com.vilyever.socketclient.util.CharsetUtil;
+import com.vilyever.socketclient.util.StringValidation;
 import com.xingyeda.ad.config.DeviceUUIDManager;
 import com.xingyeda.ad.logdebug.LogDebugUtil;
 import com.xingyeda.ad.service.CommandDealUtil;
+import com.xingyeda.ad.util.MyLog;
 import com.zz9158.app.common.utils.GsonUtil;
 import com.zz9158.app.common.utils.LoggerHelper;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.net.InetAddress;
 
 public class CommandReceiveService extends Service {
     public static void startService(Context context){
@@ -43,7 +47,39 @@ public class CommandReceiveService extends Service {
         initSendDataListener();
         initReceiveDataListener();
         autoSetHeartbeat();
-        connect();
+        //判断配置的是ip还是域名 ip可以直接连
+        if(StringValidation.validateRegex(CommandReceiveConfig.SOCKET_HOST,StringValidation.RegexIP)){
+            socketClient.setAddress(new SocketClientAddress(CommandReceiveConfig.SOCKET_HOST,CommandReceiveConfig.SOCKET_PORT,CommandReceiveConfig.CONNECTION_TIMEOUT_MILL));
+            connect();
+        }else{//判断配置的是ip还是域名 域名需要联网解析 所以这里搞了个循环去解析域名中的ip地址
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    boolean isLoggedException = false;
+                    while (true){
+                        try {
+                            InetAddress netAddress = InetAddress.getByName(CommandReceiveConfig.SOCKET_HOST);
+                            MyLog.i("解析到域名IP:" + netAddress.getHostAddress());
+                            if(netAddress.getHostAddress() != null && StringValidation.validateRegex(netAddress.getHostAddress(),StringValidation.RegexIP)){
+                                socketClient.setAddress(new SocketClientAddress(netAddress.getHostAddress(),CommandReceiveConfig.SOCKET_PORT,CommandReceiveConfig.CONNECTION_TIMEOUT_MILL));
+                                connect();
+                                break;
+                            }
+                        } catch (Exception e) {
+                            if(!isLoggedException){
+                                MyLog.i("Socket服务无法解析到域名IP 10秒循环重试");
+                                isLoggedException = true;
+                            }
+                        }
+                        try {
+                            Thread.sleep(10 * 1000);
+                        }catch (Exception ex){
+
+                        }
+                    }
+                }
+            }).start();
+        }
         LoggerHelper.i("Socket长连接服务创建成功");
     }
     private String heartBeatMessage = "";
@@ -56,7 +92,7 @@ public class CommandReceiveService extends Service {
         heartBeatMessage = GsonUtil.gson.toJson(messageData);
     }
     private void initSocketClient(){
-        socketClient = new SocketClient(new SocketClientAddress(CommandReceiveConfig.SOCKET_HOST,CommandReceiveConfig.SOCKET_PORT,CommandReceiveConfig.CONNECTION_TIMEOUT_MILL));
+        socketClient = new SocketClient(new SocketClientAddress());
         /**
          * 设置自动转换String类型到byte[]类型的编码
          * 如未设置（默认为null），将不能使用{@link SocketClient#sendString(String)}发送消息
@@ -217,7 +253,6 @@ public class CommandReceiveService extends Service {
                 if(currentConnectionState != 1){
                     currentConnectionState = 1;
                     isConnected = true;
-                    LoggerHelper.i("Socket连接成功-->" + client.getAddress().getRemoteIP() + ":" + client.getAddress().getRemotePort());
                     EventBus.getDefault().post(new ConnectChangedItem(isConnected));
                     LogDebugUtil.appendLog("Socket连接成功-->" + client.getAddress().getRemoteIP() + ":" + client.getAddress().getRemotePort());
                 }
@@ -238,7 +273,6 @@ public class CommandReceiveService extends Service {
                     isConnected = false;
                     EventBus.getDefault().post(new ConnectChangedItem(isConnected));
                     LogDebugUtil.appendLog("Socket连接失败，每隔5秒将尝试重连-->" + client.getAddress().getRemoteIP() + ":" + client.getAddress().getRemotePort());
-                    LoggerHelper.i("Socket连接失败，每隔5秒将尝试重连-->" + client.getAddress().getRemoteIP() + ":" + client.getAddress().getRemotePort());
                 }
                 mainHandler.postDelayed(new Runnable() {
                     @Override

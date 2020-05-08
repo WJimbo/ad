@@ -4,7 +4,8 @@ public class CommandReceiveConfig {
     /**
      * socket IP地址
      */
-    public static final String SOCKET_HOST = "192.168.10.38";
+//    public static final String SOCKET_HOST = "192.168.10.38";
+    public static final String SOCKET_HOST = "service.xyd999.net";
 //    public static final String SOCKET_HOST = "120.25.245.234";
     /**
      * 端口

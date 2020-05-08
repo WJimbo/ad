@@ -42,7 +42,7 @@ public class VersionManager {
         requestData.setRequestURL(URLConfig.getPath(context,URLConfig.CHECK_NEW_VERSION));
         requestData.setRequestMode(BaseRequestData.RequestModeType.GET);
         requestData.setEnableToken(true);
-        requestData.addBody("os_version","" + Build.VERSION.SDK_INT);//系统版本  21代表5.0的系统  < 21则判断是4.4的机器  >= 21判断是5.0以上机器
+        requestData.addRequestParams("os_version","" + Build.VERSION.SDK_INT);//系统版本  21代表5.0的系统  < 21则判断是4.4的机器  >= 21判断是5.0以上机器
         requestData.addRequestParams("os_model", DeviceConfig.os_model); // Q588=0,3188=1,3288=2,电视广告机=3,桌面广告机=4
         TokenHttpRequestModel.asynTokenRequestData(requestData, AppVersionResponseData.class, new HttpRequestModel.RequestCallBack() {
             @Override
