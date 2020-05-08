@@ -3,7 +3,6 @@ package com.xingyeda.ad.util;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.media.AudioManager;
 import android.provider.Settings;
 import android.util.Log;
@@ -16,10 +15,11 @@ import com.zz9158.app.common.utils.ToolUtils;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
+
+import top.wuhaojie.installerlibrary.AutoInstaller;
 
 public class DeviceUtil {
+
     public static void setMusicVolume(Context context,String volume){
         int musicVolumePercent = 0;
         if(ToolUtils.string().isEmpty(volume)){

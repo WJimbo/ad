@@ -10,6 +10,7 @@ import com.xingyeda.ad.R;
 import com.xingyeda.ad.module.ad.data.AdItem;
 import com.xingyeda.ad.module.ad.dataprovider.OneADDataProvider;
 import com.xingyeda.ad.module.ad.widget.ADView;
+import com.xingyeda.ad.module.versionmanager.VersionManager;
 import com.xingyeda.ad.util.CustomMainBoardUtil;
 import com.zz9158.app.common.utils.ToolUtils;
 
@@ -49,6 +50,7 @@ public class OneADMainActivity extends BaseADActivity {
 //                CustomMainBoardUtil.powerOffAndOn(getApplicationContext(), ToolUtils.time().date2String(powerOffDate,"yyyy-MM-dd HH:mm:ss"),ToolUtils.time().date2String(powerOnDate,"yyyy-MM-dd HH:mm:ss"));
             }
         });
+        VersionManager.checkVersions(this);
     }
     @Override
     protected void rotationADViews(float rotateAngle) {

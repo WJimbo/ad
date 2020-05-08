@@ -33,23 +33,23 @@ public class URLConfig {
     public static final String BIND_EQ_BY_MAC = "insertEqByMac/C";
    */
 
-    private static final String IP_HOST_PATH = ":8080/api/";
-    private static final String DOMAIN_HOST_PATH = "/api/";
+    private static final String IP_HOST_PATH = ":8080";
+    private static final String DOMAIN_HOST_PATH = "";
 
     //为了接口安全性 增加token机制 已测试
-    public static final String GET_LOGIN_USER_TOKEN = "user/login";
+    public static final String GET_LOGIN_USER_TOKEN = "/api/user/login";
 
     //上传日志  111    // FIXME: 2020-04-10
-    public static final String UPLOAD_LOG = "file/upload/log";
+    public static final String UPLOAD_LOG = "/api/file/upload/log";
 
     //设备配置  1111    // FIXME: 2020-04-10
-    public static final String USERSET_PATH = "devices/pointSetting";
+    public static final String USERSET_PATH = "/api/devices/pointSetting";
     //检测更新版本 111     // FIXME: 2020-04-10
-    public static final String CHECK_NEW_VERSION = "devices/firmware/check";
+    public static final String CHECK_NEW_VERSION = "/api/devices/firmware/check";
     //获取广告数据    // FIXME: 2020-04-10
-    public static final String REQUEST_AD_LIST = "advertising/reAdvertising";
+    public static final String REQUEST_AD_LIST = "/api/advertising/reAdvertising";
     //提交mac地址到后台  已测试
-    public static final String BIND_EQ_BY_MAC = "devices/register";
+    public static final String BIND_EQ_BY_MAC = "/unauthenticate/register";
 
 
 

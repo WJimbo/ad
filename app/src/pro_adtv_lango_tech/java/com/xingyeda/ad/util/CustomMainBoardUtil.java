@@ -78,7 +78,7 @@ public class CustomMainBoardUtil {
 
                 timeonArray = new int[]{year,month,day,hour,minute};
             }
-            ToastUtils.showToastLong(context,"当前时间:" + ToolUtils.time().date2String(new Date(),datePatten) + " 关机时间:" + powerOff + "  开机时间:" + powerOn);
+//            ToastUtils.showToastLong(context,"当前时间:" + ToolUtils.time().date2String(new Date(),datePatten) + " 关机时间:" + powerOff + "  开机时间:" + powerOn);
 
         }
         Intent intent = new Intent();
@@ -106,6 +106,19 @@ public class CustomMainBoardUtil {
         context.sendBroadcast(intent);
     }
 
+    /**
+     * 通过下载地址安装
+     * @param url
+     */
+    public static void installWithApkUrl(final Context context,String url){
+        ApkInstaller.downloadApkAndInstall(url, context.getApplicationContext(), "ad_tv_lango.apk", new ApkInstaller.OnDownloadApkCallback() {
+            @Override
+            public void downloadFinish(String apkPath) {
+                ToastUtils.showToast(context,"开始进行静默安装");
+                installSilentApk(context,apkPath);
+            }
+        });
+    }
     /**
      * 电视广告机静默安装
      * @param context

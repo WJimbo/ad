@@ -133,7 +133,13 @@ public class CustomMainBoardUtil {
         mIntent.putExtra("currentTime",mTime);
         context.sendBroadcast(mIntent);
     }
-
+    /**
+     * 通过下载地址安装
+     * @param url
+     */
+    public static void installWithApkUrl(final Context context,String url){
+        ApkInstaller.installApkUseAutoInstaller(context,url);
+    }
     /**
      * 电视广告机静默安装
      * @param context

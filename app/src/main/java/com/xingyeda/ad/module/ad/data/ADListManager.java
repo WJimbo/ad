@@ -130,7 +130,7 @@ public class ADListManager {
         isUpdatingList = true;
         final HttpRequestData requestData = new HttpRequestData();
         requestData.setRequestURL(URLConfig.getPath(context, URLConfig.REQUEST_AD_LIST));
-        requestData.setRequestMode(BaseRequestData.RequestModeType.POST);
+        requestData.setRequestMode(BaseRequestData.RequestModeType.GET);
         requestData.setEnableToken(true);
         requestData.addRequestParams("mac", DeviceUUIDManager.generateUUID(context));
         TokenHttpRequestModel.asynTokenRequestData(requestData, AdListResponseData.class, new HttpRequestModel.RequestCallBack() {

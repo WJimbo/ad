@@ -55,7 +55,7 @@ public class RegisterManager {
         requestData.addRequestParams("command","");
         requestData.addRequestParams("deviceId",DeviceUUIDManager.generateUUID(appContext));
         requestData.addRequestParams("info","");
-        requestData.addRequestParams("os_model", DeviceConfig.os_model);//设备型号，Q588=0,3188=1,3288=2,电视广告机=3,桌面广告机=4
+        requestData.addRequestParams("os_model", DeviceConfig.os_model);
         requestData.addRequestParams("pushType","");
         requestData.addRequestParams("version",ToolUtils.getVersionName(appContext) + "_" + ToolUtils.getVersionCode(appContext));
         TokenHttpRequestModel.asynTokenRequestData(requestData, HttpObjResponseData.class, new HttpRequestModel.RequestCallBack() {
