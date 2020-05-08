@@ -77,7 +77,7 @@ android {
         }
         //长城电器 朗国主板
         pro_adtv_lango_tech{
-            versionCode 1916092030 //格式20031914  20年03月19日14时
+            versionCode 1917081630 //格式20031914  20年03月19日14时
             versionName "1.0.0"
             signingConfig signingConfigs.config
             manifestPlaceholders = [

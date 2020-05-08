@@ -49,7 +49,7 @@ public class AppVersionResponseData extends HttpObjResponseData {
         private boolean deleted;
         private String devicesVersion;
         private String downloadUrl;
-        private int id;
+        private String id;
         private int isMaster;
         private String md5;
         private int types;
@@ -97,11 +97,11 @@ public class AppVersionResponseData extends HttpObjResponseData {
             this.downloadUrl = downloadUrl;
         }
 
-        public int getId() {
+        public String getId() {
             return id;
         }
 
-        public void setId(int id) {
+        public void setId(String id) {
             this.id = id;
         }
 

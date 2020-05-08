@@ -16,7 +16,6 @@ import com.xingyeda.ad.logdebug.LogDebugUtil;
 import com.xingyeda.ad.module.ad.data.ADListManager;
 import com.xingyeda.ad.service.socket.CommandReceiveService;
 import com.xingyeda.ad.service.socket.ConnectChangedItem;
-import com.xingyeda.ad.util.MyLog;
 import com.xingyeda.ad.widget.SquareHeightRelativeLayout;
 import com.zz9158.app.common.utils.ToolUtils;
 
@@ -42,7 +41,6 @@ public abstract class BaseADActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MyLog.i(this.getClass().toString() + " onCreate");
         EventBus.getDefault().register(this);
         setContentView(getLayout());
         unbinder = ButterKnife.bind(this);
@@ -52,7 +50,6 @@ public abstract class BaseADActivity extends BaseActivity {
         rotationViews(SettingConfig.getScreenRotateAngle(this));
         onConnectionChanged(CommandReceiveService.isConnected);
         requestList();
-        MyLog.i(this.getClass().toString() + " onCreate finish");
     }
     private void requestList() {
         ADListManager.getInstance(getApplicationContext()).setNeedUpdateList();
