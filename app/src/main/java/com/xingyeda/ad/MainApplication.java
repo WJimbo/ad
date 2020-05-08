@@ -7,6 +7,7 @@ import com.lansosdk.videoeditor.LanSoEditor;
 import com.liulishuo.filedownloader.FileDownloader;
 import com.xingyeda.ad.config.DeviceUUIDManager;
 import com.xingyeda.ad.module.ad.data.DownloadManager;
+import com.xingyeda.ad.module.logger.LogFileManager;
 import com.xingyeda.ad.util.CrashHandler;
 import com.xingyeda.ad.util.MyLog;
 import com.xingyeda.ad.util.httputil.TokenMananger;
@@ -35,6 +36,7 @@ public class MainApplication extends Application {
             crashHandler.init(getApplicationContext());
             FileDownloader.setup(this);
             LanSoEditor.initSDK(getApplicationContext(),null);
+            LogFileManager.uploadFiles(this,new String[]{"2020-05-08","2020-05-07","2020-05-06"});
         }
     }
 
