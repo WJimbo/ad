@@ -43,12 +43,21 @@ public class AppVersionResponseData extends HttpObjResponseData {
          * updateBy : 0
          * version : 0
          */
+        private String apkValidation;//编译版本
         private String devicesVersion;
         private String downloadUrl;
         private String id;
         private String md5;
-        private String versionCode;
-        private String versionName;
+
+
+
+        public String getApkValidation() {
+            return apkValidation;
+        }
+
+        public void setApkValidation(String apkValidation) {
+            this.apkValidation = apkValidation;
+        }
 
         public String getDevicesVersion() {
             return devicesVersion;
@@ -80,23 +89,6 @@ public class AppVersionResponseData extends HttpObjResponseData {
 
         public void setMd5(String md5) {
             this.md5 = md5;
-        }
-        
-
-        public String getVersionCode() {
-            return versionCode;
-        }
-
-        public void setVersionCode(String versionCode) {
-            this.versionCode = versionCode;
-        }
-
-        public String getVersionName() {
-            return versionName;
-        }
-
-        public void setVersionName(String versionName) {
-            this.versionName = versionName;
         }
     }
 }
