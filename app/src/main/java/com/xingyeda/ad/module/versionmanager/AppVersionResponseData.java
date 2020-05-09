@@ -43,43 +43,13 @@ public class AppVersionResponseData extends HttpObjResponseData {
          * updateBy : 0
          * version : 0
          */
-
-        private String createAt;
-        private int createBy;
-        private boolean deleted;
         private String devicesVersion;
         private String downloadUrl;
         private String id;
-        private int isMaster;
         private String md5;
-        private int types;
-        private String updateAt;
-        private int updateBy;
-        private int version;
-
-        public String getCreateAt() {
-            return createAt;
-        }
-
-        public void setCreateAt(String createAt) {
-            this.createAt = createAt;
-        }
-
-        public int getCreateBy() {
-            return createBy;
-        }
-
-        public void setCreateBy(int createBy) {
-            this.createBy = createBy;
-        }
-
-        public boolean isDeleted() {
-            return deleted;
-        }
-
-        public void setDeleted(boolean deleted) {
-            this.deleted = deleted;
-        }
+        private String version;
+        private String versionCode;
+        private String versionName;
 
         public String getDevicesVersion() {
             return devicesVersion;
@@ -105,14 +75,6 @@ public class AppVersionResponseData extends HttpObjResponseData {
             this.id = id;
         }
 
-        public int getIsMaster() {
-            return isMaster;
-        }
-
-        public void setIsMaster(int isMaster) {
-            this.isMaster = isMaster;
-        }
-
         public String getMd5() {
             return md5;
         }
@@ -121,62 +83,30 @@ public class AppVersionResponseData extends HttpObjResponseData {
             this.md5 = md5;
         }
 
-        public int getTypes() {
-            return types;
-        }
 
-        public void setTypes(int types) {
-            this.types = types;
-        }
 
-        public String getUpdateAt() {
-            return updateAt;
-        }
-
-        public void setUpdateAt(String updateAt) {
-            this.updateAt = updateAt;
-        }
-
-        public int getUpdateBy() {
-            return updateBy;
-        }
-
-        public void setUpdateBy(int updateBy) {
-            this.updateBy = updateBy;
-        }
-
-        public int getVersion() {
+        public String getVersion() {
             return version;
         }
 
-        public void setVersion(int version) {
+        public void setVersion(String version) {
             this.version = version;
         }
 
-        static class FileItem {
-            /**
-             * fileName : app-signed-sdk23-android51.apk
-             * version : 2.0
-             */
+        public String getVersionCode() {
+            return versionCode;
+        }
 
-            private String fileName;
-            private String version;
+        public void setVersionCode(String versionCode) {
+            this.versionCode = versionCode;
+        }
 
-            public String getFileName() {
-                return fileName;
-            }
+        public String getVersionName() {
+            return versionName;
+        }
 
-            public void setFileName(String fileName) {
-                this.fileName = fileName;
-            }
-
-            public String getVersion() {
-                return version;
-            }
-
-            public void setVersion(String version) {
-                this.version = version;
-            }
+        public void setVersionName(String versionName) {
+            this.versionName = versionName;
         }
     }
 }

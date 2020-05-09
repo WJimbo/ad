@@ -52,7 +52,7 @@ public class VersionManager {
                         AppVersionResponseData appVersionResponseData = (AppVersionResponseData)baseResponseData;
                         if(appVersionResponseData.getData() != null){
                             AppVersionResponseData.AppVersionBean versionBean = appVersionResponseData.getData();
-                            if (currentVersionCode < versionBean.getVersion()) {
+                            if (currentVersionCode < ToolUtils.parseLong(versionBean.getVersionCode())) {
                                 String downloadURL = versionBean.getDownloadUrl();
                                 if(checkCallBack != null){
                                     checkCallBack.callBack(true,downloadURL,null);

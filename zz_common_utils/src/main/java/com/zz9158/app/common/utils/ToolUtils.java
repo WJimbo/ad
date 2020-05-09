@@ -15,6 +15,23 @@ import java.io.File;
  */
 
 public class ToolUtils extends Tools {
+
+    public static int parseInt(String value){
+        try {
+            return Integer.parseInt(value);
+        }catch (Exception ex){
+            return 0;
+        }
+    }
+
+    public static long parseLong(String value){
+        try {
+            return Long.parseLong(value);
+        }catch (Exception ex){
+            return 0;
+        }
+    }
+
     public static String readFile2String(String path,String charsetName){
         String content = "";
         try{
