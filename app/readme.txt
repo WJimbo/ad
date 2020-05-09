@@ -1,0 +1,1 @@
+获取文件的md5： certutil -hashfile D:\1.exe MD5

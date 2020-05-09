@@ -33,12 +33,10 @@ public class TokenHttpRequestModel{
                         HttpRequestModel.asynRequestData(requestData, dataModelClass, new HttpRequestModel.RequestCallBack() {
                             @Override
                             public void onResponseMainThread(BaseResponseData baseResponseData) {
-                                if(baseResponseData.isOperationSuccess() == false && baseResponseData.getErrorCode() == 40001){
+                                if(baseResponseData.isOperationSuccess() == false && baseResponseData.getErrorCode() == 40001 && firstRequest){
                                     TokenMananger.getInstance().resetToken();
                                     //第一次请求这个地址 发现token过期了  就让他在去更新token请求一次
-                                    if(firstRequest){
-                                        asynTokenRequestData(requestData,false,dataModelClass,listener);
-                                    }
+                                    asynTokenRequestData(requestData,false,dataModelClass,listener);
                                     return;
                                 }
                                 if(listener != null){
