@@ -62,6 +62,9 @@ android {
         sourceCompatibility 1.8
         targetCompatibility 1.8
     }
+    packagingOptions {
+
+    }
 
     flavorDimensions "versionCode"
 // productFlavors是为了避免每次运行都把DEX重新加载一遍而设置的两套运行配置
