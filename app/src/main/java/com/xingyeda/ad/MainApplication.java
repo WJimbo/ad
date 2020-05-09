@@ -31,8 +31,11 @@ public class MainApplication extends Application {
             ToolUtils.init(this);
             LoggerHelper.init();
             MyLog.getInstance(this);
-            CrashHandler crashHandler = CrashHandler.getInstance();
-            crashHandler.init(getApplicationContext());
+            if(!BuildConfig.DEBUG){
+                CrashHandler crashHandler = CrashHandler.getInstance();
+                crashHandler.init(getApplicationContext());
+            }
+
             FileDownloader.setup(this);
             LanSoEditor.initSDK(getApplicationContext(),null);
         }

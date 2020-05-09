@@ -126,7 +126,6 @@ public class ADListManager {
         if(isUpdatingList){
             return;
         }
-        LogDebugUtil.appendLog("正在开始调用广告数据");
         isUpdatingList = true;
         final HttpRequestData requestData = new HttpRequestData();
         requestData.setRequestURL(URLConfig.getPath(context, URLConfig.REQUEST_AD_LIST));

@@ -22,7 +22,7 @@ public class CustomMainBoardUtil {
      * @param powerOff yyyy-MM-dd HH:mm:ss
      */
     public static void powerOffAndOn(Context context,String powerOff,String powerOn){
-        MyLog.i("设置定时关机：" + ToolUtils.string().nullStrToEmpty(powerOff) + "  定时开机:" + powerOn);
+
         String datePatten = "yyyy-MM-dd HH:mm:ss";
 
         //开机时间，int数组，如int[] timeonArray = {2014, 10, 1, 8, 30};//下次开机具体日期时间，即在2014.10.1 8:30开机
@@ -34,6 +34,7 @@ public class CustomMainBoardUtil {
 
         if(ToolUtils.string().isEmpty(powerOff) || ToolUtils.string().isEmpty(powerOn)){
             enable = false;
+            MyLog.i("关闭定时开关机");
         }else{
             enable = true;
             String currentDateStr = ToolUtils.time().date2String(new Date(),"yyyy-MM-dd");
@@ -79,6 +80,8 @@ public class CustomMainBoardUtil {
 
                 timeonArray = new int[]{year,month,day,hour,minute};
             }
+
+            MyLog.i("设置定时关机：" + ToolUtils.string().nullStrToEmpty(powerOff) + "  定时开机:" + powerOn);
 //            ToastUtils.showToastLong(context,"当前时间:" + ToolUtils.time().date2String(new Date(),datePatten) + " 关机时间:" + powerOff + "  开机时间:" + powerOn);
 
         }
