@@ -47,7 +47,6 @@ public class AppVersionResponseData extends HttpObjResponseData {
         private String downloadUrl;
         private String id;
         private String md5;
-        private String version;
         private String versionCode;
         private String versionName;
 
@@ -82,16 +81,7 @@ public class AppVersionResponseData extends HttpObjResponseData {
         public void setMd5(String md5) {
             this.md5 = md5;
         }
-
-
-
-        public String getVersion() {
-            return version;
-        }
-
-        public void setVersion(String version) {
-            this.version = version;
-        }
+        
 
         public String getVersionCode() {
             return versionCode;
