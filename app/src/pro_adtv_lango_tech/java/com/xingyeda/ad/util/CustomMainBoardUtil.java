@@ -118,13 +118,9 @@ public class CustomMainBoardUtil {
         ApkInstaller.downloadApkAndInstall(url, context.getApplicationContext(), "ad_tv_lango.apk", new ApkInstaller.OnDownloadApkCallback() {
             @Override
             public void downloadFinish(String apkPath) {
-                String apkProductInfo = ApkUtil.findProductInfoInAPK(apkPath);
-                if(DeviceConfig.os_model.equals(apkProductInfo)){
+                if(ApkUtil.verificationAPK(context,apkPath,DeviceConfig.os_model)){
                     ToastUtils.showToast(context,"校验通过，即将开始静默安装");
                     installSilentApk(context,apkPath);
-                }else{
-                    ToastUtils.showToast(context,"APK校验失败 apkProductInfo:" + apkProductInfo + " os_model:" + DeviceConfig.os_model);
-                    MyLog.i("APK校验失败 apkProductInfo:" + apkProductInfo + " os_model:" + DeviceConfig.os_model);
                 }
             }
         });
