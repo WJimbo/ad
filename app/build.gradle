@@ -84,7 +84,8 @@ android {
             versionName "1.0.0"
             signingConfig signingConfigs.config
             manifestPlaceholders = [
-                    CHANNEL_VALUE: name
+                    CHANNEL_VALUE: name,
+                    os_model:"202"
             ]
         }
     }
