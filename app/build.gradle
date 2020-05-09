@@ -85,7 +85,6 @@ android {
             signingConfig signingConfigs.config
             manifestPlaceholders = [
                     CHANNEL_VALUE: name,
-                    os_model:"202"
             ]
         }
     }
@@ -142,7 +141,3 @@ dependencies {
     implementation 'com.alivc.conan:AlivcConan:0.9.5'
     implementation project(path: ':AliyunPlayer-4.7.2-full')
 }
-
-
-
-//crop 图像裁剪
