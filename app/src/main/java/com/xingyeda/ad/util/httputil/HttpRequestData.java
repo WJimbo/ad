@@ -20,5 +20,6 @@ public class HttpRequestData extends BaseRequestData {
     public HttpRequestData(){
         super();
         setMediaType(JSON);
+        addHeaderParam("X-Requested-With","XMLHttpRequest");
     }
 }
