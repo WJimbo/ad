@@ -14,9 +14,9 @@ import java.util.List;
 
 public class TokenMananger {
     public interface CallBack{
-        void getToken(boolean success,String token);
+        void getToken(boolean success,String token,BaseResponseData tokenResponseData);
     }
-
+    private BaseResponseData mTokenResponseData;
     private List<CallBack> callBackList = new ArrayList<>();
     private static final Object lockObject = new Object();
     private static TokenMananger instance;
@@ -29,11 +29,11 @@ public class TokenMananger {
     }
     public void getToken(@NonNull CallBack callBack){
         if(!ToolUtils.string().isEmpty(token) && System.currentTimeMillis() < tokenExpire){
-            callBack.getToken(true,token);
+            callBack.getToken(true,token,mTokenResponseData);
         }else{
             synchronized (lockObject){
                 if(!ToolUtils.string().isEmpty(token) && System.currentTimeMillis() < tokenExpire){
-                    callBack.getToken(true,token);
+                    callBack.getToken(true,token,mTokenResponseData);
                 }else{
                     callBackList.add(callBack);
                     requestToken(mContext);
@@ -74,6 +74,7 @@ public class TokenMananger {
         TokenHttpRequestModel.asynTokenRequestData(requestData, TokenResponseData.class, new HttpRequestModel.RequestCallBack() {
             @Override
             public void onResponseMainThread(BaseResponseData baseResponseData) {
+                mTokenResponseData = baseResponseData;
                 if(baseResponseData.isOperationSuccess()){
                     TokenResponseData tokenResponseData = (TokenResponseData)baseResponseData;
                     token = tokenResponseData.data.token;
@@ -102,7 +103,7 @@ public class TokenMananger {
             callBacks.addAll(callBackList);
             for(CallBack callBack : callBacks){
                 callBackList.remove(callBack);
-                callBack.getToken(result,token);
+                callBack.getToken(result,token,mTokenResponseData);
             }
         }
     }

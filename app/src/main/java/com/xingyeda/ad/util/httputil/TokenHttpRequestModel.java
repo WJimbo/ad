@@ -27,7 +27,7 @@ public class TokenHttpRequestModel{
         if(requestData.isEnableToken()){
             TokenMananger.getInstance().getToken(new TokenMananger.CallBack() {
                 @Override
-                public void getToken(boolean success, String token) {
+                public void getToken(boolean success, String token, BaseResponseData tokenResponseData) {
                     if(success){
                         requestData.setToken(token);
                         HttpRequestModel.asynRequestData(requestData, dataModelClass, new HttpRequestModel.RequestCallBack() {
@@ -60,6 +60,9 @@ public class TokenHttpRequestModel{
                         });
                     }else {
                         LoggerHelper.i("获取TOKEN失败，无法进行后续接口访问：" + requestData.getRequestURL());
+                        if(listener != null){
+                            listener.onResponseMainThread(tokenResponseData);
+                        }
                     }
                 }
             });
