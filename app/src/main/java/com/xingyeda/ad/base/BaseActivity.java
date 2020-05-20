@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.KeyEvent;
 import android.view.WindowManager;
@@ -14,10 +15,12 @@ import android.widget.Toast;
 import com.xingyeda.ad.broadcast.BroadCasetKeys;
 import com.xingyeda.ad.module.versionmanager.VersionManager;
 import com.xingyeda.ad.receiver.InnerReceiver;
+import com.zz9158.app.common.utils.ToastUtils;
 
 
 public class BaseActivity extends Activity {
     protected Context mContext;
+    private Handler mHandler;
     public String getTag()
     {
 
@@ -28,19 +31,30 @@ public class BaseActivity extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         mContext = this;
-
+        mHandler = new Handler();
         //注册键盘
         receiverHome();
     }
 
-
+    private boolean isKeyCode_BackClick = false;
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Toast.makeText(getApplicationContext(), "返回键无效", Toast.LENGTH_SHORT).show();
-            moveTaskToBack(true);
-            return true;//return true;拦截事件传递,从而屏蔽back键。
+            if(isKeyCode_BackClick){
+                isKeyCode_BackClick = false;
+                moveTaskToBack(true);
+                return false;
+            }
+            isKeyCode_BackClick = true;
+            ToastUtils.showToast(this,"再按一次回到桌面");
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    isKeyCode_BackClick = false;
+                }
+            },1000);
+            return false;
         }
         if (KeyEvent.KEYCODE_HOME == keyCode) {
             Toast.makeText(getApplicationContext(), "HOME 键已被禁用...", Toast.LENGTH_SHORT).show();
