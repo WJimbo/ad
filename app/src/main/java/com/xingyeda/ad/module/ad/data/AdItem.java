@@ -81,7 +81,7 @@ public class AdItem {
     }
 
     public boolean isFileExsits(){
-        return ToolUtils.file().isFileExists(new File(DownloadRootPath,getLocationFileName()));
+        return ToolUtils.file().isFileExists(locationFile());
     }
     public File locationFile(){
         return new File(DownloadRootPath,getLocationFileName());

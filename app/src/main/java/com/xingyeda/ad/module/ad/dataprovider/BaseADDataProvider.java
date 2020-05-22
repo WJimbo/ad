@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.xingyeda.ad.module.ad.data.ADListManager;
 import com.xingyeda.ad.module.ad.data.AdItem;
+import com.xingyeda.ad.util.MyLog;
+import com.zz9158.app.common.utils.ToolUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +34,14 @@ public class BaseADDataProvider implements ADListManager.OnAdListChangedListener
         synchronized (lockObject){
             mAdDataList.clear();
             if(adItems != null){
-                mAdDataList.addAll(adItems);
+                for(AdItem adItem : adItems){
+                    if(!ToolUtils.string().isEmpty(adItem.getUrl())){
+                        mAdDataList.add(adItem);
+                    }else{
+                        MyLog.i("广告过滤异常数据：" + adItem.getId());
+                    }
+                }
+
             }
         }
     }
