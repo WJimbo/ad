@@ -60,6 +60,7 @@ public class SettingConfigManager {
         TokenHttpRequestModel.asynTokenRequestData(requestData, SettingResponseData.class, new HttpRequestModel.RequestCallBack() {
             @Override
             public void onResponseMainThread(BaseResponseData baseResponseData) {
+                isRequesting = false;
                 if(baseResponseData.isOperationSuccess()){
                     SettingResponseData settingResponseData = (SettingResponseData)baseResponseData;
                     if(settingResponseData.data != null){
@@ -106,7 +107,7 @@ public class SettingConfigManager {
                         if(settingChanged){
                             EventBus.getDefault().post(new SettingConfig.VideoRotateAngleChangedEventData());
                         }
-                        isRequesting = false;
+
                     }
                     lastSettingJsonValue = settingResponseData.getJsonValueString();
                 }
