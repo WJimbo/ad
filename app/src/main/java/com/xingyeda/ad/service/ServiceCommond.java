@@ -26,4 +26,9 @@ public class ServiceCommond {
      * 删除日志
      */
     public static String DELETE_ALL_LOGFILES = "M0457";
+
+    /**
+     * 修改机器保存的mac地址
+     */
+    public static String CHANG_DEVICE_UUID = "U0000";
 }

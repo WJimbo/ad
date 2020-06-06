@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.xingyeda.ad.broadcast.BroadCasetKeys;
+import com.xingyeda.ad.config.DeviceUUIDManager;
 import com.xingyeda.ad.config.SettingConfigManager;
 import com.xingyeda.ad.module.ad.data.ADListManager;
 import com.xingyeda.ad.module.logger.LogFileManager;
@@ -48,6 +49,9 @@ public class CommandDealUtil {
             }
         }else if(ServiceCommond.REMOTE_CONFIG.equals(command)){
             SettingConfigManager.getInstance().updateSettingForNet(context);
+        }else if(ServiceCommond.CHANG_DEVICE_UUID.equals(command)){
+            DeviceUUIDManager.saveNewUUIDToFile(commandMessageData.getContent());
+            CustomMainBoardUtil.reboot(context);
         }
     }
     private static void sendBroadcast(Context context, String action) {

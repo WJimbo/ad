@@ -77,18 +77,34 @@ public class DeviceUUIDManager {
     public static void setUUID(String tempUuid){
         uuid = tempUuid;
     }
+
+    public static void saveNewUUIDToFile(String newUuid){
+        newUuid = ToolUtils.string().nullStrToEmpty(newUuid).trim();
+        String uuidFilePath = getUuidFilePath();
+        ToolUtils.file().createOrExistsFile(uuidFilePath);
+        ToolUtils.file().writeFileFromString(uuidFilePath,newUuid,false);
+    }
+
+    private static String getUuidFilePath(){
+        return FileHelper.getExternalStorageRootPath() + "deviceID.db";
+    }
+
     public static final synchronized String generateUUID(Context context) {
         if(!ToolUtils.string().isEmpty(uuid)){
             return uuid;
         }
-        String uuidFilePath = FileHelper.getExternalStorageRootPath() + "deviceID.db";
+        String uuidFilePath = getUuidFilePath();
         if(ToolUtils.file().isFileExists(uuidFilePath)){
             uuid = ToolUtils.readFile2String(uuidFilePath,null);
+            if("648b3974f2127aef".equals(uuid)){
+                ToolUtils.file().deleteFile(uuidFilePath);
+                uuid = "";
+            }
         }
 
         if(ToolUtils.string().isEmpty(uuid)){
             ToolUtils.file().deleteFile(uuidFilePath);
-            uuid = getAndroidId(context);
+//            uuid = getAndroidId(context);
             if(ToolUtils.string().isEmpty(uuid)){
                 String content = getMacAddress(context);
                 if(ToolUtils.string().isEmpty(content) || "020000000000".equals(content)){
