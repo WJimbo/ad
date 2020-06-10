@@ -12,7 +12,7 @@ public class URLConfig {
     public static final String DOMAIN = "http://";
     //    public static final String HOST = "192.168.10.200";
 //    private static final String HOST = "ytyty.utools.club";//新后台测试地址
-    private static final String HOST = "47.112.252.45";
+    private static final String HOST = "api.xyd999.net";
 //    private static final String HOST = "service.xyd999.net";
 
 
