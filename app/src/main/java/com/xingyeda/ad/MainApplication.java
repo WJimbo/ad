@@ -24,6 +24,7 @@ public class MainApplication extends Application {
 //            DeviceUUIDManager.setUUID("73e4a4fda9a9f73c");
 //            DeviceUUIDManager.setUUID("c44cede2765a169b");
 //            DeviceUUIDManager.setUUID("bb4abd3a345c8d0b");
+//            DeviceUUIDManager.setUUID("7cc8d66b13fc0063");
         }
         if(ApplicationUtil.isMainProcess(this)) {
             TokenMananger.getInstance().init(this, DeviceUUIDManager.generateUUID(this),"1");
