@@ -71,9 +71,15 @@ public class CompressImageAsyncTask extends AsyncTask<Object, Object,Boolean> {
 
 
 
-            if(srcFile == zipFile && !rotated){//无需压缩 直接改文件名字
-                LogDebugUtil.appendLog("图片无需压缩:" + srcPath);
-                Tools.file().rename(srcPath,(new File(dstPath).getName()));
+            if(srcFile == zipFile){//无需压缩 直接改文件名字
+                if(!rotated){
+                    LogDebugUtil.appendLog("图片无需压缩  无需旋转:" + srcPath);
+                    Tools.file().rename(srcPath,(new File(dstPath).getName()));
+                }else{
+                    LogDebugUtil.appendLog("图片无需压缩  经过旋转处理:" + srcPath);
+                    Tools.file().rename(srcPath,(new File(dstPath).getName()));
+                }
+
             }else{
                 //图片压缩后将压缩图片替换原下载文件，然后改名最终目标文件名
                 LogDebugUtil.appendLog("图片压缩完成:" + zipFile.getPath());
