@@ -1,6 +1,8 @@
 package com.xingyeda.ad.module.ad.data;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 
 import com.mazouri.tools.Tools;
@@ -9,6 +11,7 @@ import com.zz9158.app.common.utils.PhotoBitmapUtils;
 import com.zz9158.app.common.utils.ToolUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
 
 public class CompressImageAsyncTask extends AsyncTask<Object, Object,Boolean> {
     public interface Callback{
@@ -20,11 +23,13 @@ public class CompressImageAsyncTask extends AsyncTask<Object, Object,Boolean> {
     }
     private String srcPath;
     private String dstPath;
+    private float imageRotateAngle = 0;
     private Context mContext;
-    public CompressImageAsyncTask(Context context,String srcPath, String dstPath) {
+    public CompressImageAsyncTask(Context context,String srcPath, String dstPath,float imageRotateAngle) {
         mContext = context;
         this.srcPath = srcPath;
         this.dstPath = dstPath;
+        this.imageRotateAngle = imageRotateAngle;
     }
 
     @Override
@@ -40,7 +45,30 @@ public class CompressImageAsyncTask extends AsyncTask<Object, Object,Boolean> {
         ToolUtils.file().deleteFile(dstPath);
         if(srcFile.exists()){
             File zipFile = PhotoBitmapUtils.compressorFile(mContext,srcFile,300 * 1024,600,800,80);
-            if(srcFile == zipFile){//无需压缩 直接改文件名字
+            boolean rotated = false;
+            if(imageRotateAngle != 0){
+                FileInputStream fis = null;
+                try{
+                    fis = new FileInputStream(zipFile.getPath());
+                    Bitmap bitmap = BitmapFactory.decodeFileDescriptor(fis.getFD());
+                    Bitmap rotateBitmap = ToolUtils.bitmap().rotateBitmap(bitmap,(int)imageRotateAngle,true);
+                    if(rotateBitmap != null){
+                        ToolUtils.bitmap().saveBitmap(rotateBitmap,zipFile);
+                        rotated = true;
+                        LogDebugUtil.appendLog("旋转图片成功");
+                    }else{
+                        throw new Exception("图片旋转错误，rotateBitmap is null");
+                    }
+                }catch (Exception ex){
+                    LogDebugUtil.appendLog("旋转图片出错:" + ex.getMessage());
+                }finally {
+                    ToolUtils.close().closeIO(fis);
+                }
+            }
+
+
+
+            if(srcFile == zipFile && !rotated){//无需压缩 直接改文件名字
                 LogDebugUtil.appendLog("图片无需压缩:" + srcPath);
                 Tools.file().rename(srcPath,(new File(dstPath).getName()));
             }else{

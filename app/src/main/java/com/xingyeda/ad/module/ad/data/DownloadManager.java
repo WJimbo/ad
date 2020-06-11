@@ -135,7 +135,7 @@ public class DownloadManager {
                         });
                         rotateVideoAsyncTask.execute();
                     }else if(0 == downloadItem.fileType){
-                        CompressImageAsyncTask compressImageAsyncTask = new CompressImageAsyncTask(context,downloadItem.getTempDownloadPath().getPath(),downloadItem.savePath.getPath());
+                        CompressImageAsyncTask compressImageAsyncTask = new CompressImageAsyncTask(context,downloadItem.getTempDownloadPath().getPath(),downloadItem.savePath.getPath(),downloadItem.videoRotateAngle);
                         compressImageAsyncTask.setCallback(new CompressImageAsyncTask.Callback() {
                             @Override
                             public void compressImageFinish(boolean success) {

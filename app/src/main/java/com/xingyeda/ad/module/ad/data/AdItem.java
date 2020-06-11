@@ -73,7 +73,7 @@ public class AdItem {
         if(2 == type){
             return (VideoRotateAngle + "video_") + url.hashCode() + ".mp4";
         }else if(0 == type){
-            return url.hashCode() + ".jpg";
+            return (VideoRotateAngle + "_pic_") + url.hashCode() + ".jpg";
         }else if(1 == type){
             return url.hashCode() + ".mp3";
         }

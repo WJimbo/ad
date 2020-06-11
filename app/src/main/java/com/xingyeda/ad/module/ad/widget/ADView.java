@@ -26,7 +26,6 @@ import com.xingyeda.ad.module.ad.data.AdItem;
 import com.xingyeda.ad.module.ad.data.DownloadManager;
 import com.xingyeda.ad.util.GlideUtil;
 import com.xingyeda.ad.util.MyLog;
-import com.xingyeda.ad.util.RotateTransformation;
 import com.zz9158.app.common.utils.LoggerHelper;
 import com.zz9158.app.common.utils.ToolUtils;
 import com.zz9158.app.common.widget.CustomView;
@@ -295,7 +294,7 @@ public class ADView extends CustomView {
                 surfaceView.setVisibility(View.INVISIBLE);
                 imageView.setVisibility(View.VISIBLE);
                 stopVideo();
-                GlideUtil.loadImage(getContext(), adItem.locationFile(),imageView,new RotateTransformation(getContext(),rotation));
+                GlideUtil.loadImage(getContext(), adItem.locationFile(),imageView);
             }
             delayTime = adItem.getDuration() * 1000;
         }

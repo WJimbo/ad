@@ -13,9 +13,14 @@ public class GlideUtil {
     public static void loadImage(Context context, final String imageUrl, final ImageView imageView, RotateTransformation rotateTransformation) {
         Glide.with(context).load(imageUrl).animate(android.R.anim.fade_in).transform(rotateTransformation).into(imageView);
     }
-
+    public static void loadImage(Context context, final File file, final ImageView imageView) {
+        loadImage(context,file,imageView,null);
+    }
     public static void loadImage(Context context, final File file, final ImageView imageView, RotateTransformation rotateTransformation) {
-        DrawableRequestBuilder drawableRequestBuilder = Glide.with(context).load(file).crossFade().transform(rotateTransformation);
+        DrawableRequestBuilder drawableRequestBuilder = Glide.with(context).load(file).crossFade();//.transform(rotateTransformation);
+        if(rotateTransformation != null){
+            drawableRequestBuilder.transform(rotateTransformation);
+        }
         if(imageView != null && imageView.getDrawable() != null){
             drawableRequestBuilder.placeholder(imageView.getDrawable());
         }else{
