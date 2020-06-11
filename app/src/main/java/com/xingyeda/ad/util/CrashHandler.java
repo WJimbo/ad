@@ -61,7 +61,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
 //            DeviceUtil.reboot(mContext);
             reStartApp();
         } else {
-            reStartApp();
+//            reStartApp();
 //            try {
 //                Thread.sleep(1000);
 //            } catch (InterruptedException e) {
@@ -75,8 +75,9 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         }
     }
     public void reStartApp(){
+        StartActivity.isStarted = false;
         Intent intent = new Intent(mContext, StartActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         mContext.startActivity(intent);
         android.os.Process.killProcess(android.os.Process.myPid());
     }
