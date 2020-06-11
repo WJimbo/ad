@@ -294,7 +294,7 @@ public class ADView extends CustomView {
                 surfaceView.setVisibility(View.INVISIBLE);
                 imageView.setVisibility(View.VISIBLE);
                 stopVideo();
-                GlideUtil.loadImage(getContext(), adItem.locationFile(),imageView);
+                GlideUtil.loadImage(getContext(), adItem.locationFile(),imageView,rotation);
             }
             delayTime = adItem.getDuration() * 1000;
         }
