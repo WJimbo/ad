@@ -56,6 +56,9 @@ public class CompressImageAsyncTask extends AsyncTask<Object, Object,Boolean> {
                         ToolUtils.bitmap().saveBitmap(rotateBitmap,zipFile);
                         rotated = true;
                         LogDebugUtil.appendLog("旋转图片成功");
+                        if(!rotateBitmap.isRecycled()){
+                            rotateBitmap.recycle();
+                        }
                     }else{
                         throw new Exception("图片旋转错误，rotateBitmap is null");
                     }
