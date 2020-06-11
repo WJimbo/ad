@@ -53,7 +53,7 @@ public class CompressImageAsyncTask extends AsyncTask<Object, Object,Boolean> {
                     Bitmap bitmap = BitmapFactory.decodeFileDescriptor(fis.getFD());
                     Bitmap rotateBitmap = ToolUtils.bitmap().rotateBitmap(bitmap,(int)imageRotateAngle,true);
                     if(rotateBitmap != null){
-                        ToolUtils.bitmap().saveBitmap(rotateBitmap,zipFile);
+                        ToolUtils.bitmap().saveBitmap(rotateBitmap,80,zipFile);
                         rotated = true;
                         LogDebugUtil.appendLog("旋转图片成功");
                         if(!rotateBitmap.isRecycled()){
@@ -72,6 +72,7 @@ public class CompressImageAsyncTask extends AsyncTask<Object, Object,Boolean> {
 
 
             if(srcFile == zipFile){//无需压缩 直接改文件名字
+                Tools.file().deleteFile(dstPath);
                 if(!rotated){
                     LogDebugUtil.appendLog("图片无需压缩  无需旋转:" + srcPath);
                     Tools.file().rename(srcPath,(new File(dstPath).getName()));
