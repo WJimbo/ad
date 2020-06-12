@@ -1,6 +1,9 @@
 package com.xingyeda.ad.module.ad.widget;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.DrawableRes;
@@ -147,6 +150,7 @@ public class ADView extends CustomView {
                 @Override
                 public void onRenderingStart() {
                     imageView.setVisibility(View.INVISIBLE);
+                    releaseImageViewResouce(imageView);
                     imageView.setImageDrawable(null);
                 }
             });
@@ -235,6 +239,7 @@ public class ADView extends CustomView {
     private long lastTryToPlayNextAdTimeMillis = 0;
     private long currentADEndTimeMillis = 0;
     private AdItem currentADItem = null;
+    private int GCCount = 0;
     private synchronized void playNextAd() {
         //避免视频广告播放后 导致后续广告过来两处理回调异常  一个是定时器发出的 一个是播放结束发出的
         if(System.currentTimeMillis() - lastTryToPlayNextAdTimeMillis < 500){
@@ -263,17 +268,10 @@ public class ADView extends CustomView {
 
         }else if(!adItem.isFileExsits()){
             //有广告，但是广告还没下载完成
+            releaseImageViewResouce(imageView);
             ivDefualt.setVisibility(View.INVISIBLE);
             imageView.setVisibility(View.VISIBLE);
-            if(rotation == 0){
-                imageView.setImageResource(R.drawable.drawable_ad_loading);
-            }else if(rotation == 90){
-                imageView.setImageResource(R.drawable.drawable_ad_loading_90);
-            }else if(rotation == 180){
-                imageView.setImageResource(R.drawable.drawable_ad_loading_180);
-            }else if(rotation == 270){
-                imageView.setImageResource(R.drawable.drawable_ad_loading_270);
-            }
+            imageView.setImageDrawable(getImageViewDrawable(rotation));
             surfaceView.setVisibility(View.INVISIBLE);
             stopVideo();
             if(0 == adItem.getType()){
@@ -296,22 +294,66 @@ public class ADView extends CustomView {
                 surfaceView.setVisibility(View.INVISIBLE);
                 imageView.setVisibility(View.VISIBLE);
                 stopVideo();
+                releaseImageViewResouce(imageView);
                 GlideUtil.loadImage(getContext(), adItem.locationFile(),imageView,rotation);
             }
             delayTime = adItem.getDuration() * 1000;
         }
-
         mHandler.postDelayed(toNextAdRunnable, delayTime);
         currentADEndTimeMillis = System.currentTimeMillis() + delayTime;
         lastTryToPlayNextAdTimeMillis = System.currentTimeMillis();
+        GCCount++;
+        if(GCCount >= 50){
+            GCCount = 0;
+            System.gc();
+        }
     }
     public void setDefaultImage(@DrawableRes int resID){
         imageView.setImageResource(resID);
         ivDefualt.setImageResource(resID);
     }
+
+
+    private Drawable drawableRotation0,drawableRotation90,drawableRotation180,drawableRotation270;
+    private Drawable getImageViewDrawable(float rotation){
+        if(rotation == 90){
+            if(drawableRotation90 == null){
+                drawableRotation90 = getResources().getDrawable(R.drawable.drawable_ad_loading_90);
+            }
+            return drawableRotation90;
+        }else if(rotation == 180){
+            if(drawableRotation180 == null){
+                drawableRotation180 = getResources().getDrawable(R.drawable.drawable_ad_loading_180);
+            }
+            return drawableRotation180;
+        }else if(rotation == 270){
+            if(drawableRotation270 == null){
+                drawableRotation270 = getResources().getDrawable(R.drawable.drawable_ad_loading_270);
+            }
+            return drawableRotation270;
+        }else{
+            if(drawableRotation0 == null){
+                drawableRotation0 = getResources().getDrawable(R.drawable.drawable_ad_loading);
+            }
+            return drawableRotation0;
+        }
+    }
+
     public void setCountDownTitleColor(int color){
         if(tvCountSecond != null){
             tvCountSecond.setTextColor(color);
+        }
+    }
+
+    public static void releaseImageViewResouce(ImageView imageView) {
+        if (imageView == null) return;
+        Drawable drawable = imageView.getDrawable();
+        if (drawable != null && drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            Bitmap bitmap = bitmapDrawable.getBitmap();
+            if (bitmap != null && !bitmap.isRecycled()) {
+                bitmap.recycle();
+            }
         }
     }
 

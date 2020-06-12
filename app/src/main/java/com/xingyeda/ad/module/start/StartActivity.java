@@ -22,6 +22,8 @@ import com.xingyeda.ad.widget.SquareHeightRelativeLayout;
 import com.zz9158.app.common.utils.ToolUtils;
 import com.zz9158.app.common.utils.UIUtils;
 
+import java.lang.ref.WeakReference;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -41,6 +43,7 @@ public class StartActivity extends BaseActivity {
     SquareHeightRelativeLayout rootLayoutVersions;
 
     private CountDownTimer countDownTimer;
+    private WeakReference<TextView> textViewWeakReference;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,11 +78,15 @@ public class StartActivity extends BaseActivity {
                 SettingConfigManager.getInstance().startUpdateSettingTimer(getApplicationContext());
             }
         },waitTime / 2);
+        textViewWeakReference = new WeakReference<>(infoTextView);
         countDownTimer = new CountDownTimer(waitTime, 300) {
             @Override
             public void onTick(long millisUntilFinished) {
-                if (infoTextView != null) {
-                    infoTextView.setText("正在启动中(" + (millisUntilFinished + 500) / 1000 + "秒)...");
+                if(textViewWeakReference != null){
+                    TextView weakTextView = textViewWeakReference.get();
+                    if (weakTextView != null) {
+                        weakTextView.setText("正在启动中(" + (millisUntilFinished + 500) / 1000 + "秒)...");
+                    }
                 }
             }
 
