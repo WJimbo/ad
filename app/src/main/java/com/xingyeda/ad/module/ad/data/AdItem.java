@@ -71,13 +71,13 @@ public class AdItem {
 
     public String getLocationFileName(){
         if(2 == type){
-            return (VideoRotateAngle + "video_") + url.hashCode() + ".mp4";
+            return ("video_" + VideoRotateAngle + "_") + id + "_" + url.hashCode() + ".mp4";
         }else if(0 == type){
-            return (VideoRotateAngle + "_pic_") + url.hashCode() + ".jpg";
+            return ("pic_" + VideoRotateAngle + "_") + id + "_" + url.hashCode() + ".jpg";
         }else if(1 == type){
-            return url.hashCode() + ".mp3";
+            return id + "_" + url.hashCode() + ".mp3";
         }
-        return url.hashCode() + ".unknow";
+        return id + "_" + url.hashCode() + ".unknow";
     }
 
     public boolean isFileExsits(){
