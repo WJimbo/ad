@@ -157,6 +157,7 @@ public class CustomMainBoardUtil {
      * @param context
      */
     public static void reboot(Context context){
+        MyLog.i("准备重启");
         Intent intent = new Intent();
         intent.setAction("android.intent.action.reboot");
         context.sendBroadcast(intent);
