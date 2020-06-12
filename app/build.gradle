@@ -18,6 +18,7 @@ android {
             //解决编译时com.android.builder.merge.DuplicateRelativeFileException: More than one file was found with OS independent path 'META-INF/rxjava.properties'这个错误
             exclude 'META-INF/rxjava.properties'
         }
+        multiDexEnabled true
     }
     signingConfigs {
         config {
@@ -80,7 +81,7 @@ android {
         }
         //长城电器 朗国主板
         pro_adtv_lango_tech{
-            versionCode 1918111550 //格式20031914  20年03月19日14时
+            versionCode 1918120815 //格式20031914  20年03月19日14时
             versionName "1.0.0"
             signingConfig signingConfigs.config
             manifestPlaceholders = [
@@ -96,7 +97,11 @@ dependencies {
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    implementation 'com.android.support:multidex:1.0.3'
+
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.3'
     //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:design:28.0.0'
@@ -117,6 +122,7 @@ dependencies {
     //下载用
     implementation 'com.liulishuo.filedownloader:library:1.7.6'
     //自动注入
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.jakewharton:butterknife:8.8.1'
     //jsonutil
     implementation 'com.google.code.gson:gson:2.8.5'
