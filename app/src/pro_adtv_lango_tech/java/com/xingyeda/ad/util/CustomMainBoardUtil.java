@@ -37,6 +37,7 @@ public class CustomMainBoardUtil {
             MyLog.i("关闭定时开关机");
         }else{
             enable = true;
+            long powerOffTimeMillis = 0;
             String currentDateStr = ToolUtils.time().date2String(new Date(),"yyyy-MM-dd");
             if(powerOff.contains("0000-00-00")){
                 powerOff = powerOff.replace("0000-00-00",currentDateStr);
@@ -45,6 +46,7 @@ public class CustomMainBoardUtil {
                 if(System.currentTimeMillis() > time){
                     time = time + 24 * 60 * 60 * 1000;
                 }
+                powerOffTimeMillis = time;
                 powerOff = ToolUtils.time().date2String(new Date(time),datePatten);
 
             }
@@ -52,6 +54,9 @@ public class CustomMainBoardUtil {
                 powerOn = powerOn.replace("0000-00-00",currentDateStr);
                 long time = ToolUtils.time().string2Date(powerOn,datePatten).getTime();
                 if(System.currentTimeMillis() > time){
+                    time = time + 24 * 60 * 60 * 1000;
+                }
+                if(time < powerOffTimeMillis){
                     time = time + 24 * 60 * 60 * 1000;
                 }
                 powerOn = ToolUtils.time().date2String(new Date(time),datePatten);
