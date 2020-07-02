@@ -33,7 +33,7 @@ public class MainApplication extends Application {
 //            DeviceUUIDManager.setUUID("c44cede2765a169b");
 //            DeviceUUIDManager.setUUID("bb4abd3a345c8d0b");
 //            DeviceUUIDManager.setUUID("7cc8d66b13fc0063");
-            DeviceUUIDManager.setUUID("dda29da822020797");
+//            DeviceUUIDManager.setUUID("dda29da822020797");
         }
         if (LeakCanary.isInAnalyzerProcess(this)) {
             //此过程专用于LeakCanary进行堆分析。在此过程中不应初始化应用程序。
