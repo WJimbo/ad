@@ -1,8 +1,6 @@
 package com.xingyeda.ad.module.ad.widget;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -346,15 +344,15 @@ public class ADView extends CustomView {
     }
 
     public static void releaseImageViewResouce(ImageView imageView) {
-        if (imageView == null) return;
-        Drawable drawable = imageView.getDrawable();
-        if (drawable != null && drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            Bitmap bitmap = bitmapDrawable.getBitmap();
-            if (bitmap != null && !bitmap.isRecycled()) {
-                bitmap.recycle();
-            }
-        }
+//        if (imageView == null) return;
+//        Drawable drawable = imageView.getDrawable();
+//        if (drawable != null && drawable instanceof BitmapDrawable) {
+//            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+//            Bitmap bitmap = bitmapDrawable.getBitmap();
+//            if (bitmap != null && !bitmap.isRecycled()) {
+//                bitmap.recycle();
+//            }
+//        }
     }
 
     private boolean isPause = false;
