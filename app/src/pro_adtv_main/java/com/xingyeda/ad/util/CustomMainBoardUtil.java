@@ -166,7 +166,7 @@ public class CustomMainBoardUtil {
      * @param context
      */
     public static void reboot(Context context){
-        Intent intent = new Intent("com.soniq.cybercast.reboot");
+        Intent intent = new Intent("android.intent.action.reboot");
         context.sendBroadcast(intent);
         DeviceUtil.reboot(context);
     }
@@ -176,7 +176,7 @@ public class CustomMainBoardUtil {
      * @param context
      */
     public static void powerDown(Context context){
-        Intent intent = new Intent("com.soniq.cybercast.powerdown");
+        Intent intent = new Intent("android.intent.action.shutdown");
         context.sendBroadcast(intent);
     }
 
