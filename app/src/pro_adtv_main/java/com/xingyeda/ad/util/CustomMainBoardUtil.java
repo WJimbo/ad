@@ -169,6 +169,9 @@ public class CustomMainBoardUtil {
         Intent intent = new Intent();
         intent.setAction("android.intent.action.reboot");
         context.sendBroadcast(intent);
+
+//        PowerManager pManager=(PowerManager) context.getSystemService(Context.POWER_SERVICE);
+//        pManager.reboot("重启");
     }
 
     /**

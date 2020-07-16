@@ -16,6 +16,7 @@ import com.xingyeda.ad.config.SettingConfigManager;
 import com.xingyeda.ad.module.main.NineADMainActivity;
 import com.xingyeda.ad.module.main.OneADMainActivity;
 import com.xingyeda.ad.module.register.RegisterManager;
+import com.xingyeda.ad.service.TimerRebootService;
 import com.xingyeda.ad.service.socket.CommandReceiveService;
 import com.xingyeda.ad.util.MyLog;
 import com.xingyeda.ad.widget.SquareHeightRelativeLayout;
@@ -123,6 +124,7 @@ public class StartActivity extends BaseActivity {
         rootLayoutVersions.setLayoutParams(layoutParams);
 
         CommandReceiveService.startService(this);
+        TimerRebootService.startService(this);
         RegisterManager.getInstance().startToRegister(this);
     }
 
