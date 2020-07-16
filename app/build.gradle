@@ -72,7 +72,7 @@ android {
     productFlavors {
         //通用主板
         pro_adtv_main{
-            versionCode 1919131415 //格式20031914  20年03月19日14时
+            versionCode 1919160840 //格式20031914  20年03月19日14时
             versionName "2.1.0"
             signingConfig signingConfigs.config
             manifestPlaceholders = [

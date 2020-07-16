@@ -166,9 +166,9 @@ public class CustomMainBoardUtil {
      * @param context
      */
     public static void reboot(Context context){
-        Intent intent = new Intent("android.intent.action.reboot");
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.reboot");
         context.sendBroadcast(intent);
-        DeviceUtil.reboot(context);
     }
 
     /**
