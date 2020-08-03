@@ -16,6 +16,7 @@ import com.xingyeda.ad.config.SettingConfigManager;
 import com.xingyeda.ad.module.main.NineADMainActivity;
 import com.xingyeda.ad.module.main.OneADMainActivity;
 import com.xingyeda.ad.module.register.RegisterManager;
+import com.xingyeda.ad.service.SystemRunningMonitorService;
 import com.xingyeda.ad.service.TimerRebootService;
 import com.xingyeda.ad.service.socket.CommandReceiveService;
 import com.xingyeda.ad.util.MyLog;
@@ -125,6 +126,7 @@ public class StartActivity extends BaseActivity {
 
         CommandReceiveService.startService(this);
         TimerRebootService.startService(this);
+        SystemRunningMonitorService.startService(this);
         RegisterManager.getInstance().startToRegister(this);
     }
 

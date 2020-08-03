@@ -72,7 +72,10 @@
         <service
             android:name=".service.socket.CommandReceiveService"
             android:exported="false" />
-        <service android:name=".service.TimerRebootService" />
+        <service android:name=".service.TimerRebootService"
+            />
+        <service android:name=".service.SystemRunningMonitorService"
+            />
     </application>
 
 </manifest>
