@@ -55,5 +55,15 @@ public class MainApplication extends Application {
             LanSoEditor.initSDK(getApplicationContext(),null);
         }
     }
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        MyLog.i(this.toString() +" onLowMemory");
+    }
 
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        MyLog.i(this.toString() +" onTrimMemory:" + level);
+    }
 }

@@ -17,6 +17,7 @@ import com.xingyeda.ad.module.ad.data.ADListManager;
 import com.xingyeda.ad.service.SystemRunningMonitorService;
 import com.xingyeda.ad.service.socket.CommandReceiveService;
 import com.xingyeda.ad.service.socket.ConnectChangedItem;
+import com.xingyeda.ad.util.MyLog;
 import com.xingyeda.ad.widget.SquareHeightRelativeLayout;
 import com.zz9158.app.common.utils.ToolUtils;
 import com.zz9158.app.common.utils.UIUtils;
@@ -182,13 +183,38 @@ public abstract class BaseADActivity extends BaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        MyLog.i(this.toString() +" onResume");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MyLog.i(this.toString() +" onPause");
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+        MyLog.i(this.toString() +" onDestroy");
         if(unbinder != null){
             unbinder.unbind();
         }
         isFeedDogThreadRunning = false;
         feedDogThread.interrupt();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        MyLog.i(this.toString() +" onLowMemory");
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        MyLog.i(this.toString() +" onTrimMemory:" + level);
     }
 }

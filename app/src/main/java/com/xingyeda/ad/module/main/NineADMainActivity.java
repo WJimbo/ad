@@ -9,12 +9,10 @@ import com.xingyeda.ad.R;
 import com.xingyeda.ad.module.ad.data.AdItem;
 import com.xingyeda.ad.module.ad.dataprovider.NineADDataProvider;
 import com.xingyeda.ad.module.ad.widget.ADView;
-import com.xingyeda.ad.util.MyLog;
 
 import butterknife.BindView;
 
 public class NineADMainActivity extends BaseADActivity {
-
     @BindView(R.id.adView1)
     ADView adView1;
     @BindView(R.id.adView2)
@@ -111,7 +109,6 @@ public class NineADMainActivity extends BaseADActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        MyLog.i(this.toString() +" onResume");
         if(adViewList != null){
             for(int index = 0;index < adViewList.length;index++){
                 adViewList[index].resumeAD();
@@ -122,7 +119,6 @@ public class NineADMainActivity extends BaseADActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        MyLog.i(this.toString() +" onPause");
         if(adViewList != null){
             for(int index = 0;index < adViewList.length;index++){
                 adViewList[index].pauseAD();
@@ -133,7 +129,6 @@ public class NineADMainActivity extends BaseADActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        MyLog.i(this.toString() +" onDestroy");
         if(adViewList != null){
             for(int index = 0;index < adViewList.length;index++){
                 adViewList[index].onDestroy();
