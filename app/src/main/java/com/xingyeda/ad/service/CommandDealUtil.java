@@ -29,7 +29,7 @@ public class CommandDealUtil {
             ADListManager.getInstance(context).setNeedUpdateList();
         } else if (ServiceCommond.PC_RESTART.equals(command))//重启
         {
-            CustomMainBoardUtil.reboot(context);
+            CustomMainBoardUtil.reboot(context,"接收到服务器重启命令");
         }else if(ServiceCommond.UPLOAD_LOGFILES.equals(command)){
             String content = commandMessageData.getContent();
             if(!ToolUtils.string().isEmpty(content)){
@@ -51,7 +51,7 @@ public class CommandDealUtil {
             SettingConfigManager.getInstance().updateSettingForNet(context);
         }else if(ServiceCommond.CHANG_DEVICE_UUID.equals(command)){
             DeviceUUIDManager.saveNewUUIDToFile(commandMessageData.getContent());
-            CustomMainBoardUtil.reboot(context);
+            CustomMainBoardUtil.reboot(context,"远程修改设备UUID");
         }
     }
     private static void sendBroadcast(Context context, String action) {

@@ -59,7 +59,8 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             // 如果用户没有处理则让系统默认的异常处理器来处理
 //            mDefaultHandler.uncaughtException(thread, ex);
 //            DeviceUtil.reboot(mContext);
-            reStartApp();
+//            reStartApp();
+            CustomMainBoardUtil.reboot(mContext,"闪退重启");
         } else {
 //            reStartApp();
 //            try {
@@ -67,7 +68,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
 //            } catch (InterruptedException e) {
 //                Log.e(TAG, "error : ", e);
 //            }
-            CustomMainBoardUtil.reboot(mContext);
+            CustomMainBoardUtil.reboot(mContext,"闪退重启");
             // 退出程序
 //            android.os.Process.killProcess(android.os.Process.myPid());
 //            System.exit(1);

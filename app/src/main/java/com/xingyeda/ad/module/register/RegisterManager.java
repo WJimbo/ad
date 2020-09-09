@@ -57,7 +57,7 @@ public class RegisterManager {
         requestData.addRequestParams("info","");
         requestData.addRequestParams("os_model", DeviceConfig.os_model);
         requestData.addRequestParams("pushType","");
-        requestData.addRequestParams("version",ToolUtils.getVersionName(appContext) + "_" + ToolUtils.getVersionCode(appContext));
+        requestData.addRequestParams("version","(" +DeviceConfig.os_model+ ")" +  ToolUtils.getVersionName(appContext) + "_" + ToolUtils.getVersionCode(appContext));
         TokenHttpRequestModel.asynTokenRequestData(requestData, HttpObjResponseData.class, new HttpRequestModel.RequestCallBack() {
             @Override
             public void onResponseMainThread(BaseResponseData baseResponseData) {

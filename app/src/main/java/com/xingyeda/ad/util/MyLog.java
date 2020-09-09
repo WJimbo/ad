@@ -3,13 +3,13 @@ package com.xingyeda.ad.util;
 import android.content.Context;
 import android.os.Environment;
 
-
 import com.xingyeda.ad.config.DeviceUUIDManager;
 import com.zz9158.app.common.utils.LoggerHelper;
 import com.zz9158.app.common.utils.ToolUtils;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -193,7 +193,35 @@ public class MyLog {
             file.delete();
         }
     }
+    private static SimpleDateFormat logfileSimpleDateFormate = new SimpleDateFormat("yyyy-MM-dd");// 日志文件格式
+    /**
+     * 删除超过七天的所有日志
+     */
+    public static void delBefore7LogFiles(){
 
+        ArrayList<String> unDelFileNames = new ArrayList<>();
+        Date nowtime = new Date();
+        Calendar now = Calendar.getInstance();
+        for(int beforeDay = 0;beforeDay < 7;beforeDay++){
+            now.setTime(nowtime);
+            now.set(Calendar.DATE, now.get(Calendar.DATE)
+                    - beforeDay);
+            String unDelFileName = logfileSimpleDateFormate.format(now.getTime()) + MYLOGFILEName;
+            unDelFileNames.add(unDelFileName);
+        }
+
+        File dirFile = new File(MYLOG_PATH_SDCARD_DIR);
+        if(dirFile != null && dirFile.isDirectory() && dirFile.listFiles() != null){
+            for(File logFile : dirFile.listFiles()){
+                if(logFile != null
+                        && logFile.getName() != null
+                        && logFile.getName().endsWith(MYLOGFILEName)
+                        && !unDelFileNames.contains(logFile.getName())){
+                    ToolUtils.file().deleteFile(logFile);
+                }
+            }
+        }
+    }
     /**
      *
      * @param day

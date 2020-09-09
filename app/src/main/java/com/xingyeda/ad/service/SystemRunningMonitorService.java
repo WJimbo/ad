@@ -55,7 +55,7 @@ public class SystemRunningMonitorService extends Service {
                         if(System.currentTimeMillis() - lastFeedDogTime >= ScreenSaverIntervalMill){
                             lastFeedDogTime = System.currentTimeMillis();
                             MyLog.i("喂狗服务检测到一定时间内未有吃的，准备重启机器了");
-                            CustomMainBoardUtil.reboot(getApplicationContext());
+                            CustomMainBoardUtil.reboot(getApplicationContext(),"系统运行监控重启");
                         }else{
                             Thread.sleep(10 * 1000);
                         }

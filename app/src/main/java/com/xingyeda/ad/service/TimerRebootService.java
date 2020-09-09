@@ -37,7 +37,7 @@ public class TimerRebootService extends Service {
             @Override
             public void run() {
                 MyLog.i("定时服务->准备重启机器");
-                CustomMainBoardUtil.reboot(getApplicationContext());
+                CustomMainBoardUtil.reboot(getApplicationContext(),"定时重启");
             }
         }, ToolUtils.time().string2Date(scheduleDateTimeStr,"yyyy-MM-dd HH:mm:ss"));
     }
