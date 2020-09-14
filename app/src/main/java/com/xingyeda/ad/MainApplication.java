@@ -69,7 +69,7 @@ public class MainApplication extends Application {
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
         MyLog.i("onTrimMemory ->" + level);
-        if(level == TRIM_MEMORY_RUNNING_LOW || level == TRIM_MEMORY_RUNNING_CRITICAL || level == TRIM_MEMORY_UI_HIDDEN) {//内存不足(后台进程不足5个)，并且该进程优先级比较高，需要清理内存
+        if(level == TRIM_MEMORY_RUNNING_LOW || level == TRIM_MEMORY_RUNNING_CRITICAL) {//内存不足(后台进程不足5个)，并且该进程优先级比较高，需要清理内存
             CustomMainBoardUtil.reboot(getApplicationContext(),"内存不足重启");
         }
     }
