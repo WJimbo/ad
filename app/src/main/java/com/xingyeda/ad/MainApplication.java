@@ -11,7 +11,6 @@ import com.squareup.leakcanary.LeakCanary;
 import com.xingyeda.ad.config.DeviceUUIDManager;
 import com.xingyeda.ad.module.ad.data.DownloadManager;
 import com.xingyeda.ad.util.CrashHandler;
-import com.xingyeda.ad.util.CustomMainBoardUtil;
 import com.xingyeda.ad.util.MyLog;
 import com.xingyeda.ad.util.httputil.TokenMananger;
 import com.zz9158.app.common.utils.ApplicationUtil;
@@ -29,6 +28,7 @@ public class MainApplication extends Application {
     public void onCreate() {
         super.onCreate();
         if(BuildConfig.DEBUG){
+//            DeviceUUIDManager.setUUID("6ce8c64270c0");
 //            DeviceUUIDManager.setUUID("6c21a218fb77");
 //            DeviceUUIDManager.setUUID("73e4a4fda9a9f73c");
 //            DeviceUUIDManager.setUUID("c44cede2765a169b");
@@ -70,7 +70,7 @@ public class MainApplication extends Application {
         super.onTrimMemory(level);
         MyLog.i("onTrimMemory ->" + level);
         if(level == TRIM_MEMORY_RUNNING_LOW || level == TRIM_MEMORY_RUNNING_CRITICAL) {//内存不足(后台进程不足5个)，并且该进程优先级比较高，需要清理内存
-            CustomMainBoardUtil.reboot(getApplicationContext(),"内存不足重启");
+//            CustomMainBoardUtil.reboot(getApplicationContext(),"内存不足重启");
         }
     }
 }

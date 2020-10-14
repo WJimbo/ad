@@ -7,11 +7,11 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.xingyeda.ad.broadcast.BroadCasetKeys;
 import com.xingyeda.ad.config.DeviceUUIDManager;
 import com.xingyeda.ad.config.SettingConfigManager;
+import com.xingyeda.ad.logdebug.LogDebugUtil;
 import com.xingyeda.ad.module.ad.data.ADListManager;
 import com.xingyeda.ad.module.logger.LogFileManager;
 import com.xingyeda.ad.service.socket.CommandMessageData;
 import com.xingyeda.ad.util.CustomMainBoardUtil;
-
 import com.xingyeda.ad.util.MyLog;
 import com.zz9158.app.common.utils.ToolUtils;
 
@@ -20,7 +20,7 @@ import java.io.File;
 public class CommandDealUtil {
     public static void dealCommand(Context context, CommandMessageData commandMessageData){
         String command = commandMessageData.getCommond();
-        MyLog.i("Command received :" + command);
+        LogDebugUtil.appendLog("Command received :" + command + " content:" + commandMessageData.getContent());
         if (ServiceCommond.UPDATE_DEVICE.equals(command))//更新设备
         {
             sendBroadcast(context,BroadCasetKeys.UPDATE_DEVICE);
