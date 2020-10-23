@@ -1,6 +1,7 @@
 package com.xingyeda.ad.module.ad.data;
 import com.xingyeda.ad.util.httputil.HttpObjResponseData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AdListResponseData extends HttpObjResponseData {
@@ -11,6 +12,9 @@ public class AdListResponseData extends HttpObjResponseData {
 
 
     public List<AdItem> getData() {
+        if(data == null){
+            return new ArrayList<>();
+        }
         return data;
     }
 

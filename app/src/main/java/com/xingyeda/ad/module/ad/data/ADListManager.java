@@ -136,7 +136,9 @@ public class ADListManager {
             @Override
             public void onResponseMainThread(BaseResponseData baseResponseData) {
                 isUpdatingList = false;
-                if(baseResponseData.isOperationSuccess()){
+                if(baseResponseData.isOperationSuccess()
+                        || baseResponseData.getErrorCode() == 401
+                        || baseResponseData.getErrorCode() == 403){
                     AdItem.VideoRotateAngle = SettingConfig.getScreenRotateAngle(context);
                     String lastStr = "";
                     if(adListResponseData != null && adListResponseData.getJsonValueString() != null){
