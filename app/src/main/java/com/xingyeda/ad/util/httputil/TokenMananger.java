@@ -119,7 +119,7 @@ public class TokenMananger {
         }
     }
 
-    class TokenResponseData extends HttpObjResponseData{
+    static class TokenResponseData extends HttpObjResponseData{
         private TokenBean data;
 
         public TokenBean getData() {

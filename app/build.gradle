@@ -144,6 +144,6 @@ dependencies {
     implementation project(':okhttp')
     implementation project(':zz_common_utils')
     implementation project(':zz_common_widget')
-    implementation 'com.alivc.conan:AlivcConan:0.9.5'
-    implementation project(path: ':AliyunPlayer-4.7.2-full')
+    implementation 'com.alivc.conan:AlivcConan:1.0.4'
+    implementation project(path: ':AliyunPlayer-5.2.1-full')
 }

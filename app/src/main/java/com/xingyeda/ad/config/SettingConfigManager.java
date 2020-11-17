@@ -124,7 +124,7 @@ public class SettingConfigManager {
             }
         });
     }
-    class SettingResponseData extends HttpObjResponseData {
+    static class SettingResponseData extends HttpObjResponseData {
         private SettingItem data;
 
 

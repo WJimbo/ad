@@ -29,7 +29,7 @@ public abstract class BaseRequestData {
     public static final MediaType TEXT
             = MediaType.parse("text/plain; charset=utf-8");
 
-    class UploadFileData{
+    static class UploadFileData{
         String key;
         String fileName;
         File file;
