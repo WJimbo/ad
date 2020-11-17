@@ -55,7 +55,7 @@ public class ToolUtils extends Tools {
      * @param context
      * @return 当前应用的版本名称
      */
-    public static synchronized String getVersionName(Context context) {
+    public static String getVersionName(Context context) {
         try {
             PackageManager packageManager = context.getPackageManager();
             PackageInfo packageInfo = packageManager.getPackageInfo(
@@ -73,7 +73,7 @@ public class ToolUtils extends Tools {
      * @param context
      * @return 当前应用的版本名称
      */
-    public static synchronized int getVersionCode(Context context) {
+    public static int getVersionCode(Context context) {
         try {
             PackageManager packageManager = context.getPackageManager();
             PackageInfo packageInfo = packageManager.getPackageInfo(

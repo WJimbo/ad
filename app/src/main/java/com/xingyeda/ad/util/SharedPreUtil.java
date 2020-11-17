@@ -45,7 +45,7 @@ public class SharedPreUtil {
 			editor.putString(key, datas.toString());
 		}
 
-		editor.commit();
+		editor.apply();
 	}
 
 	//数据取出
@@ -84,14 +84,14 @@ public class SharedPreUtil {
 	public static void remove(Context context, String key) {
 		SharedPreferences.Editor editor = getEdit(context);
 		editor.remove(key);
-		editor.commit();
+		editor.apply();
 	}
 
 	//清除数据
 	public static void clear(Context context) {
 		SharedPreferences.Editor editor = getEdit(context);
 		editor.clear();
-		editor.commit();
+		editor.apply();
 	}
 
 	//查询数据

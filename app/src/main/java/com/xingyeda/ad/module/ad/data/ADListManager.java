@@ -10,9 +10,12 @@ import com.xingyeda.ad.config.DeviceUUIDManager;
 import com.xingyeda.ad.config.SettingConfig;
 import com.xingyeda.ad.config.URLConfig;
 import com.xingyeda.ad.logdebug.LogDebugUtil;
+import com.xingyeda.ad.util.MyLog;
 import com.xingyeda.ad.util.httputil.HttpRequestData;
 import com.xingyeda.ad.util.httputil.TokenHttpRequestModel;
+import com.xingyeda.config.DeviceConfig;
 import com.zz9158.app.common.utils.GsonUtil;
+import com.zz9158.app.common.utils.ToolUtils;
 import com.zz9158.app.common.utils.http.BaseRequestData;
 import com.zz9158.app.common.utils.http.BaseResponseData;
 import com.zz9158.app.common.utils.http.HttpRequestModel;
@@ -62,7 +65,7 @@ public class ADListManager {
     /**
      * 自动请求广告接口列表间隔时间
      */
-    private static final long AUTO_REQUEST_ADLIST_TIME = 5 * 60 * 1000;
+    private static final long AUTO_REQUEST_ADLIST_TIME = 60 * 60 * 1000;
 
     private static ADListManager instance;
     private AdListResponseData adListResponseData;
@@ -70,10 +73,10 @@ public class ADListManager {
     private Context context;
 
     private ADListManager(Context context){
-        this.context = context;
+        this.context = context.getApplicationContext();
         init();
-        AdItem.DownloadRootPath = DownloadManager.getDownloadRootPath(context);
-        AdItem.VideoRotateAngle = SettingConfig.getScreenRotateAngle(context);
+        AdItem.DownloadRootPath = DownloadManager.getDownloadRootPath(this.context);
+        AdItem.VideoRotateAngle = SettingConfig.getScreenRotateAngle(this.context);
         readListFromLocation();
         //开始请求数据
         //容错，怕偶尔收不到服务器推送，采用轮询的方式获取数据。
@@ -90,7 +93,7 @@ public class ADListManager {
         return adListResponseData;
     }
 
-    public synchronized static ADListManager getInstance(Context context) {
+    public static ADListManager getInstance(Context context) {
         if(instance == null){
             instance = new ADListManager(context.getApplicationContext());
         }
@@ -112,7 +115,7 @@ public class ADListManager {
         }
         rootPath = rootPath + File.separator + "XYD_AD" + File.separator + "data";
         File rootFile = new File(rootPath);
-        locationSaveFile = new File(rootPath,DeviceUUIDManager.generateUUID(context) + "_adList.db");
+        locationSaveFile = new File(rootPath, DeviceUUIDManager.generateUUID(context) + "_adList.db");
         if (!rootFile.exists()) {
             rootFile.mkdirs();
         }
@@ -127,6 +130,7 @@ public class ADListManager {
             return;
         }
         isUpdatingList = true;
+        MyLog.i("开始调用广告更新接口");
         final HttpRequestData requestData = new HttpRequestData();
         requestData.setRequestURL(URLConfig.getPath(context, URLConfig.REQUEST_AD_LIST));
         requestData.setRequestMode(BaseRequestData.RequestModeType.GET);
@@ -145,8 +149,8 @@ public class ADListManager {
                         lastStr = adListResponseData.getJsonValueString();
                     }
                     adListResponseData = (AdListResponseData)baseResponseData;
-                    LogDebugUtil.appendLog("调用广告数据成功:" + adListResponseData.getData().size() + "条");
-//                    MyLog.i("调用广告数据成功:" + adListResponseData.getObj().size() + "条");
+//                    LoggerHelper.i("调用广告数据成功:" + adListResponseData.getData().size() + "条");
+                    MyLog.i("调用广告数据成功:" + adListResponseData.getData().size() + "条");
                     if(!lastStr.equals(baseResponseData.getJsonValueString())){
                         saveListToLocation();
                         sendEventToDataChangedListeners();
@@ -155,8 +159,10 @@ public class ADListManager {
                     }
                     downloadADFiles();
                 }else{
-                    LogDebugUtil.appendLog("调用广告数据失败:" + baseResponseData.getErrorMsg());
+                    MyLog.i("调用广告数据失败:" + baseResponseData.getErrorMsg());
+//                    LoggerHelper.i("调用广告数据失败:" + baseResponseData.getErrorMsg());
                 }
+                MyLog.i("调用广告数据结束");
             }
 
             @Override
@@ -179,8 +185,8 @@ public class ADListManager {
             Tools.file().writeFileFromString(locationSaveFile,"",false);
         }
     }
-    private void readListFromLocation(){
-        String locationStr = Tools.file().readFile2String(locationSaveFile,null);
+    private synchronized void readListFromLocation(){
+        String locationStr = ToolUtils.readFile2String(locationSaveFile,null);
         if(!Tools.string().isEmpty(locationStr)){
             try {
                 adListResponseData = GsonUtil.gson.fromJson(locationStr,AdListResponseData.class);
@@ -192,7 +198,7 @@ public class ADListManager {
         }
     }
 
-    private synchronized void downloadADFiles(){
+    private void downloadADFiles(){
         if (adListResponseData != null && adListResponseData.getData() != null) {
             List<AdItem> adItems = new ArrayList<>();
             adItems.addAll(adListResponseData.getData());

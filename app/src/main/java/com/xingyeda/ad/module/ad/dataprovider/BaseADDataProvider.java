@@ -38,7 +38,7 @@ public class BaseADDataProvider implements ADListManager.OnAdListChangedListener
                     if(!ToolUtils.string().isEmpty(adItem.getUrl())){
                         mAdDataList.add(adItem);
                     }else{
-                        MyLog.i("广告过滤异常数据：" + adItem.getId());
+                        MyLog.i("广告异常数据过滤：" + adItem.getId());
                     }
                 }
 

@@ -56,7 +56,7 @@ public class DownloadManager {
 
 
     private static String DOWNLOAD_ROOT_PATH = null;
-    public static synchronized String getDownloadRootPath(Context context) {
+    public static String getDownloadRootPath(Context context) {
         if(DOWNLOAD_ROOT_PATH == null){
             String rootPath;
             if (Environment.getExternalStorageState().equals(

@@ -1,9 +1,8 @@
 package com.xingyeda.ad.module.ad.widget;
 
 import android.content.Context;
+
 import android.graphics.drawable.Drawable;
-import android.os.CountDownTimer;
-import android.os.Handler;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -33,15 +32,25 @@ import com.zz9158.app.common.widget.CustomView;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class ADView extends CustomView {
 
+    public interface IADViewCallBack{
+
+    }
     public interface IADDataSourceListener{
         AdItem getNextAD(AdItem finishPlayItem);
     }
+
+
     private boolean videoMute = false;//视频静音
     private boolean autoFadeInWhenNoAD = false;//没有广告的时候 将控件Alpha设置低一些
     //旋转角度
@@ -58,7 +67,8 @@ public class ADView extends CustomView {
     TextView tvCountSecond;
     //定义一个播放器对象
     private AliPlayer mAliyunVodPlayer;
-    private Handler mHandler;
+    private Disposable disposable;
+    private final Object lockObject = new Object();
 
     private IADDataSourceListener dataSourceListener;
 
@@ -93,15 +103,12 @@ public class ADView extends CustomView {
         return R.layout.widget_adview;
     }
 
-    private Runnable toNextAdRunnable;
-
     @Override
     protected void initView() {
         super.initView();
         ButterKnife.bind(this, rootView);
         mWeakTvCountSecond = new WeakReference<>(tvCountSecond);
         tvCountSecond.setRotation(rotation);
-        mHandler = new Handler();
         surfaceView.setZOrderMediaOverlay(true);
         SurfaceHolder holder = surfaceView.getHolder();
         //增加surfaceView的监听
@@ -129,6 +136,13 @@ public class ADView extends CustomView {
                 }
             }
         });
+
+        currentADEndTimeMillis = System.currentTimeMillis() + 1 * 1500;
+        startCountDownDisposable();
+
+    }
+
+    private void createAliPlayer(){
         try {
             mAliyunVodPlayer = AliPlayerFactory.createAliPlayer(getContext().getApplicationContext());
             mAliyunVodPlayer.setScaleMode(IPlayer.ScaleMode.SCALE_ASPECT_FILL);
@@ -147,7 +161,7 @@ public class ADView extends CustomView {
             mAliyunVodPlayer.setOnRenderingStartListener(new IPlayer.OnRenderingStartListener() {
                 @Override
                 public void onRenderingStart() {
-                    imageView.setVisibility(View.INVISIBLE);
+					imageView.setVisibility(View.INVISIBLE);
                     releaseImageViewResouce(imageView);
                     imageView.setImageDrawable(null);
                 }
@@ -155,14 +169,13 @@ public class ADView extends CustomView {
             mAliyunVodPlayer.setOnStateChangedListener(new IPlayer.OnStateChangedListener() {
                 @Override
                 public void onStateChanged(int i) {
-//                    LoggerHelper.i("onStateChanged-->" + i);
-//                    if(i == IPlayer.started){
-//                        imageView.setVisibility(View.INVISIBLE);
-//                        imageView.setImageDrawable(null);
-//                    }
+                    if(i == IPlayer.started){
+                        imageView.setVisibility(View.INVISIBLE);
+                        imageView.setImageDrawable(null);
+                    }
                 }
             });
-
+//            mAliyunVodPlayer.enableHardwareDecoder(false);
             mAliyunVodPlayer.setDisplay(surfaceView.getHolder());
 
         }catch (Exception ex){
@@ -170,46 +183,55 @@ public class ADView extends CustomView {
         }catch (Error error){
             MyLog.i("ADView---> Error:" + error.getMessage());
         }
-        countDownTimer = new CountDownTimer(Long.MAX_VALUE, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                //用弱引用 先判空 避免崩溃
-                if (mWeakTvCountSecond.get() == null) {
-                    if(countDownTimer != null){
-                        countDownTimer.cancel();
-                    }
-                    return;
-                }
-                if (mWeakTvCountSecond.get() != null) {
-                    long lastSecond = (currentADEndTimeMillis - System.currentTimeMillis()) / 1000;
-                    if(lastSecond >= 0 && lastSecond <= 1000){
-                        mWeakTvCountSecond.get().setText(lastSecond + "");
-                    }else{
-                        mWeakTvCountSecond.get().setText("--");
-                    }
-
-                }
-            }
-
-            @Override
-            public void onFinish() {
-
-            }
-        };
-        countDownTimer.start();
-        toNextAdRunnable = new Runnable() {
-            @Override
-            public void run() {
-                playNextAd();
-            }
-        };
-        mHandler.postDelayed(toNextAdRunnable, 1 * 1000);
     }
 
-    private void stopVideo() {
+    private void cancelCountDownDisposable(){
+        if(disposable != null && !disposable.isDisposed()) {
+            disposable.dispose();
+            disposable = null;
+        }
+    }
+    private void startCountDownDisposable(){
+        cancelCountDownDisposable();
+        StringBuilder stringBuilder = new StringBuilder();
+        String undefineTime = "--";
+        disposable = Flowable.intervalRange(0, Long.MAX_VALUE, 0, 500, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(aLong -> {
+                    //用弱引用 先判空 避免崩溃
+                    if (mWeakTvCountSecond.get() == null) {
+                        cancelCountDownDisposable();
+                        return;
+                    }
+                    long lastSecond = ((currentADEndTimeMillis - System.currentTimeMillis()) + 500) / 1000;
+                    if(lastSecond >= 0 && lastSecond <= 1000){
+                        stringBuilder.setLength(0);
+                        stringBuilder.append(lastSecond);
+                        mWeakTvCountSecond.get().setText(stringBuilder);
+                    }else{
+                        mWeakTvCountSecond.get().setText(undefineTime);
+                    }
+
+                    if(System.currentTimeMillis() >= currentADEndTimeMillis){
+                        playNextAd();
+                    }
+                })
+                .doOnComplete(() -> {
+                    startCountDownDisposable();
+                })
+                .subscribe();
+    }
+
+    private void stopAndRealseAliPlayer() {
         if(mAliyunVodPlayer != null){
+            mAliyunVodPlayer.setOnCompletionListener(null);
+            mAliyunVodPlayer.setOnErrorListener(null);
+            mAliyunVodPlayer.setOnStateChangedListener(null);
             mAliyunVodPlayer.reset();
             mAliyunVodPlayer.stop();
+            mAliyunVodPlayer.release();
+            mAliyunVodPlayer = null;
         }
     }
 
@@ -217,7 +239,10 @@ public class ADView extends CustomView {
     private void playLocalVideo(File file) {
         String path = "file://" + file.getPath();
         LoggerHelper.i("playLocalVideo:" + path);
-        stopVideo();
+        stopAndRealseAliPlayer();
+        if(mAliyunVodPlayer == null){
+            createAliPlayer();
+        }
         if(mAliyunVodPlayer != null){
             mAliyunVodPlayer.setLoop(false);
             mAliyunVodPlayer.setAutoPlay(true);
@@ -233,77 +258,71 @@ public class ADView extends CustomView {
     }
 
 
-    private CountDownTimer countDownTimer;
-    private long lastTryToPlayNextAdTimeMillis = 0;
     private long currentADEndTimeMillis = 0;
     private AdItem currentADItem = null;
-    private int GCCount = 0;
-    private synchronized void playNextAd() {
-        //避免视频广告播放后 导致后续广告过来两处理回调异常  一个是定时器发出的 一个是播放结束发出的
-        if(System.currentTimeMillis() - lastTryToPlayNextAdTimeMillis < 500){
-            return;
-        }
-        long delayTime = 0;
-        mHandler.removeCallbacks(toNextAdRunnable);
-        AdItem adItem = null;
-        if(isPause){
-            adItem = null;
-        }else{
-            if(dataSourceListener != null){
-                adItem = dataSourceListener.getNextAD(currentADItem);
+    private void playNextAd() {
+        MyLog.i("PlayNextAD--->Start");
+        synchronized (lockObject){
+            //当前广告播放结束时间比当前时间晚  则认为广告在有效期  无需切换
+            if(currentADEndTimeMillis >= System.currentTimeMillis()){
+                return;
             }
-            currentADItem = adItem;
-        }
-        if (adItem == null) {//无广告，广告位是空的  则显示默认图片
-            ivDefualt.setVisibility(View.VISIBLE);
-            imageView.setVisibility(View.INVISIBLE);
-            surfaceView.setVisibility(View.INVISIBLE);
-            if(autoFadeInWhenNoAD){
-                setAlpha(0.1f);
-            }
-            stopVideo();
-            delayTime = ((int)(Math.random() * 4 + 3)) * 1000;
-
-        }else if(!adItem.isFileExsits()){
-            //有广告，但是广告还没下载完成
-            releaseImageViewResouce(imageView);
-            ivDefualt.setVisibility(View.INVISIBLE);
-            imageView.setVisibility(View.VISIBLE);
-            imageView.setImageDrawable(getImageViewDrawable(rotation));
-            surfaceView.setVisibility(View.INVISIBLE);
-            stopVideo();
-            if(0 == adItem.getType()){
-                delayTime = ((int)(Math.random() * 3 + 5)) * 1000;
+            //避免视频广告播放后 导致后续广告过来两处理回调异常  一个是定时器发出的 一个是播放结束发出的
+            long delayTime = 0;
+            AdItem adItem = null;
+            if(isPause){
+                adItem = null;
             }else{
-                delayTime = ((int)(Math.random() * 5 + 5)) * 1000;
+                if(dataSourceListener != null){
+                    adItem = dataSourceListener.getNextAD(currentADItem);
+                }
+                currentADItem = adItem;
             }
-            if(autoFadeInWhenNoAD){
-                setAlpha(0.3f);
-            }
-        } else {//广告已经下载完成了，可以正常显示了
-            if(autoFadeInWhenNoAD){
-                setAlpha(1);
-            }
-            ivDefualt.setVisibility(View.INVISIBLE);
-            if (2 == adItem.getType()) {
-//              等视频开始渲染了在隐藏图片控件
-                playLocalVideo(new File(DownloadManager.getDownloadRootPath(getContext()), adItem.getLocationFileName()));
-            } else {
+            if (adItem == null) {//无广告，广告位是空的  则显示默认图片
+                ivDefualt.setVisibility(View.VISIBLE);
+                imageView.setVisibility(View.INVISIBLE);
                 surfaceView.setVisibility(View.INVISIBLE);
-                imageView.setVisibility(View.VISIBLE);
-                stopVideo();
+                if(autoFadeInWhenNoAD){
+                    setAlpha(0.1f);
+                }
+                stopAndRealseAliPlayer();
+                delayTime = ((int)(Math.random() * 4 + 3)) * 1000;
+
+            }else if(!adItem.isFileExsits()){
+                //有广告，但是广告还没下载完成
                 releaseImageViewResouce(imageView);
-                GlideUtil.loadImage(getContext(), adItem.locationFile(),imageView,rotation);
+                ivDefualt.setVisibility(View.INVISIBLE);
+           		imageView.setVisibility(View.VISIBLE);
+            	imageView.setImageDrawable(getImageViewDrawable(rotation));
+                surfaceView.setVisibility(View.INVISIBLE);
+                stopAndRealseAliPlayer();
+                if(0 == adItem.getType()){
+                    delayTime = ((int)(Math.random() * 3 + 5)) * 1000;
+                }else{
+                    delayTime = ((int)(Math.random() * 5 + 5)) * 1000;
+                }
+                if(autoFadeInWhenNoAD){
+                    setAlpha(0.3f);
+                }
+            } else {//广告已经下载完成了，可以正常显示了
+                if(autoFadeInWhenNoAD){
+                    setAlpha(1);
+                }
+                ivDefualt.setVisibility(View.INVISIBLE);
+                if (2 == adItem.getType()) {
+//              等视频开始渲染了在隐藏图片控件
+                    playLocalVideo(new File(DownloadManager.getDownloadRootPath(getContext().getApplicationContext()), adItem.getLocationFileName()));
+                } else {
+                    surfaceView.setVisibility(View.INVISIBLE);
+                    imageView.setVisibility(View.VISIBLE);
+                    stopAndRealseAliPlayer();
+                    releaseImageViewResouce(imageView);
+                    GlideUtil.loadImage(getContext().getApplicationContext(), adItem.locationFile(),imageView,rotation);
+                }
+                delayTime = adItem.getDuration() * 1000;
             }
-            delayTime = adItem.getDuration() * 1000;
-        }
-        mHandler.postDelayed(toNextAdRunnable, delayTime);
-        currentADEndTimeMillis = System.currentTimeMillis() + delayTime;
-        lastTryToPlayNextAdTimeMillis = System.currentTimeMillis();
-        GCCount++;
-        if(GCCount >= 50){
-            GCCount = 0;
-            System.gc();
+            currentADEndTimeMillis = System.currentTimeMillis() + delayTime;
+            MyLog.i("PlayNextAD--->END");
         }
     }
     public void setDefaultImage(@DrawableRes int resID){
@@ -365,7 +384,7 @@ public class ADView extends CustomView {
 
     public void pauseAD() {
         isPause = true;
-        stopVideo();
+        stopAndRealseAliPlayer();
     }
 
     @Override
@@ -397,18 +416,8 @@ public class ADView extends CustomView {
         tvCountSecond.setLayoutParams(layoutParams);
     }
     public void onDestroy(){
-        if(countDownTimer != null){
-            countDownTimer.cancel();
-            countDownTimer = null;
-        }
-        if(mAliyunVodPlayer != null){
-            stopVideo();
-            mAliyunVodPlayer.release();
-            mAliyunVodPlayer = null;
-        }
-        if(mHandler != null && toNextAdRunnable != null){
-            mHandler.removeCallbacks(toNextAdRunnable);
-        }
+        stopAndRealseAliPlayer();
+        cancelCountDownDisposable();
     }
     public void setTvCountSecondTextSize(int spTextSize){
         tvCountSecond.setTextSize(ToolUtils.convert().sp2px(spTextSize));
