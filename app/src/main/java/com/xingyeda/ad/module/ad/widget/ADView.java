@@ -16,29 +16,35 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.aliyun.player.AliListPlayer;
 import com.aliyun.player.AliPlayer;
 import com.aliyun.player.AliPlayerFactory;
 import com.aliyun.player.IPlayer;
 import com.aliyun.player.bean.ErrorInfo;
 import com.aliyun.player.source.UrlSource;
 import com.xingyeda.ad.R;
+import com.xingyeda.ad.logdebug.LogDebugUtil;
 import com.xingyeda.ad.module.ad.data.AdItem;
 import com.xingyeda.ad.module.ad.data.DownloadManager;
 import com.xingyeda.ad.util.GlideUtil;
 import com.xingyeda.ad.util.MyLog;
 import com.zz9158.app.common.utils.LoggerHelper;
+import com.zz9158.app.common.utils.ToastUtils;
 import com.zz9158.app.common.utils.ToolUtils;
 import com.zz9158.app.common.widget.CustomView;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 
 public class ADView extends CustomView {
@@ -55,6 +61,7 @@ public class ADView extends CustomView {
     private boolean autoFadeInWhenNoAD = false;//没有广告的时候 将控件Alpha设置低一些
     //旋转角度
     private float rotation = 0;
+
     @BindView(R.id.surfaceView)
     SurfaceView surfaceView;
     @BindView(R.id.videoViewRootLayout)
@@ -66,9 +73,9 @@ public class ADView extends CustomView {
     @BindView(R.id.tv_CountSecond)
     TextView tvCountSecond;
     //定义一个播放器对象
-    private AliPlayer mAliyunVodPlayer;
+//    private AliPlayer mAliyunVodPlayer;
+    private AliListPlayer aliListPlayer;
     private Disposable disposable;
-    private final Object lockObject = new Object();
 
     private IADDataSourceListener dataSourceListener;
 
@@ -115,8 +122,8 @@ public class ADView extends CustomView {
         holder.addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder surfaceHolder) {
-                if(mAliyunVodPlayer != null){
-                    mAliyunVodPlayer.setDisplay(surfaceHolder);
+                if(aliListPlayer != null){
+                    aliListPlayer.setDisplay(surfaceHolder);
                 }
 
             }
@@ -124,60 +131,59 @@ public class ADView extends CustomView {
             @Override
             public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width,
                                        int height) {
-                if(mAliyunVodPlayer != null){
-                    mAliyunVodPlayer.redraw();
+                if(aliListPlayer != null){
+                    aliListPlayer.redraw();
                 }
             }
 
             @Override
             public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-                if(mAliyunVodPlayer != null){
-                    mAliyunVodPlayer.setDisplay(null);
+                if(aliListPlayer != null){
+                    aliListPlayer.setDisplay(null);
                 }
             }
         });
 
         currentADEndTimeMillis = System.currentTimeMillis() + 1 * 1500;
         startCountDownDisposable();
-
     }
 
     private void createAliPlayer(){
         try {
-            mAliyunVodPlayer = AliPlayerFactory.createAliPlayer(getContext().getApplicationContext());
-            mAliyunVodPlayer.setScaleMode(IPlayer.ScaleMode.SCALE_ASPECT_FILL);
-            mAliyunVodPlayer.setOnCompletionListener(new IPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion() {
-                    playNextAd();
-                }
-            });
-            mAliyunVodPlayer.setOnErrorListener(new IPlayer.OnErrorListener() {
+            aliListPlayer = AliPlayerFactory.createAliListPlayer(getContext().getApplicationContext());
+            aliListPlayer.setScaleMode(IPlayer.ScaleMode.SCALE_ASPECT_FILL);
+            aliListPlayer.setOnErrorListener(new IPlayer.OnErrorListener() {
                 @Override
                 public void onError(ErrorInfo errorInfo) {
-                    playNextAd();
+//                    currentADEndTimeMillis = System.currentTimeMillis() + 3 * 1000;
+//                    ToastUtils.showToastLong(getContext().getApplicationContext(),"播放视频错误:" + errorInfo.getMsg());
+                    LoggerHelper.i("播放视频错误:" + errorInfo.getMsg());
+//                    playNextAd("errorInfo");
                 }
             });
-            mAliyunVodPlayer.setOnRenderingStartListener(new IPlayer.OnRenderingStartListener() {
-                @Override
-                public void onRenderingStart() {
-					imageView.setVisibility(View.INVISIBLE);
-                    releaseImageViewResouce(imageView);
-                    imageView.setImageDrawable(null);
-                }
-            });
-            mAliyunVodPlayer.setOnStateChangedListener(new IPlayer.OnStateChangedListener() {
+            aliListPlayer.setOnStateChangedListener(new IPlayer.OnStateChangedListener() {
                 @Override
                 public void onStateChanged(int i) {
                     if(i == IPlayer.started){
-                        imageView.setVisibility(View.INVISIBLE);
-                        imageView.setImageDrawable(null);
+                        //延时100毫秒  去除切换时的残留影像
+                        Observable.timer(100,TimeUnit.MILLISECONDS)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnComplete(new Action() {
+                                    @Override
+                                    public void run() throws Exception {
+                                        imageView.setVisibility(View.INVISIBLE);
+                                        imageView.setImageDrawable(null);
+                                    }
+                                }).subscribe();
+
                     }
                 }
             });
+//            mAliyunVodPlayer = AliPlayerFactory.createAliPlayer(getContext().getApplicationContext());
+//
+//            mAliyunVodPlayer.setScaleMode(IPlayer.ScaleMode.SCALE_ASPECT_FILL);
 //            mAliyunVodPlayer.enableHardwareDecoder(false);
-            mAliyunVodPlayer.setDisplay(surfaceView.getHolder());
-
+            aliListPlayer.setDisplay(surfaceView.getHolder());
         }catch (Exception ex){
             MyLog.i("ADView---> Exception:" + ex.getMessage());
         }catch (Error error){
@@ -214,7 +220,7 @@ public class ADView extends CustomView {
                     }
 
                     if(System.currentTimeMillis() >= currentADEndTimeMillis){
-                        playNextAd();
+                        playNextAd("CountDown");
                     }
                 })
                 .doOnComplete(() -> {
@@ -223,50 +229,77 @@ public class ADView extends CustomView {
                 .subscribe();
     }
 
-    private void stopAndRealseAliPlayer() {
-        if(mAliyunVodPlayer != null){
-            mAliyunVodPlayer.setOnCompletionListener(null);
-            mAliyunVodPlayer.setOnErrorListener(null);
-            mAliyunVodPlayer.setOnStateChangedListener(null);
-            mAliyunVodPlayer.reset();
-            mAliyunVodPlayer.stop();
-            mAliyunVodPlayer.release();
-            mAliyunVodPlayer = null;
+    private void stopAliPlayer() {
+        if(aliListPlayer != null && isVideoPlaying){
+            aliListPlayer.setOnCompletionListener(null);
+//            aliListPlayer.reset();
+
+            aliListPlayer.stop();
+//            mAliyunVodPlayer.release();
+//            mAliyunVodPlayer = null;
+            isVideoPlaying = false;
         }
     }
 
+    private boolean isVideoPlaying = false;
 
     private void playLocalVideo(File file) {
+//        Observable<AliPlayer> observable = Observable.create(new ObservableOnSubscribe<AliPlayer>() {
+//            @Override
+//            public void subscribe(ObservableEmitter<AliPlayer> emitter) throws Exception {
+//
+//            }
+//        });
         String path = "file://" + file.getPath();
-        LoggerHelper.i("playLocalVideo:" + path);
-        stopAndRealseAliPlayer();
-        if(mAliyunVodPlayer == null){
+        stopAliPlayer();
+        if(aliListPlayer == null){
             createAliPlayer();
         }
-        if(mAliyunVodPlayer != null){
-            mAliyunVodPlayer.setLoop(false);
-            mAliyunVodPlayer.setAutoPlay(true);
+        if(aliListPlayer != null){
+            aliListPlayer.setOnCompletionListener(new IPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion() {
+//                    playNextAd("onCompletion");
+                    currentADEndTimeMillis = System.currentTimeMillis();
+                }
+            });
+
+            aliListPlayer.setLoop(false);
+            aliListPlayer.setAutoPlay(true);
+
+            aliListPlayer.setMute(videoMute);
+//            if(!videoURLAddList.contains(file.getName())){
+//                aliListPlayer.addUrl(path,file.getName());
+//                videoURLAddList.add(file.getName());
+//            }
             UrlSource urlSource = new UrlSource();
             urlSource.setUri(path);
-            mAliyunVodPlayer.setMute(videoMute);
-            mAliyunVodPlayer.setDataSource(urlSource);
-            mAliyunVodPlayer.prepare();
-            mAliyunVodPlayer.start();
-
+            aliListPlayer.setDataSource(urlSource);
+//            LoggerHelper.i("setDataSource");
+            aliListPlayer.prepare();
+            aliListPlayer.start();
             surfaceView.setVisibility(View.VISIBLE);
+            isVideoPlaying = true;
         }
     }
 
 
     private long currentADEndTimeMillis = 0;
     private AdItem currentADItem = null;
-    private void playNextAd() {
-        MyLog.i("PlayNextAD--->Start");
-        synchronized (lockObject){
-            //当前广告播放结束时间比当前时间晚  则认为广告在有效期  无需切换
-            if(currentADEndTimeMillis >= System.currentTimeMillis()){
+    private long lastTryToPlayTime = 0;
+    private void playNextAd(String info) {
+        try {
+            //距离上次播放切换处理不足500ms  忽略本次切换操作
+            if(System.currentTimeMillis() - lastTryToPlayTime < 500){
+                MyLog.i("距离上次播放切换处理不足500ms  忽略本次切换操作");
                 return;
             }
+//            //当前广告播放结束时间比当前时间晚  则认为广告在有效期  无需切换
+//            if(currentADEndTimeMillis >= System.currentTimeMillis()){
+//                MyLog.i("PlayNextAD--->Start当前广告播放结束时间比当前时间晚  则认为广告在有效期  无需切换");
+//                return;
+//            }
+//            currentADEndTimeMillis = System.currentTimeMillis() + 3 * 1000;
             //避免视频广告播放后 导致后续广告过来两处理回调异常  一个是定时器发出的 一个是播放结束发出的
             long delayTime = 0;
             AdItem adItem = null;
@@ -285,26 +318,26 @@ public class ADView extends CustomView {
                 if(autoFadeInWhenNoAD){
                     setAlpha(0.1f);
                 }
-                stopAndRealseAliPlayer();
-                delayTime = ((int)(Math.random() * 4 + 3)) * 1000;
+                stopAliPlayer();
+                delayTime = (System.currentTimeMillis() % 4 + 3) * 1000;
 
             }else if(!adItem.isFileExsits()){
+                LogDebugUtil.appendLog(String.format("(%s)广告正在下载中，请稍后：-->%s",2==adItem.getType()?"视频":"图片",adItem.getLocationFileName()));
                 //有广告，但是广告还没下载完成
-                releaseImageViewResouce(imageView);
-                ivDefualt.setVisibility(View.INVISIBLE);
-           		imageView.setVisibility(View.VISIBLE);
-            	imageView.setImageDrawable(getImageViewDrawable(rotation));
+                ivDefualt.setVisibility(View.VISIBLE);
+                imageView.setVisibility(View.INVISIBLE);
                 surfaceView.setVisibility(View.INVISIBLE);
-                stopAndRealseAliPlayer();
+                stopAliPlayer();
                 if(0 == adItem.getType()){
-                    delayTime = ((int)(Math.random() * 3 + 5)) * 1000;
+                    delayTime = (System.currentTimeMillis() % 3 + 5) * 1000;
                 }else{
-                    delayTime = ((int)(Math.random() * 5 + 5)) * 1000;
+                    delayTime = (System.currentTimeMillis() % 5 + 5) * 1000;
                 }
                 if(autoFadeInWhenNoAD){
                     setAlpha(0.3f);
                 }
             } else {//广告已经下载完成了，可以正常显示了
+                LogDebugUtil.appendLog(String.format("(%s)广告即将播放：-->%s",2==adItem.getType()?"视频":"图片",adItem.getLocationFileName()));
                 if(autoFadeInWhenNoAD){
                     setAlpha(1);
                 }
@@ -315,45 +348,23 @@ public class ADView extends CustomView {
                 } else {
                     surfaceView.setVisibility(View.INVISIBLE);
                     imageView.setVisibility(View.VISIBLE);
-                    stopAndRealseAliPlayer();
-                    releaseImageViewResouce(imageView);
+                    stopAliPlayer();
                     GlideUtil.loadImage(getContext().getApplicationContext(), adItem.locationFile(),imageView,rotation);
                 }
                 delayTime = adItem.getDuration() * 1000;
             }
             currentADEndTimeMillis = System.currentTimeMillis() + delayTime;
-            MyLog.i("PlayNextAD--->END");
+        }catch (Exception ex){
+            LogDebugUtil.appendLog("PlayNextAD--->Exception----->" + ex.getMessage());
+            ToastUtils.showToast(getContext().getApplicationContext(),"广告切换异常");
+            currentADEndTimeMillis = System.currentTimeMillis() + 3 * 1000;
         }
+        lastTryToPlayTime = System.currentTimeMillis();
+
     }
     public void setDefaultImage(@DrawableRes int resID){
         imageView.setImageResource(resID);
         ivDefualt.setImageResource(resID);
-    }
-
-
-    private Drawable drawableRotation0,drawableRotation90,drawableRotation180,drawableRotation270;
-    private Drawable getImageViewDrawable(float rotation){
-        if(rotation == 90){
-            if(drawableRotation90 == null){
-                drawableRotation90 = getResources().getDrawable(R.drawable.drawable_ad_loading_90);
-            }
-            return drawableRotation90;
-        }else if(rotation == 180){
-            if(drawableRotation180 == null){
-                drawableRotation180 = getResources().getDrawable(R.drawable.drawable_ad_loading_180);
-            }
-            return drawableRotation180;
-        }else if(rotation == 270){
-            if(drawableRotation270 == null){
-                drawableRotation270 = getResources().getDrawable(R.drawable.drawable_ad_loading_270);
-            }
-            return drawableRotation270;
-        }else{
-            if(drawableRotation0 == null){
-                drawableRotation0 = getResources().getDrawable(R.drawable.drawable_ad_loading);
-            }
-            return drawableRotation0;
-        }
     }
 
     public void setCountDownTitleColor(int color){
@@ -362,36 +373,24 @@ public class ADView extends CustomView {
         }
     }
 
-    public static void releaseImageViewResouce(ImageView imageView) {
-//        if (imageView == null) return;
-//        Drawable drawable = imageView.getDrawable();
-//        if (drawable != null && drawable instanceof BitmapDrawable) {
-//            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-//            Bitmap bitmap = bitmapDrawable.getBitmap();
-//            if (bitmap != null && !bitmap.isRecycled()) {
-//                bitmap.recycle();
-//            }
-//        }
-    }
-
     private boolean isPause = false;
     public void resumeAD() {
         if(isPause){
             isPause = false;
-            playNextAd();
+            currentADEndTimeMillis = System.currentTimeMillis();
+//            playNextAd("resumeAD");
         }
     }
 
     public void pauseAD() {
         isPause = true;
-        stopAndRealseAliPlayer();
+        stopAliPlayer();
     }
 
     @Override
     public void setVisibility(int visibility) {
         super.setVisibility(visibility);
     }
-
     @Override
     public void setRotation(float rotation) {
         this.rotation = rotation;
@@ -416,7 +415,12 @@ public class ADView extends CustomView {
         tvCountSecond.setLayoutParams(layoutParams);
     }
     public void onDestroy(){
-        stopAndRealseAliPlayer();
+
+        if(aliListPlayer != null){
+            stopAliPlayer();
+            aliListPlayer.release();
+            aliListPlayer = null;
+        }
         cancelCountDownDisposable();
     }
     public void setTvCountSecondTextSize(int spTextSize){

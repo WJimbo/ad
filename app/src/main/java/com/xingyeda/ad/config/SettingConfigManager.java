@@ -2,8 +2,6 @@ package com.xingyeda.ad.config;
 
 import android.content.Context;
 
-import com.gavinrowe.lgw.library.SimpleTimerTask;
-import com.gavinrowe.lgw.library.SimpleTimerTaskHandler;
 import com.xingyeda.ad.util.CustomMainBoardUtil;
 import com.xingyeda.ad.util.DeviceUtil;
 import com.xingyeda.ad.util.httputil.HttpObjResponseData;
@@ -14,6 +12,12 @@ import com.zz9158.app.common.utils.http.BaseResponseData;
 import com.zz9158.app.common.utils.http.HttpRequestModel;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 
 public class SettingConfigManager {
 
@@ -35,14 +39,15 @@ public class SettingConfigManager {
             final Context appContext = context.getApplicationContext();
             //开始请求数据
             //容错，怕偶尔收不到服务器推送，采用轮询的方式获取数据。
-            SimpleTimerTask loopTask = new SimpleTimerTask(AUTO_UPDATE_SETTINGCONFIG_TIME) {
-                @Override
-                public void run() {
-                    updateSettingForNet(appContext);
-                }
-            };
-            SimpleTimerTaskHandler.getInstance().sendTask(401, loopTask);
-            updateSettingForNet(appContext);
+            Observable.interval(5 * 1000,AUTO_UPDATE_SETTINGCONFIG_TIME, TimeUnit.MILLISECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(new Consumer<Long>() {
+                        @Override
+                        public void accept(Long aLong) throws Exception {
+                            updateSettingForNet(appContext);
+                        }
+                    })
+                    .subscribe();
         }
     }
     private boolean isRequesting = false;

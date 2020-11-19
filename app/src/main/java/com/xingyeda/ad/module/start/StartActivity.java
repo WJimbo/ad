@@ -126,7 +126,7 @@ public class StartActivity extends BaseActivity {
 
         CommandReceiveService.startService(this);
         TimerRebootService.startService(this);
-        SystemRunningMonitorService.startService(this);
+        //SystemRunningMonitorService.startService(this);
         RegisterManager.getInstance().startToRegister(this);
     }
 

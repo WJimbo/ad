@@ -41,9 +41,9 @@ public abstract class BaseADActivity extends BaseActivity {
     private SquareHeightRelativeLayout rootLayoutLogDebug;
     private SquareHeightRelativeLayout rootLayoutTips;
     private Unbinder unbinder;
-    private boolean isFeedDogThreadRunning = false;
-    private Thread feedDogThread;
-    private WeakReference<BaseActivity> weakReferenceThis;
+//    private boolean isFeedDogThreadRunning = false;
+//    private Thread feedDogThread;
+//    private WeakReference<BaseActivity> weakReferenceThis;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,31 +56,31 @@ public abstract class BaseADActivity extends BaseActivity {
         rotationViews(SettingConfig.getScreenRotateAngle(this));
         onConnectionChanged(CommandReceiveService.isConnected);
         requestList();
-        isFeedDogThreadRunning = true;
-        weakReferenceThis = new WeakReference<>(this);
-        feedDogThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (isFeedDogThreadRunning
-                        && weakReferenceThis != null
-                        && weakReferenceThis.get() != null
-                        && !weakReferenceThis.get().isFinishing()){
-                    try {
-                        UIUtils.runOnMainThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                SystemRunningMonitorService.feedDog(getApplicationContext());
-                            }
-                        });
-
-                        Thread.sleep(10 * 1000);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-        feedDogThread.start();
+//        isFeedDogThreadRunning = true;
+//        weakReferenceThis = new WeakReference<>(this);
+//        feedDogThread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while (isFeedDogThreadRunning
+//                        && weakReferenceThis != null
+//                        && weakReferenceThis.get() != null
+//                        && !weakReferenceThis.get().isFinishing()){
+//                    try {
+//                        UIUtils.runOnMainThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                SystemRunningMonitorService.feedDog(getApplicationContext());
+//                            }
+//                        });
+//
+//                        Thread.sleep(10 * 1000);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        });
+//        feedDogThread.start();
     }
     private void requestList() {
         ADListManager.getInstance(getApplicationContext()).setNeedUpdateList();
@@ -201,8 +201,8 @@ public abstract class BaseADActivity extends BaseActivity {
         if(unbinder != null){
             unbinder.unbind();
         }
-        isFeedDogThreadRunning = false;
-        feedDogThread.interrupt();
+//        isFeedDogThreadRunning = false;
+//        feedDogThread.interrupt();
         EventBus.getDefault().unregister(this);
     }
 

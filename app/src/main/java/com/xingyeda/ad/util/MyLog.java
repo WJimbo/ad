@@ -12,6 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 /**
@@ -30,26 +32,8 @@ public class MyLog {
     private static String MYLOGFILEName = ".txt";// 本类输出的日志文件名称
     private static SimpleDateFormat myLogSdfSimpleDateFormate = new SimpleDateFormat("MM-dd HH:mm:ss");// 日志的输出格式
     private static SimpleDateFormat logfileSimpleDateFormate = new SimpleDateFormat("yyyy-MM-dd");// 日志文件格式
+    private ExecutorService executorService;
 
-    public static void w(Object msg) { // 警告信息
-        log(TAG, msg.toString(), 'w');
-    }
-
-    public static void e( Object msg) { // 错误信息
-        log(TAG, msg.toString(), 'e');
-    }
-
-    public static void d(Object msg) {// 调试信息
-        log(TAG, msg.toString(), 'd');
-    }
-
-    public static void i( Object msg) {//
-        log(TAG, msg.toString(), 'i');
-    }
-
-    public static void v( Object msg) {
-        log(TAG, msg.toString(), 'v');
-    }
 
     public static void w( String text) {
         log(TAG, text, 'w');
@@ -91,6 +75,7 @@ public class MyLog {
             file.mkdirs();
         }
         versionInfo = ToolUtils.appTool().getVersionNameFromPackage(context) + "_" + ToolUtils.appTool().getAppVersionCode(context);
+        executorService = Executors.newSingleThreadExecutor();
     }
 
     public static MyLog getInstance(Context context) {
@@ -138,22 +123,23 @@ public class MyLog {
      *
      * @return
      * **/
-    private static final Object lockObject = new Object();
     private static void writeLogtoFile(String mylogtype, String tag, String text) {// 新建或打开日志文件
-        synchronized (lockObject){
-            try{
-                try {
-                    Date nowtime = new Date();
-                    String needWriteMessage = myLogSdfSimpleDateFormate.format(nowtime) + " " + versionInfo + " " + mylogtype  + "-->" + text;
-                    File file = getCurrentLogFile();
-                    ToolUtils.file().writeFileFromString(file,needWriteMessage + "\n",true);
-                }catch (Error error){
-                    LoggerHelper.e(error,"writeLogtoFile error");
+        if(INSTANCE.executorService != null && !INSTANCE.executorService.isShutdown()){
+            INSTANCE.executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Date nowtime = new Date();
+                        String needWriteMessage = myLogSdfSimpleDateFormate.format(nowtime) + " " + versionInfo + " " + mylogtype  + "-->" + text;
+                        File file = getCurrentLogFile();
+                        ToolUtils.file().writeFileFromString(file,needWriteMessage + "\n",true);
+                    }catch (Exception ex){
+                        LoggerHelper.e(ex,"writeLogtoFile Exception");
+                    }catch (Error error){
+                        LoggerHelper.e(error,"writeLogtoFile error");
+                    }
                 }
-
-            } catch (Exception ex){
-                LoggerHelper.e(ex,"writeLogtoFile Exception");
-            }
+            });
         }
     }
 

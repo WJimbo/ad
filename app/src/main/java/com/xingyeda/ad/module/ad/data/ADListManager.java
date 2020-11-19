@@ -3,17 +3,13 @@ package com.xingyeda.ad.module.ad.data;
 import android.content.Context;
 import android.os.Environment;
 
-import com.gavinrowe.lgw.library.SimpleTimerTask;
-import com.gavinrowe.lgw.library.SimpleTimerTaskHandler;
 import com.mazouri.tools.Tools;
 import com.xingyeda.ad.config.DeviceUUIDManager;
 import com.xingyeda.ad.config.SettingConfig;
 import com.xingyeda.ad.config.URLConfig;
 import com.xingyeda.ad.logdebug.LogDebugUtil;
-import com.xingyeda.ad.util.MyLog;
 import com.xingyeda.ad.util.httputil.HttpRequestData;
 import com.xingyeda.ad.util.httputil.TokenHttpRequestModel;
-import com.xingyeda.config.DeviceConfig;
 import com.zz9158.app.common.utils.GsonUtil;
 import com.zz9158.app.common.utils.ToolUtils;
 import com.zz9158.app.common.utils.http.BaseRequestData;
@@ -23,6 +19,11 @@ import com.zz9158.app.common.utils.http.HttpRequestModel;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 
 public class ADListManager {
     public interface OnAdListChangedListener{
@@ -65,7 +66,7 @@ public class ADListManager {
     /**
      * 自动请求广告接口列表间隔时间
      */
-    private static final long AUTO_REQUEST_ADLIST_TIME = 60 * 60 * 1000;
+    private static final long AUTO_REQUEST_ADLIST_TIME = 5 * 60 * 1000;
 
     private static ADListManager instance;
     private AdListResponseData adListResponseData;
@@ -80,13 +81,15 @@ public class ADListManager {
         readListFromLocation();
         //开始请求数据
         //容错，怕偶尔收不到服务器推送，采用轮询的方式获取数据。
-        SimpleTimerTask loopTask = new SimpleTimerTask(AUTO_REQUEST_ADLIST_TIME) {
-            @Override
-            public void run() {
-                setNeedUpdateList();
-            }
-        };
-        SimpleTimerTaskHandler.getInstance().sendTask(1, loopTask);
+        Observable.interval(3 * 1000,AUTO_REQUEST_ADLIST_TIME, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+                        setNeedUpdateList();
+                    }
+                })
+                .subscribe();
     }
 
     public AdListResponseData getAdListResponseData() {
@@ -130,7 +133,7 @@ public class ADListManager {
             return;
         }
         isUpdatingList = true;
-        MyLog.i("开始调用广告更新接口");
+        LogDebugUtil.appendLog("开始调用广告更新接口");
         final HttpRequestData requestData = new HttpRequestData();
         requestData.setRequestURL(URLConfig.getPath(context, URLConfig.REQUEST_AD_LIST));
         requestData.setRequestMode(BaseRequestData.RequestModeType.GET);
@@ -150,7 +153,7 @@ public class ADListManager {
                     }
                     adListResponseData = (AdListResponseData)baseResponseData;
 //                    LoggerHelper.i("调用广告数据成功:" + adListResponseData.getData().size() + "条");
-                    MyLog.i("调用广告数据成功:" + adListResponseData.getData().size() + "条");
+                    LogDebugUtil.appendLog("调用广告数据成功:" + adListResponseData.getData().size() + "条");
                     if(!lastStr.equals(baseResponseData.getJsonValueString())){
                         saveListToLocation();
                         sendEventToDataChangedListeners();
@@ -159,10 +162,10 @@ public class ADListManager {
                     }
                     downloadADFiles();
                 }else{
-                    MyLog.i("调用广告数据失败:" + baseResponseData.getErrorMsg());
+                    LogDebugUtil.appendLog("调用广告数据失败:" + baseResponseData.getErrorMsg());
 //                    LoggerHelper.i("调用广告数据失败:" + baseResponseData.getErrorMsg());
                 }
-                MyLog.i("调用广告数据结束");
+                LogDebugUtil.appendLog("调用广告数据结束");
             }
 
             @Override

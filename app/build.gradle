@@ -137,8 +137,6 @@ dependencies {
     implementation 'com.github.dueeeke.dkplayer:dkplayer-armv7a:2.5.7'
     //自动更新
     implementation 'com.github.a-voyager:AutoInstaller:v1.0'
-    //定时任务
-    implementation 'com.github.lgw666:SimpleTimerTaskHandler:v1.0'
     //数据库操作
     implementation 'cn.ittiger:tigerdb:1.0'
     testImplementation 'junit:junit:4.12'
