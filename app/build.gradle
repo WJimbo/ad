@@ -72,8 +72,8 @@ android {
     productFlavors {
         //通用主板
         pro_adtv_main{
-            versionCode 1921241415 //格式20031914  20年03月19日14时
-            versionName "2.1.0"
+            versionCode 1923231100 //格式20031914  20年03月19日14时
+            versionName "2.2.0"
             signingConfig signingConfigs.config
             manifestPlaceholders = [
                     CHANNEL_VALUE: name
@@ -81,8 +81,8 @@ android {
         }
         //长城电器 朗国主板
         pro_adtv_lango_tech{
-            versionCode 1921241415 //格式20031914  20年03月19日14时
-            versionName "1.1.0"
+            versionCode 1923231100 //格式20031914  20年03月19日14时
+            versionName "1.2.0"
             signingConfig signingConfigs.config
             manifestPlaceholders = [
                     CHANNEL_VALUE: name,
@@ -133,8 +133,8 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.2.8'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     //播放器
-    implementation 'com.github.dueeeke.dkplayer:dkplayer-java:2.5.7'
-    implementation 'com.github.dueeeke.dkplayer:dkplayer-armv7a:2.5.7'
+//    implementation 'com.github.dueeeke.dkplayer:dkplayer-java:2.5.7'
+//    implementation 'com.github.dueeeke.dkplayer:dkplayer-armv7a:2.5.7'
     //自动更新
     implementation 'com.github.a-voyager:AutoInstaller:v1.0'
     //数据库操作
@@ -144,6 +144,5 @@ dependencies {
     implementation project(':okhttp')
     implementation project(':zz_common_utils')
     implementation project(':zz_common_widget')
-    implementation 'com.alivc.conan:AlivcConan:1.0.4'
-    implementation project(path: ':AliyunPlayer-5.2.1-full')
-}
+    implementation 'com.aliyun.sdk.android:AliyunPlayer:5.2.2-full'
+    implementation 'com.alivc.conan:AlivcConan:1.0.4'}

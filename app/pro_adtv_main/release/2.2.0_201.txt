@@ -1,0 +1,1 @@
+certutil -hashfile  文件名称.文件类型 MD5
