@@ -14,19 +14,16 @@ import com.xingyeda.ad.config.SettingConfig;
 import com.xingyeda.ad.logdebug.LogDebugItem;
 import com.xingyeda.ad.logdebug.LogDebugUtil;
 import com.xingyeda.ad.module.ad.data.ADListManager;
-import com.xingyeda.ad.service.SystemRunningMonitorService;
 import com.xingyeda.ad.service.socket.CommandReceiveService;
 import com.xingyeda.ad.service.socket.ConnectChangedItem;
 import com.xingyeda.ad.util.MyLog;
 import com.xingyeda.ad.widget.SquareHeightRelativeLayout;
 import com.zz9158.app.common.utils.ToolUtils;
-import com.zz9158.app.common.utils.UIUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -197,7 +194,6 @@ public abstract class BaseADActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        MyLog.i(this.toString() +" onDestroy");
         if(unbinder != null){
             unbinder.unbind();
         }

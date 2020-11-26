@@ -19,6 +19,7 @@ import com.aliyun.player.AliPlayerFactory;
 import com.aliyun.player.IPlayer;
 import com.aliyun.player.bean.ErrorInfo;
 import com.aliyun.player.source.UrlSource;
+import com.bumptech.glide.Glide;
 import com.xingyeda.ad.R;
 import com.xingyeda.ad.logdebug.LogDebugUtil;
 import com.xingyeda.ad.module.ad.data.AdItem;
@@ -234,6 +235,7 @@ public class ADView extends CustomView {
 
     private void stopAliPlayer() {
         if(aliPlayer != null){
+            aliPlayer.reset();
             aliPlayer.stop();
         }
     }
@@ -352,8 +354,8 @@ public class ADView extends CustomView {
         LoggerHelper.i("PlayNextAD - run - finish");
     }
     public void setDefaultImage(@DrawableRes int resID){
-        imageView.setImageResource(resID);
-        ivDefualt.setImageResource(resID);
+//        imageView.setImageResource(resID);
+        Glide.with(getContext()).load(resID).into(ivDefualt);
     }
 
     public void setCountDownTitleColor(int color){

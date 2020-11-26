@@ -46,34 +46,60 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
                 Looper.prepare();
                 Toast.makeText(mContext, "程序异常崩溃，详情请查看日志文件", Toast.LENGTH_SHORT).show();
                 Looper.loop();
-            }
-        }).start();
 
-        try {
-            Thread.sleep(30000);
-        } catch (InterruptedException e) {
-            Log.e(TAG, "error : ", e);
-        }
+                try {
+                    Thread.sleep(30000);
+                } catch (InterruptedException e) {
+                    Log.e(TAG, "error : ", e);
+                }
 
-        if (!handleException(ex) && mDefaultHandler != null) {
-            // 如果用户没有处理则让系统默认的异常处理器来处理
+                if (!handleException(ex) && mDefaultHandler != null) {
+                    // 如果用户没有处理则让系统默认的异常处理器来处理
 //            mDefaultHandler.uncaughtException(thread, ex);
 //            DeviceUtil.reboot(mContext);
 //            reStartApp();
-            CustomMainBoardUtil.reboot(mContext,"闪退重启");
-        } else {
+                    CustomMainBoardUtil.reboot(mContext,"闪退重启");
+                } else {
 //            reStartApp();
 //            try {
 //                Thread.sleep(1000);
 //            } catch (InterruptedException e) {
 //                Log.e(TAG, "error : ", e);
 //            }
-            CustomMainBoardUtil.reboot(mContext,"闪退重启");
-            // 退出程序
+                    CustomMainBoardUtil.reboot(mContext,"闪退重启");
+                    // 退出程序
 //            android.os.Process.killProcess(android.os.Process.myPid());
 //            System.exit(1);
 
-        }
+                }
+            }
+        }).start();
+
+//        try {
+//            Thread.sleep(30000);
+//        } catch (InterruptedException e) {
+//            Log.e(TAG, "error : ", e);
+//        }
+//
+//        if (!handleException(ex) && mDefaultHandler != null) {
+//            // 如果用户没有处理则让系统默认的异常处理器来处理
+////            mDefaultHandler.uncaughtException(thread, ex);
+////            DeviceUtil.reboot(mContext);
+////            reStartApp();
+//            CustomMainBoardUtil.reboot(mContext,"闪退重启");
+//        } else {
+////            reStartApp();
+////            try {
+////                Thread.sleep(1000);
+////            } catch (InterruptedException e) {
+////                Log.e(TAG, "error : ", e);
+////            }
+//            CustomMainBoardUtil.reboot(mContext,"闪退重启");
+//            // 退出程序
+////            android.os.Process.killProcess(android.os.Process.myPid());
+////            System.exit(1);
+//
+//        }
     }
     public void reStartApp(){
         StartActivity.isStarted = false;

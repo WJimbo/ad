@@ -36,6 +36,13 @@ public class OneADDataProvider extends BaseADDataProvider {
                 }
             }
             currentShowAdIndex = tempShowIndex;
+            if(adItem != null){
+                try {
+                    adItem = (AdItem)adItem.clone();
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                }
+            }
             return adItem;
         }
     }

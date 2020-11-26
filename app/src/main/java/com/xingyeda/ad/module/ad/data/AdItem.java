@@ -10,7 +10,7 @@ import java.io.File;
  * Created by tingyanwu on 2017/10/29.
  */
 
-public class AdItem {
+public class AdItem implements Cloneable{
 
 
 //              "id": 84,   //广告的id
@@ -40,20 +40,24 @@ public class AdItem {
     private int type;
     private String url;
     private int duration;
-    /**
-     * id : 1248553761333792769
-     * type : 0
-     * createDate : null
-     * name : null
-     * stateTime : 2020-04-01 00:00:00
-     * endTime : 2020-04-30 00:00:00
-     * advId : 1248553799220940801
-     * duration : 15
-     */
 
     private String stateTime;
     private String endTime;
     private String advId;
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        AdItem adItem = (AdItem)super.clone();
+        adItem.advId = advId;
+        adItem.createDate = createDate;
+        adItem.duration = duration;
+        adItem.endTime = endTime;
+        adItem.id = id;
+        adItem.name = name;
+        adItem.type = type;
+        adItem.url = url;
+        return adItem;
+    }
 
     @Override
     public boolean equals(Object obj) {
