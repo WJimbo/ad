@@ -1,6 +1,9 @@
 package com.xingyeda.ad.module.ad.widget;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,7 +29,6 @@ import com.xingyeda.ad.module.ad.data.AdItem;
 import com.xingyeda.ad.module.ad.data.DownloadManager;
 import com.xingyeda.ad.util.GlideUtil;
 import com.xingyeda.ad.util.MyLog;
-import com.zz9158.app.common.utils.LoggerHelper;
 import com.zz9158.app.common.utils.ToastUtils;
 import com.zz9158.app.common.utils.ToolUtils;
 import com.zz9158.app.common.widget.CustomView;
@@ -74,7 +76,7 @@ public class ADView extends CustomView {
 
     private IADDataSourceListener dataSourceListener;
 
-    private WeakReference<TextView> mWeakTvCountSecond; //显示倒计时的文字  用弱引用 防止内存泄漏
+    private WeakReference<ADView> mWeakSelf; //显示倒计时的文字  用弱引用 防止内存泄漏
 
     public void setVideoMute(boolean videoMute) {
         this.videoMute = videoMute;
@@ -109,7 +111,7 @@ public class ADView extends CustomView {
     protected void initView() {
         super.initView();
         ButterKnife.bind(this, rootView);
-        mWeakTvCountSecond = new WeakReference<>(tvCountSecond);
+        mWeakSelf = new WeakReference<>(this);
         tvCountSecond.setRotation(rotation);
         surfaceView.setZOrderMediaOverlay(true);
         SurfaceHolder holder = surfaceView.getHolder();
@@ -155,7 +157,7 @@ public class ADView extends CustomView {
             aliPlayer.setOnCompletionListener(new IPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion() {
-                    LoggerHelper.i("onCompletion");
+//                    LoggerHelper.i("onCompletion");
                     currentADEndTimeMillis = System.currentTimeMillis();
                 }
             });
@@ -164,7 +166,7 @@ public class ADView extends CustomView {
                 public void onError(ErrorInfo errorInfo) {
 //                    currentADEndTimeMillis = System.currentTimeMillis() + 3 * 1000;
 //                    ToastUtils.showToastLong(getContext().getApplicationContext(),"播放视频错误:" + errorInfo.getMsg());
-                    LoggerHelper.i("播放视频错误:" + errorInfo.getMsg());
+//                    LoggerHelper.i("播放视频错误:" + errorInfo.getMsg());
 //                    playNextAd("errorInfo");
                 }
             });
@@ -182,7 +184,7 @@ public class ADView extends CustomView {
                                         imageView.setImageDrawable(null);
                                     }
                                 }).subscribe();
-                        LoggerHelper.i("duration---》" + aliPlayer.getDuration());
+//                        LoggerHelper.i("duration---》" + aliPlayer.getDuration());
 
                     }
                 }
@@ -203,29 +205,35 @@ public class ADView extends CustomView {
     }
     private void startCountDownDisposable(){
         cancelCountDownDisposable();
-        StringBuilder stringBuilder = new StringBuilder();
-        String undefineTime = "--";
+
         disposable = Flowable.intervalRange(0, Long.MAX_VALUE, 0, 500, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(aLong -> {
-                    //用弱引用 先判空 避免崩溃
-                    if (mWeakTvCountSecond.get() == null) {
-                        cancelCountDownDisposable();
-                        return;
-                    }
-                    long lastSecond = ((currentADEndTimeMillis - System.currentTimeMillis()) + 500) / 1000;
-                    if(lastSecond >= 0 && lastSecond <= 1000){
-                        stringBuilder.setLength(0);
-                        stringBuilder.append(lastSecond);
-                        mWeakTvCountSecond.get().setText(stringBuilder);
-                    }else{
-                        mWeakTvCountSecond.get().setText(undefineTime);
+                    try{
+                        StringBuilder stringBuilder = new StringBuilder();
+                        //用弱引用 先判空 避免崩溃
+                        if (mWeakSelf.get() == null) {
+                            cancelCountDownDisposable();
+                            return;
+                        }
+                        ADView weakAdview = mWeakSelf.get();
+                        long lastSecond = ((currentADEndTimeMillis - System.currentTimeMillis()) + 500) / 1000;
+                        if(lastSecond >= 0 && lastSecond <= 1000){
+                            stringBuilder.setLength(0);
+                            stringBuilder.append(lastSecond);
+                            weakAdview.tvCountSecond.setText(stringBuilder);
+                        }else{
+                            weakAdview.tvCountSecond.setText("--");
+                        }
+
+                        if(System.currentTimeMillis() >= currentADEndTimeMillis){
+                            weakAdview.playNextAd("CountDown");
+                        }
+                    }catch (Exception ex){
+
                     }
 
-                    if(System.currentTimeMillis() >= currentADEndTimeMillis){
-                        playNextAd("CountDown");
-                    }
                 })
                 .doOnComplete(() -> {
                     startCountDownDisposable();
@@ -242,23 +250,23 @@ public class ADView extends CustomView {
 
 
     private void playLocalVideo(File file) {
-        String path = "file://" + file.getPath();
+//        String path = "file://" + file.getPath();
         stopAliPlayer();
         if(aliPlayer == null){
             createAliPlayer();
         }
         if(aliPlayer != null){
-            LoggerHelper.i("playLocalVideo--->1");
+//            LoggerHelper.i("playLocalVideo--->1");
 
             aliPlayer.setLoop(false);
             aliPlayer.setAutoPlay(true);
             aliPlayer.setMute(videoMute);
-            LoggerHelper.i("playLocalVideo--->2");
+//            LoggerHelper.i("playLocalVideo--->2");
             UrlSource urlSource = new UrlSource();
             urlSource.setUri(file.getPath());
             aliPlayer.setDataSource(urlSource);
             aliPlayer.prepare();
-            LoggerHelper.i("playLocalVideo--->3");
+//            LoggerHelper.i("playLocalVideo--->3");
             aliPlayer.start();
 
             surfaceView.setVisibility(View.VISIBLE);
@@ -326,7 +334,7 @@ public class ADView extends CustomView {
                     setAlpha(0.3f);
                 }
             } else {//广告已经下载完成了，可以正常显示了
-                 LogDebugUtil.appendLog(String.format("(%s)广告即将播放：-->%s",2==adItem.getType()?"视频":"图片",adItem.getLocationFileName()));
+                LogDebugUtil.appendLog(String.format("(%s)广告即将播放：-->%s",2==adItem.getType()?"视频":"图片",adItem.getLocationFileName()));
                 delayTime = adItem.getDuration() * 1000;
                 if(autoFadeInWhenNoAD){
                     setAlpha(1);
@@ -351,7 +359,7 @@ public class ADView extends CustomView {
             currentADEndTimeMillis = System.currentTimeMillis() + 3 * 1000;
         }
         tryingToPlayAD = false;
-        LoggerHelper.i("PlayNextAD - run - finish");
+//        LoggerHelper.i("PlayNextAD - run - finish");
     }
     public void setDefaultImage(@DrawableRes int resID){
 //        imageView.setImageResource(resID);
@@ -422,5 +430,16 @@ public class ADView extends CustomView {
         layoutParams.height = ToolUtils.convert().dp2px(heightDP);
         layoutParams.width = ToolUtils.convert().dp2px(widthDP);
         tvCountSecond.setLayoutParams(layoutParams);
+    }
+    public void releaseDefaultImage(){
+        Drawable drawable=ivDefualt.getDrawable();
+        if(drawable instanceof BitmapDrawable){
+            Bitmap bmp = ((BitmapDrawable)drawable).getBitmap();
+            if (bmp != null && !bmp.isRecycled()){
+                ivDefualt.setImageBitmap(null);
+                bmp.recycle();
+                bmp=null;
+            }
+        }
     }
 }

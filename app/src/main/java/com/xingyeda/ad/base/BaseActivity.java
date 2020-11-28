@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.xingyeda.ad.broadcast.BroadCasetKeys;
 import com.xingyeda.ad.module.versionmanager.VersionManager;
 import com.xingyeda.ad.receiver.InnerReceiver;
-import com.zz9158.app.common.utils.LoggerHelper;
+import com.xingyeda.ad.util.MyLog;
 import com.zz9158.app.common.utils.ToastUtils;
 
 
@@ -29,6 +29,7 @@ public class BaseActivity extends Activity {
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        MyLog.i("OnCreate--->" + this.toString());
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         mContext = this;
@@ -116,6 +117,6 @@ public class BaseActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(innerReceiver);
-        LoggerHelper.i("onDestroy--->" + this.toString());
+        MyLog.i("onDestroy--->" + this.toString());
     }
 }

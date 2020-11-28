@@ -3,6 +3,7 @@ package com.xingyeda.ad;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.SystemClock;
 import android.support.multidex.MultiDex;
 
 import com.lansosdk.videoeditor.LanSoEditor;
@@ -10,6 +11,7 @@ import com.liulishuo.filedownloader.FileDownloader;
 import com.squareup.leakcanary.LeakCanary;
 import com.xingyeda.ad.config.DeviceUUIDManager;
 import com.xingyeda.ad.module.ad.data.DownloadManager;
+import com.xingyeda.ad.module.start.StartActivity;
 import com.xingyeda.ad.util.CrashHandler;
 import com.xingyeda.ad.util.MyLog;
 import com.xingyeda.ad.util.httputil.TokenMananger;
@@ -18,6 +20,7 @@ import com.zz9158.app.common.utils.LoggerHelper;
 import com.zz9158.app.common.utils.ToolUtils;
 
 public class MainApplication extends Application {
+    private boolean isStarted = false;
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -45,7 +48,12 @@ public class MainApplication extends Application {
         if(ApplicationUtil.isMainProcess(this)) {
             MyLog.getInstance(this);
             MyLog.delBefore7LogFiles();
-            MyLog.i("MainApplication onCreate ->" + this.toString());
+            MyLog.i(new StringBuilder("MainApplication onCreate ->").append(this.toString()).append("  isStarted").append(isStarted).toString());
+            MyLog.i(new StringBuilder("SystemClockTime-->").append(SystemClock.elapsedRealtime()).toString());
+            if(isStarted){
+                ApplicationUtil.restartApp(this, StartActivity.class);
+                return;
+            }
             TokenMananger.getInstance().init(this, DeviceUUIDManager.generateUUID(this),"1");
             DownloadManager.getInstance().setContext(this);
             ToolUtils.init(this);
@@ -57,7 +65,7 @@ public class MainApplication extends Application {
 
             FileDownloader.setup(this);
             LanSoEditor.initSDK(getApplicationContext(),null);
-
+            isStarted = true;
         }
     }
     @Override
@@ -70,8 +78,11 @@ public class MainApplication extends Application {
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
         MyLog.i("onTrimMemory ->" + level);
-        if(level == TRIM_MEMORY_RUNNING_LOW || level == TRIM_MEMORY_RUNNING_CRITICAL) {//内存不足(后台进程不足5个)，并且该进程优先级比较高，需要清理内存
+        if(level == TRIM_MEMORY_RUNNING_MODERATE
+                || level == TRIM_MEMORY_RUNNING_LOW
+                || level == TRIM_MEMORY_RUNNING_CRITICAL) {//内存不足(后台进程不足5个)，并且该进程优先级比较高，需要清理内存
 //            CustomMainBoardUtil.reboot(getApplicationContext(),"内存不足重启");
+//            Glide.get(getApplicationContext()).clearMemory();
         }
     }
 }

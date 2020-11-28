@@ -40,6 +40,7 @@ public class OneADMainActivity extends BaseADActivity {
         adView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                ApplicationUtil.restartApp(getApplicationContext(), StartActivity.class);
 //                Date powerOffDate = ToolUtils.time().millis2Date(System.currentTimeMillis() + 2 * 60 * 1000);
 //                Date powerOnDate = ToolUtils.time().millis2Date(System.currentTimeMillis() + 5 * 60 * 1000);
 //                CustomMainBoardUtil.powerOffAndOn(getApplicationContext(), ToolUtils.time().date2String(powerOffDate,"yyyy-MM-dd HH:mm:ss"),ToolUtils.time().date2String(powerOnDate,"yyyy-MM-dd HH:mm:ss"));
@@ -91,5 +92,16 @@ public class OneADMainActivity extends BaseADActivity {
             dataProvider.unRegisterDataProvider();
         }
 
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        if(level == TRIM_MEMORY_RUNNING_MODERATE
+                || level == TRIM_MEMORY_RUNNING_LOW
+                || level == TRIM_MEMORY_RUNNING_CRITICAL) {//内存不足(后台进程不足5个)，并且该进程优先级比较高，需要清理内存
+            adView.releaseDefaultImage();
+        }
+        System.gc();
     }
 }

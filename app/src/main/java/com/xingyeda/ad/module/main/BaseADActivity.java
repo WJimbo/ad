@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.xingyeda.ad.R;
 import com.xingyeda.ad.base.BaseActivity;
 import com.xingyeda.ad.config.DeviceUUIDManager;
@@ -203,14 +204,15 @@ public abstract class BaseADActivity extends BaseActivity {
     }
 
     @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        MyLog.i(this.toString() +" onLowMemory");
-    }
-
-    @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
         MyLog.i(this.toString() +" onTrimMemory:" + level);
+        if(level == TRIM_MEMORY_RUNNING_MODERATE
+                || level == TRIM_MEMORY_RUNNING_LOW
+                || level == TRIM_MEMORY_RUNNING_CRITICAL) {//内存不足(后台进程不足5个)，并且该进程优先级比较高，需要清理内存
+//            CustomMainBoardUtil.reboot(getApplicationContext(),"内存不足重启");
+            Glide.get(getApplicationContext()).clearMemory();
+        }
+
     }
 }

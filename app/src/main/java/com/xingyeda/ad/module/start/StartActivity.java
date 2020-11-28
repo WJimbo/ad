@@ -2,7 +2,6 @@ package com.xingyeda.ad.module.start;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -16,18 +15,22 @@ import com.xingyeda.ad.config.SettingConfigManager;
 import com.xingyeda.ad.module.main.NineADMainActivity;
 import com.xingyeda.ad.module.main.OneADMainActivity;
 import com.xingyeda.ad.module.register.RegisterManager;
-import com.xingyeda.ad.service.SystemRunningMonitorService;
 import com.xingyeda.ad.service.TimerRebootService;
 import com.xingyeda.ad.service.socket.CommandReceiveService;
 import com.xingyeda.ad.util.MyLog;
 import com.xingyeda.ad.widget.SquareHeightRelativeLayout;
+import com.zz9158.app.common.utils.LoggerHelper;
 import com.zz9158.app.common.utils.ToolUtils;
-import com.zz9158.app.common.utils.UIUtils;
 
 import java.lang.ref.WeakReference;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 
 /**
@@ -43,8 +46,8 @@ public class StartActivity extends BaseActivity {
     TextView versionInfoTextView;
     @BindView(R.id.rootLayout_Versions)
     SquareHeightRelativeLayout rootLayoutVersions;
-
-    private CountDownTimer countDownTimer;
+    private Disposable disposable;
+//    private CountDownTimer countDownTimer;
     private WeakReference<TextView> textViewWeakReference;
 
     @Override
@@ -70,43 +73,9 @@ public class StartActivity extends BaseActivity {
 
         setContentView(R.layout.activity_start);
         ButterKnife.bind(this);
-        int waitTime = 15 * 1000;
-        if (BuildConfig.DEBUG) {
-            waitTime = 3 * 1000;
-        }
-        UIUtils.runOnMainThread(new Runnable() {
-            @Override
-            public void run() {
-                SettingConfigManager.getInstance().startUpdateSettingTimer(getApplicationContext());
-            }
-        },waitTime / 2);
+
         textViewWeakReference = new WeakReference<>(infoTextView);
-        countDownTimer = new CountDownTimer(waitTime, 300) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                if(textViewWeakReference != null){
-                    TextView weakTextView = textViewWeakReference.get();
-                    if (weakTextView != null) {
-                        weakTextView.setText("正在启动中(" + (millisUntilFinished + 500) / 1000 + "秒)...");
-                    }
-                }
-            }
 
-            @Override
-            public void onFinish() {
-//                Intent intent = new Intent(mContext, PowerTestActivity.class);
-//                startActivity(intent);
-                MyLog.i("StartActivity finish");
-                if(SettingConfig.getADScreenNum(getApplicationContext()) == 9){
-                    NineADMainActivity.startActivity(mContext);
-                }else{
-                    OneADMainActivity.startActivity(mContext);
-                }
-
-                finish();
-            }
-        };
-        countDownTimer.start();
         versionInfoTextView.setText("MAC:" + DeviceUUIDManager.generateUUID(this) + "\n版本号:" + ToolUtils.appTool().getVersionNameFromPackage(this) + "_" + ToolUtils.appTool().getAppVersionCode(this) + "\n编译时间:" + BuildConfig.BUILD_DATE);
 
 
@@ -128,15 +97,39 @@ public class StartActivity extends BaseActivity {
         TimerRebootService.startService(this);
         //SystemRunningMonitorService.startService(this);
         RegisterManager.getInstance().startToRegister(this);
+        SettingConfigManager.getInstance().startUpdateSettingTimer(getApplicationContext());
+        final int waitTime = BuildConfig.DEBUG ? 3 : 15;
+        disposable = Flowable.intervalRange(0, waitTime, 0, 1, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(aLong -> {
+                    LoggerHelper.i("doOnNext-->" + aLong);
+                    if(textViewWeakReference != null){
+                        TextView weakTextView = textViewWeakReference.get();
+                        if (weakTextView != null) {
+                            weakTextView.setText("正在启动中(" + (waitTime - aLong) + "秒)...");
+                        }
+                    }
+                })
+                .doOnComplete(() -> {
+                    MyLog.i("StartActivity finish");
+                    if(SettingConfig.getADScreenNum(getApplicationContext()) == 9){
+                        NineADMainActivity.startActivity(mContext);
+                    }else{
+                        OneADMainActivity.startActivity(mContext);
+                    }
+
+                    finish();
+                })
+                .subscribe();
     }
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-            countDownTimer = null;
+        if (disposable != null && !disposable.isDisposed()) {
+            disposable.dispose();
         }
     }
 }
