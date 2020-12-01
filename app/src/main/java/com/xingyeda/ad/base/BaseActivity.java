@@ -12,6 +12,7 @@ import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.xingyeda.ad.MainApplication;
 import com.xingyeda.ad.broadcast.BroadCasetKeys;
 import com.xingyeda.ad.module.versionmanager.VersionManager;
 import com.xingyeda.ad.receiver.InnerReceiver;
@@ -30,6 +31,7 @@ public class BaseActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         MyLog.i("OnCreate--->" + this.toString());
+        MainApplication.isAnyActivityStartedFlag = true;
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         mContext = this;

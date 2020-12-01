@@ -72,7 +72,7 @@ android {
     productFlavors {
         //通用主板
         pro_adtv_main{
-            versionCode 1924011030 //格式20031914  20年03月19日14时
+            versionCode 1924011500 //格式20031914  20年03月19日14时
             versionName "2.2.0"
             signingConfig signingConfigs.config
             manifestPlaceholders = [
@@ -81,7 +81,7 @@ android {
         }
         //长城电器 朗国主板
         pro_adtv_lango_tech{
-            versionCode 1924011055 //格式20031914  20年03月19日14时
+            versionCode 1924011500 //格式20031914  20年03月19日14时
             versionName "1.2.0"
             signingConfig signingConfigs.config
             manifestPlaceholders = [

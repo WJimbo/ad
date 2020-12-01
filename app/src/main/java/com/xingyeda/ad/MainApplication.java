@@ -3,6 +3,7 @@ package com.xingyeda.ad;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Process;
 import android.os.SystemClock;
 import android.support.multidex.MultiDex;
 
@@ -11,7 +12,6 @@ import com.liulishuo.filedownloader.FileDownloader;
 import com.squareup.leakcanary.LeakCanary;
 import com.xingyeda.ad.config.DeviceUUIDManager;
 import com.xingyeda.ad.module.ad.data.DownloadManager;
-import com.xingyeda.ad.module.main.OneADMainActivity;
 import com.xingyeda.ad.module.start.StartActivity;
 import com.xingyeda.ad.util.CrashHandler;
 import com.xingyeda.ad.util.MyLog;
@@ -20,10 +20,14 @@ import com.zz9158.app.common.utils.ApplicationUtil;
 import com.zz9158.app.common.utils.LoggerHelper;
 import com.zz9158.app.common.utils.ToolUtils;
 
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
+
 public class MainApplication extends Application {
-    private boolean isStarted = false;
-    private static boolean isStaticStartedFlag = false;
-    private static final String SP_KEY_LAST_APPLICATION_LOCATION = "SP_KEY_LAST_APPLICATION_LOCATION";
+    public static boolean isAnyActivityStartedFlag;
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -57,25 +61,11 @@ public class MainApplication extends Application {
                     .append(this.toString())
                     .append(" SystemClockTime:")
                     .append(SystemClock.elapsedRealtime())
-                    .append("  isStarted:")
-                    .append(isStarted)
-                    .append(" staticStartedFlag:")
-                    .append(isStaticStartedFlag)
-                    .append(" isAppAlive:")
-                    .append(ApplicationUtil.isAppAlive(this))
-                    .append(" isActivityForeground:")
-                    .append(ApplicationUtil.isActivityForeground(this, OneADMainActivity.class.getName()))
+                    .append(" isAnyActivityStartedFlag：")
+                    .append(isAnyActivityStartedFlag)
+                    .append(" ProcessID:")
+                    .append(Process.myPid())
                     .toString());
-            String lastApplicationInstanceLocation = ToolUtils.sp().getShareString(SP_KEY_LAST_APPLICATION_LOCATION);//上一次启动Application的内存地址
-            String currentApplicationInstanceLocation = this.toString();
-            if(isStarted || isStaticStartedFlag
-                    || currentApplicationInstanceLocation.equals(lastApplicationInstanceLocation)){
-                MyLog.i("Application异常被重启");
-                ToolUtils.sp().saveShareString(SP_KEY_LAST_APPLICATION_LOCATION,"");
-                ApplicationUtil.restartApp(this, StartActivity.class);
-                return;
-            }
-            ToolUtils.sp().saveShareString(SP_KEY_LAST_APPLICATION_LOCATION,currentApplicationInstanceLocation);
 
             TokenMananger.getInstance().init(this, DeviceUUIDManager.generateUUID(this),"1");
             DownloadManager.getInstance().setContext(this);
@@ -88,9 +78,24 @@ public class MainApplication extends Application {
 
             FileDownloader.setup(this);
             LanSoEditor.initSDK(getApplicationContext(),null);
-            isStarted = true;
-            isStaticStartedFlag = true;
+            checkUIRuningTimer();
         }
+    }
+    private void checkUIRuningTimer(){
+        isAnyActivityStartedFlag = false;
+        Flowable.timer(25, TimeUnit.SECONDS)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .doOnComplete(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        MyLog.i("ApplicationOnCreate启动：" + (isAnyActivityStartedFlag ? "正常启动" : "异常启动"));
+                        if (!isAnyActivityStartedFlag) {
+                            ApplicationUtil.restartApp(getApplicationContext(), StartActivity.class);
+                        }
+                    }
+
+                })
+                .subscribe();
     }
     @Override
     public void onLowMemory() {
