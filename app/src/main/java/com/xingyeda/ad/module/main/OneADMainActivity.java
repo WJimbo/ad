@@ -10,6 +10,8 @@ import com.xingyeda.ad.R;
 import com.xingyeda.ad.module.ad.data.AdItem;
 import com.xingyeda.ad.module.ad.dataprovider.OneADDataProvider;
 import com.xingyeda.ad.module.ad.widget.ADView;
+import com.xingyeda.ad.module.start.StartActivity;
+import com.zz9158.app.common.utils.ApplicationUtil;
 
 import butterknife.BindView;
 

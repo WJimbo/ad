@@ -19,7 +19,6 @@ import com.xingyeda.ad.service.TimerRebootService;
 import com.xingyeda.ad.service.socket.CommandReceiveService;
 import com.xingyeda.ad.util.MyLog;
 import com.xingyeda.ad.widget.SquareHeightRelativeLayout;
-import com.zz9158.app.common.utils.LoggerHelper;
 import com.zz9158.app.common.utils.ToolUtils;
 
 import java.lang.ref.WeakReference;
@@ -76,8 +75,15 @@ public class StartActivity extends BaseActivity {
 
         textViewWeakReference = new WeakReference<>(infoTextView);
 
-        versionInfoTextView.setText("MAC:" + DeviceUUIDManager.generateUUID(this) + "\n版本号:" + ToolUtils.appTool().getVersionNameFromPackage(this) + "_" + ToolUtils.appTool().getAppVersionCode(this) + "\n编译时间:" + BuildConfig.BUILD_DATE);
-
+        versionInfoTextView.setText(new StringBuilder("MAC:")
+                .append(DeviceUUIDManager.generateUUID(this))
+                .append("\n版本号:")
+                .append(ToolUtils.appTool().getVersionNameFromPackage(this))
+                .append("_")
+                .append(ToolUtils.appTool().getAppVersionCode(this))
+                .append("\n编译时间:")
+                .append(BuildConfig.BUILD_DATE)
+                .toString());
 
         infoTextView.setRotation(SettingConfig.getScreenRotateAngle(this));
         rootLayoutVersions.setRotation(SettingConfig.getScreenRotateAngle(this));
@@ -103,7 +109,6 @@ public class StartActivity extends BaseActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(aLong -> {
-                    LoggerHelper.i("doOnNext-->" + aLong);
                     if(textViewWeakReference != null){
                         TextView weakTextView = textViewWeakReference.get();
                         if (weakTextView != null) {
@@ -112,7 +117,6 @@ public class StartActivity extends BaseActivity {
                     }
                 })
                 .doOnComplete(() -> {
-                    MyLog.i("StartActivity finish");
                     if(SettingConfig.getADScreenNum(getApplicationContext()) == 9){
                         NineADMainActivity.startActivity(mContext);
                     }else{
