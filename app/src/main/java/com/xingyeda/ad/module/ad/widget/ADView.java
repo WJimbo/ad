@@ -286,6 +286,7 @@ public class ADView extends CustomView {
         try {
             //距离上次播放切换处理不足500ms  忽略本次切换操作
             if(System.currentTimeMillis() - lastTryToPlayTime < 500){
+                tryingToPlayAD = false;
                 MyLog.i("距离上次播放切换处理不足500ms  忽略本次切换操作");
                 return;
             }
